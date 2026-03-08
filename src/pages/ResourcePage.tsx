@@ -97,14 +97,28 @@ export default function ResourcePage() {
     setToggling(false);
   };
 
+  const handleToggleHidden = async () => {
+    if (!resource) return;
+    setHiding(true);
+    const newValue = !resource.is_hidden;
+    const { error } = await supabase
+      .from("resources")
+      .update({ is_hidden: newValue } as any)
+      .eq("id", resource.id);
+    if (error) {
+      toast.error("Failed to update visibility");
+    } else {
+      setResource((prev) => prev ? { ...prev, is_hidden: newValue } as any : prev);
+      toast.success(newValue ? "Resource hidden" : "Resource visible again");
+    }
+    setHiding(false);
+  };
+
   const handleDelete = async () => {
     if (!resource) return;
     setDeleting(true);
-    // Delete associated flags first
     await supabase.from("resource_flags").delete().eq("resource_id", resource.id);
-    // Delete the file from storage
     await supabase.storage.from("resources").remove([resource.file_path]);
-    // Delete the resource record
     const { error } = await supabase.from("resources").delete().eq("id", resource.id);
     if (error) {
       toast.error("Failed to delete resource");

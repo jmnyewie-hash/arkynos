@@ -21,6 +21,7 @@ import ClassTagPage from "./pages/ClassTagPage";
 import UpgradePage from "./pages/UpgradePage";
 import MyLibraryPage from "./pages/MyLibraryPage";
 import ViewerPage from "./pages/ViewerPage";
+import OfflinePage from "./pages/OfflinePage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();

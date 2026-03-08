@@ -187,6 +187,34 @@ export default function ClassTagPage() {
     }
   };
 
+  const handleSaveOffline = async (resource: ResourceWithRelations) => {
+    try {
+      const { data } = supabase.storage.from("resources").getPublicUrl(resource.file_path);
+      const response = await fetch(data.publicUrl);
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${resource.title}.${resource.file_path.split(".").pop() || "pdf"}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      sonnerToast.success(`Saved "${resource.title}" for offline access`);
+    } catch {
+      sonnerToast.error("Failed to save file");
+    }
+  };
+
+  const handleDownloadAll = async () => {
+    setDownloadingAll(true);
+    for (const r of resources) {
+      await handleSaveOffline(r);
+    }
+    setDownloadingAll(false);
+  };
+
+
   if (loading || checkingAccess || authLoading || adminLoading) {
     return (
       <div className="container max-w-2xl py-10">

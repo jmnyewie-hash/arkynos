@@ -1,0 +1,1 @@
+ALTER TABLE public.resources ADD COLUMN author text DEFAULT null;

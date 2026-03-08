@@ -38,6 +38,7 @@ export default function UploadPage() {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [author, setAuthor] = useState("");
   const [courseId, setCourseId] = useState("");
   const [selectedCourse, setSelectedCourse] = useState<Tables<"courses"> | null>(null);
   const [resourceType, setResourceType] = useState("");
@@ -84,6 +85,7 @@ export default function UploadPage() {
       const { error: insertError } = await supabase.from("resources").insert({
         title: title.trim(),
         description: description.trim() || null,
+        author: author.trim() || null,
         course_id: courseId,
         resource_type: resourceType as any,
         file_url: urlData.publicUrl,
@@ -112,6 +114,11 @@ export default function UploadPage() {
         <div className="space-y-2">
           <Label htmlFor="title">Title *</Label>
           <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Calculus Final Exam 2024" maxLength={200} required />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="author">Author <span className="text-muted-foreground font-normal">(optional)</span></Label>
+          <Input id="author" value={author} onChange={(e) => setAuthor(e.target.value)} placeholder="e.g. Prof. Adeyemi, John Smith" maxLength={150} />
         </div>
 
         <div className="space-y-2">

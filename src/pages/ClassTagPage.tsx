@@ -301,6 +301,21 @@ export default function ClassTagPage() {
     setUploading(false);
   };
 
+  const handleTogglePreferred = async () => {
+    if (!tag || !isAdmin) return;
+    const newVal = !tag.is_preferred;
+    const { error } = await supabase
+      .from("class_tags")
+      .update({ is_preferred: newVal } as any)
+      .eq("id", tag.id);
+    if (error) {
+      sonnerToast.error("Failed to update preferred status");
+    } else {
+      setTag({ ...tag, is_preferred: newVal });
+      sonnerToast.success(newVal ? "Marked as preferred" : "Removed preferred status");
+    }
+  };
+
 
   if (loading || checkingAccess || authLoading || adminLoading) {
     return (

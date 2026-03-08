@@ -209,7 +209,7 @@ export default function ResourcePage() {
             )}
             <p>{resource.downloads} downloads</p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Button onClick={handleDownload} disabled={downloading} size="sm">
               <Download className="mr-2 h-4 w-4" />
               {downloading ? "Downloading..." : "Download"}
@@ -221,7 +221,7 @@ export default function ResourcePage() {
                 onClick={() => toggleSave(resource.id)}
               >
                 <Bookmark className={`mr-2 h-4 w-4 ${isSaved(resource.id) ? "fill-primary text-primary" : ""}`} />
-                {isSaved(resource.id) ? "Saved" : "Save to Library"}
+                {isSaved(resource.id) ? "Saved" : "Save"}
               </Button>
             )}
             <FlagResourceDialog resourceId={resource.id} />

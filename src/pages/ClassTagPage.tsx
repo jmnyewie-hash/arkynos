@@ -6,8 +6,9 @@ import ResourceCard from "@/components/ResourceCard";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Button } from "@/components/ui/button";
-import { Lock, Loader2, CheckCircle } from "lucide-react";
+import { Lock, Loader2, CheckCircle, Download, Wifi, WifiOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { toast as sonnerToast } from "sonner";
 
 type ResourceWithRelations = Tables<"resources"> & {
   courses: Tables<"courses"> | null;
@@ -35,6 +36,7 @@ export default function ClassTagPage() {
   const [checkingAccess, setCheckingAccess] = useState(true);
   const [paying, setPaying] = useState(false);
   const [verifying, setVerifying] = useState(false);
+  const [downloadingAll, setDownloadingAll] = useState(false);
 
   // Check access — admins always have access
   useEffect(() => {
@@ -185,6 +187,34 @@ export default function ClassTagPage() {
     }
   };
 
+  const handleSaveOffline = async (resource: ResourceWithRelations) => {
+    try {
+      const { data } = supabase.storage.from("resources").getPublicUrl(resource.file_path);
+      const response = await fetch(data.publicUrl);
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${resource.title}.${resource.file_path.split(".").pop() || "pdf"}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      sonnerToast.success(`Saved "${resource.title}" for offline access`);
+    } catch {
+      sonnerToast.error("Failed to save file");
+    }
+  };
+
+  const handleDownloadAll = async () => {
+    setDownloadingAll(true);
+    for (const r of resources) {
+      await handleSaveOffline(r);
+    }
+    setDownloadingAll(false);
+  };
+
+
   if (loading || checkingAccess || authLoading || adminLoading) {
     return (
       <div className="container max-w-2xl py-10">
@@ -244,16 +274,49 @@ export default function ClassTagPage() {
         </div>
       ) : hasAccess ? (
         <>
-          <div className="mt-4 flex items-center gap-1.5 text-xs text-green-600">
-            <CheckCircle className="h-3.5 w-3.5" />
-            <span>You have permanent access</span>
+          <div className="mt-4 flex items-center justify-between">
+            <div className="flex items-center gap-1.5 text-xs text-green-600">
+              <CheckCircle className="h-3.5 w-3.5" />
+              <span>You have permanent access</span>
+            </div>
+            {resources.length > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleDownloadAll}
+                disabled={downloadingAll}
+              >
+                {downloadingAll ? (
+                  <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Download className="mr-1.5 h-3.5 w-3.5" />
+                )}
+                {downloadingAll ? "Saving..." : "Save All for Offline"}
+              </Button>
+            )}
           </div>
           {resources.length === 0 ? (
             <p className="mt-8 text-sm text-muted-foreground">No resources uploaded to this class yet.</p>
           ) : (
             <div className="mt-6 space-y-2">
               {resources.map((r) => (
-                <ResourceCard key={r.id} resource={r} />
+                <div key={r.id} className="flex items-center gap-2">
+                  <div className="flex-1 min-w-0">
+                    <ResourceCard resource={r} />
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="shrink-0 h-9 w-9"
+                    title="Save for offline"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleSaveOffline(r);
+                    }}
+                  >
+                    <Download className="h-4 w-4" />
+                  </Button>
+                </div>
               ))}
             </div>
           )}

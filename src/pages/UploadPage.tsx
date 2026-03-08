@@ -19,6 +19,7 @@ const ALLOWED_TYPES = [
 ];
 const MAX_SIZE_DEFAULT = 50 * 1024 * 1024; // 50MB
 const MAX_SIZE_RECOMMENDED = 100 * 1024 * 1024; // 100MB
+const MAX_SIZE_SOLUTION = 200 * 1024 * 1024; // 200MB
 
 const resourceTypes = [
   { value: "past_question", label: "Past Question" },
@@ -26,6 +27,7 @@ const resourceTypes = [
   { value: "textbook", label: "Textbook" },
   { value: "lab_manual", label: "Lab Manual" },
   { value: "recommended_books", label: "Recommended Book" },
+  { value: "solution_manual", label: "Solution Manual" },
 ];
 
 export default function UploadPage() {

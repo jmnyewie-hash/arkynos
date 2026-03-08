@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 import ResourceCard from "@/components/ResourceCard";
 import { useAuth } from "@/hooks/useAuth";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Button } from "@/components/ui/button";
 import { Lock, Loader2, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";

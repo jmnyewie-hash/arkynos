@@ -73,7 +73,7 @@ export default function ViewerPage() {
     );
   }
 
-  const fileType = getFileType(fileName || fileUrl);
+  const fileType = getFileType(filePath || fileUrl || "");
 
   return (
     <div className="h-[calc(100vh-4rem)]">

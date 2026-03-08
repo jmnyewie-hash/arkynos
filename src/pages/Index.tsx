@@ -64,8 +64,8 @@ export default function Index() {
       <FoundingBanner />
       <div className="container max-w-2xl py-16">
         <div className="text-center animate-fade-in">
-          <img src={arkynosLogo} alt="Arkynos" className="mx-auto mb-2 w-[50rem] max-w-full h-[22rem] object-contain" />
-          <p className="text-base font-medium tracking-[0.25em] uppercase text-muted-foreground/50 italic">The Labyrinth Of Knowledge</p>
+          <h1 className="font-heading text-4xl sm:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-primary to-accent-foreground bg-clip-text text-transparent">Arkynos</h1>
+          <p className="mt-2 text-base font-medium tracking-[0.25em] uppercase text-muted-foreground/50 italic">The Labyrinth Of Knowledge</p>
           <p className="mt-3 text-lg text-muted-foreground">
             Find and share study resources for your courses
           </p>

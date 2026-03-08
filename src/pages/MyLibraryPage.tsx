@@ -94,7 +94,7 @@ export default function MyLibraryPage() {
       ) : (
         <div className="space-y-3">
           {resources.map((r) => (
-            <ResourceCard key={r.id} resource={r} />
+            <ResourceCard key={r.id} resource={r} isSaved={isSaved(r.id)} onToggleSave={toggleSave} />
           ))}
         </div>
       )}

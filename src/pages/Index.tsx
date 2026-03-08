@@ -185,7 +185,7 @@ export default function Index() {
           ) : (
             <div className="mt-4 space-y-3">
               {recentResources.map((r) => (
-                <ResourceCard key={r.id} resource={r} />
+                <ResourceCard key={r.id} resource={r} isSaved={isSaved(r.id)} onToggleSave={toggleSave} />
               ))}
             </div>
           )}

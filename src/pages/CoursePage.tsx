@@ -204,7 +204,7 @@ export default function CoursePage() {
                 {sorted.length === 0 ? (
                   <p className="text-sm text-muted-foreground">No resources of this type.</p>
                 ) : (
-                  sorted.map((r) => <ResourceCard key={r.id} resource={r} />)
+                  sorted.map((r) => <ResourceCard key={r.id} resource={r} isSaved={isSaved(r.id)} onToggleSave={toggleSave} />)
                 )}
               </div>
             )}

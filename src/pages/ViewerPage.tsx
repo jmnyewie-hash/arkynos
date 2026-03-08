@@ -9,6 +9,7 @@ export default function ViewerPage() {
   const navigate = useNavigate();
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [fileName, setFileName] = useState("");
+  const [filePath, setFilePath] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

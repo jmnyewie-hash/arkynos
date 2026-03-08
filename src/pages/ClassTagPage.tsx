@@ -260,8 +260,9 @@ export default function ClassTagPage() {
     if (!user || !uploadFile || !uploadCourseId || !uploadType || !uploadTitle.trim() || !tagId) return;
     setUploading(true);
     try {
-      const ext = uploadFile.name.split(".").pop();
-      const filePath = `${user.id}/${Date.now()}.${ext}`;
+      const ext = uploadFile.name.split(".").pop()?.toLowerCase() || "pdf";
+      const sanitizedName = uploadFile.name.replace(/[^a-zA-Z0-9.-]/g, "_");
+      const filePath = `${user.id}/${Date.now()}_${sanitizedName}`;
       const { error: upErr } = await supabase.storage.from("resources").upload(filePath, uploadFile);
       if (upErr) throw upErr;
 

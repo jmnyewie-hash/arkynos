@@ -116,6 +116,16 @@ export default function Navbar() {
                 <Button variant="ghost" size="sm" asChild className="shrink-0">
                   <Link to="/upgrade"><Crown className="mr-1.5 h-4 w-4" />Upgrade</Link>
                 </Button>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={handleManualUpdateCheck}
+                  disabled={isCheckingForUpdates}
+                  className="shrink-0"
+                >
+                  <RefreshCw className={`mr-1.5 h-4 w-4 ${isCheckingForUpdates ? 'animate-spin' : ''}`} />
+                  {isCheckingForUpdates ? 'Checking...' : 'Check Updates'}
+                </Button>
                 <Button variant="ghost" size="sm" onClick={handleSignOut} className="shrink-0">
                   <LogOut className="mr-1.5 h-4 w-4" />Sign Out
                 </Button>

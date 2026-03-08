@@ -220,6 +220,7 @@ export type Database = {
       }
       resources: {
         Row: {
+          author: string | null
           class_tag_id: string | null
           course_id: string
           created_at: string
@@ -235,6 +236,7 @@ export type Database = {
           uploaded_by: string
         }
         Insert: {
+          author?: string | null
           class_tag_id?: string | null
           course_id: string
           created_at?: string
@@ -250,6 +252,7 @@ export type Database = {
           uploaded_by: string
         }
         Update: {
+          author?: string | null
           class_tag_id?: string | null
           course_id?: string
           created_at?: string

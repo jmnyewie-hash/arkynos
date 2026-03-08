@@ -33,6 +33,7 @@ const App = () => (
             <Route path="/upload" element={<UploadPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/admin/flags" element={<AdminFlagsPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

@@ -39,6 +39,7 @@ export default function ViewerPage() {
       if (resource) {
         const { data } = supabase.storage.from("resources").getPublicUrl(resource.file_path);
         setFileName(resource.title);
+        setFilePath(resource.file_path);
         setFileUrl(data.publicUrl);
       }
       setLoading(false);

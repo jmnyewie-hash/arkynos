@@ -2,7 +2,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Button } from "@/components/ui/button";
-import { Upload, LogOut, Flag, Home, Tag, Crown, BarChart3, MessageSquare, ArrowLeft, ChevronRight } from "lucide-react";
+import { Upload, LogOut, Flag, Home, Tag, Crown, BarChart3, MessageSquare, ArrowLeft, ChevronRight, BookOpen } from "lucide-react";
 import { useRef, useState, useEffect } from "react";
 
 export default function Navbar() {
@@ -79,6 +79,9 @@ export default function Navbar() {
                     </Button>
                   </>
                 )}
+                <Button variant="ghost" size="sm" asChild className="shrink-0">
+                  <Link to="/library"><BookOpen className="mr-1.5 h-4 w-4" />Library</Link>
+                </Button>
                 <Button variant="ghost" size="sm" asChild className="shrink-0">
                   <Link to="/contact"><MessageSquare className="mr-1.5 h-4 w-4" />Contact</Link>
                 </Button>

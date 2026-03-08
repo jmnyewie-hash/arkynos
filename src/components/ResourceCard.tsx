@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Download, Star } from "lucide-react";
+import { Download, Star, Bookmark } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tables } from "@/integrations/supabase/types";
 
@@ -30,55 +30,75 @@ const typeThumbnails: Record<string, string> = {
 
 interface ResourceCardProps {
   resource: Tables<"resources"> & { courses?: Tables<"courses"> | null; profiles?: Tables<"profiles"> | null };
+  isSaved?: boolean;
+  onToggleSave?: (resourceId: string) => void;
 }
 
-export default function ResourceCard({ resource }: ResourceCardProps) {
+export default function ResourceCard({ resource, isSaved, onToggleSave }: ResourceCardProps) {
   return (
-    <Link
-      to={`/resource/${resource.id}`}
-      className={`group block rounded-xl border bg-card p-4 shadow-card transition-all hover:shadow-card-hover hover:-translate-y-0.5 ${
+    <div
+      className={`group relative rounded-xl border bg-card p-4 shadow-card transition-all hover:shadow-card-hover hover:-translate-y-0.5 ${
         resource.is_preferred ? "ring-2 ring-accent/50 border-accent/30" : ""
       }`}
     >
-      <div className="flex items-start gap-3">
-        <img
-          src={typeThumbnails[resource.resource_type]}
-          alt={typeLabels[resource.resource_type]}
-          className="h-10 w-10 shrink-0 rounded-lg object-contain"
-        />
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
+      {onToggleSave && (
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onToggleSave(resource.id);
+          }}
+          className="absolute top-3 right-3 p-1.5 rounded-lg hover:bg-muted transition-colors z-10"
+          title={isSaved ? "Remove from library" : "Save to library"}
+        >
+          <Bookmark
+            className={`h-4 w-4 transition-colors ${
+              isSaved ? "fill-primary text-primary" : "text-muted-foreground hover:text-foreground"
+            }`}
+          />
+        </button>
+      )}
+      <Link to={`/resource/${resource.id}`} className="block">
+        <div className="flex items-start gap-3 pr-8">
+          <img
+            src={typeThumbnails[resource.resource_type]}
+            alt={typeLabels[resource.resource_type]}
+            className="h-10 w-10 shrink-0 rounded-lg object-contain"
+          />
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2">
+              {resource.is_preferred && (
+                <Star className="h-4 w-4 shrink-0 fill-accent text-accent" />
+              )}
+              <h3 className="font-heading font-semibold text-card-foreground truncate group-hover:text-primary transition-colors">
+                {resource.title}
+              </h3>
+            </div>
             {resource.is_preferred && (
-              <Star className="h-4 w-4 shrink-0 fill-accent text-accent" />
+              <span className="text-xs font-medium text-accent">Preferred</span>
             )}
-            <h3 className="font-heading font-semibold text-card-foreground truncate group-hover:text-primary transition-colors">
-              {resource.title}
-            </h3>
-          </div>
-          {resource.is_preferred && (
-            <span className="text-xs font-medium text-accent">Preferred</span>
-          )}
-          {resource.courses && (
-            <p className="mt-1 text-sm text-muted-foreground">
-              {resource.courses.course_code} · {resource.courses.course_name}
-            </p>
-          )}
-          <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-            <Badge variant="secondary" className="text-xs shrink-0">
-              {typeLabels[resource.resource_type]}
-            </Badge>
-            <span className="flex items-center gap-1 shrink-0"><Download className="h-3 w-3" />{resource.downloads}</span>
-            {resource.profiles && (
-              <span className="flex items-center gap-1 truncate">
-                by {resource.profiles.name}
-                {(resource.profiles as any).subscription_tier === "founder" && (
-                  <span className="ml-1 text-amber-500 font-semibold">👑</span>
-                )}
-              </span>
+            {resource.courses && (
+              <p className="mt-1 text-sm text-muted-foreground">
+                {resource.courses.course_code} · {resource.courses.course_name}
+              </p>
             )}
+            <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+              <Badge variant="secondary" className="text-xs shrink-0">
+                {typeLabels[resource.resource_type]}
+              </Badge>
+              <span className="flex items-center gap-1 shrink-0"><Download className="h-3 w-3" />{resource.downloads}</span>
+              {resource.profiles && (
+                <span className="flex items-center gap-1 truncate">
+                  by {resource.profiles.name}
+                  {(resource.profiles as any).subscription_tier === "founder" && (
+                    <span className="ml-1 text-amber-500 font-semibold">👑</span>
+                  )}
+                </span>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </Link>
+      </Link>
+    </div>
   );
 }

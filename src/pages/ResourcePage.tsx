@@ -4,13 +4,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Download, FileText, Star, Trash2, EyeOff, Eye, Tag } from "lucide-react";
+import { Download, FileText, Star, Trash2, EyeOff, Eye, Tag, Bookmark } from "lucide-react";
 import { toast } from "sonner";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useProfile } from "@/hooks/useProfile";
 import { useAuth } from "@/hooks/useAuth";
 import FounderBadge from "@/components/FounderBadge";
 import FlagResourceDialog from "@/components/FlagResourceDialog";
+import { useLibrary } from "@/hooks/useLibrary";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -48,6 +49,7 @@ export default function ResourcePage() {
   const { isAdmin } = useIsAdmin();
   const { user } = useAuth();
   const { profile } = useProfile();
+  const { isSaved, toggleSave } = useLibrary();
 
   useEffect(() => {
     if (!id) return;
@@ -212,6 +214,16 @@ export default function ResourcePage() {
               <Download className="mr-2 h-4 w-4" />
               {downloading ? "Downloading..." : "Download"}
             </Button>
+            {user && (
+              <Button
+                variant={isSaved(resource.id) ? "secondary" : "outline"}
+                size="sm"
+                onClick={() => toggleSave(resource.id)}
+              >
+                <Bookmark className={`mr-2 h-4 w-4 ${isSaved(resource.id) ? "fill-primary text-primary" : ""}`} />
+                {isSaved(resource.id) ? "Saved" : "Save to Library"}
+              </Button>
+            )}
             <FlagResourceDialog resourceId={resource.id} />
           </div>
           {isAdmin && (

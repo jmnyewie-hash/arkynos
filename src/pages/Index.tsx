@@ -5,6 +5,7 @@ import CourseSearchBar from "@/components/CourseSearchBar";
 import ResourceCard from "@/components/ResourceCard";
 import FoundingBanner from "@/components/FoundingBanner";
 import { useRealtimeResources } from "@/hooks/useRealtimeResources";
+import { useLibrary } from "@/hooks/useLibrary";
 import arkynosLogo from "@/assets/arkynos-logo-full.png";
 import { Users, BookOpen, FolderOpen, Shield, Upload, Share2, ArrowUp, Download } from "lucide-react";
 
@@ -15,6 +16,7 @@ type ResourceWithRelations = Tables<"resources"> & {
 
 export default function Index() {
   const [recentResources, setRecentResources] = useState<ResourceWithRelations[]>([]);
+  const { isSaved, toggleSave } = useLibrary();
   const [loading, setLoading] = useState(true);
   const [userCount, setUserCount] = useState<number>(0);
   const [totalFiles, setTotalFiles] = useState<number>(0);
@@ -184,7 +186,7 @@ export default function Index() {
           ) : (
             <div className="mt-4 space-y-3">
               {recentResources.map((r) => (
-                <ResourceCard key={r.id} resource={r} />
+                <ResourceCard key={r.id} resource={r} isSaved={isSaved(r.id)} onToggleSave={toggleSave} />
               ))}
             </div>
           )}

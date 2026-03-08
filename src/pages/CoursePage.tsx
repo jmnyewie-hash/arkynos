@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 import ResourceCard from "@/components/ResourceCard";
 import { useRealtimeResources } from "@/hooks/useRealtimeResources";
+import { useLibrary } from "@/hooks/useLibrary";
 import { TrendingUp, Star, Clock, SlidersHorizontal, FolderOpen } from "lucide-react";
 
 type ResourceWithRelations = Tables<"resources"> & {
@@ -50,6 +51,7 @@ const sortOptions: { value: SortMode; label: string; icon: typeof Star }[] = [
 
 export default function CoursePage() {
   const { courseCode } = useParams<{ courseCode: string }>();
+  const { isSaved, toggleSave } = useLibrary();
   const [course, setCourse] = useState<Tables<"courses"> | null>(null);
   const [resources, setResources] = useState<ResourceWithRelations[]>([]);
   const [loading, setLoading] = useState(true);
@@ -194,7 +196,7 @@ export default function CoursePage() {
                 <section key={type}>
                   <h2 className="font-heading text-base font-semibold text-foreground mb-3">{typeLabels[type]}</h2>
                   <div className="space-y-2">
-                    {items.map((r) => <ResourceCard key={r.id} resource={r} />)}
+                    {items.map((r) => <ResourceCard key={r.id} resource={r} isSaved={isSaved(r.id)} onToggleSave={toggleSave} />)}
                   </div>
                 </section>
               ))
@@ -203,7 +205,7 @@ export default function CoursePage() {
                 {sorted.length === 0 ? (
                   <p className="text-sm text-muted-foreground">No resources of this type.</p>
                 ) : (
-                  sorted.map((r) => <ResourceCard key={r.id} resource={r} />)
+                  sorted.map((r) => <ResourceCard key={r.id} resource={r} isSaved={isSaved(r.id)} onToggleSave={toggleSave} />)
                 )}
               </div>
             )}

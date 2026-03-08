@@ -53,9 +53,10 @@ export default function UploadPage() {
       toast.error("Only PDF, DOCX, and PPTX files are allowed");
       return;
     }
-    const maxSize = resourceType === "recommended_books" ? MAX_SIZE_RECOMMENDED : MAX_SIZE_DEFAULT;
+    const maxSize = resourceType === "solution_manual" ? MAX_SIZE_SOLUTION : resourceType === "recommended_books" ? MAX_SIZE_RECOMMENDED : MAX_SIZE_DEFAULT;
     if (f.size > maxSize) {
-      toast.error(`File must be under ${resourceType === "recommended_books" ? "100" : "50"}MB`);
+      const label = resourceType === "solution_manual" ? "200" : resourceType === "recommended_books" ? "100" : "50";
+      toast.error(`File must be under ${label}MB`);
       return;
     }
     setFile(f);

@@ -57,10 +57,10 @@ export default function CoursePage() {
           profiles: profilesMap.get(r.uploaded_by) ?? null,
         }));
         setResources(merged as ResourceWithRelations[]);
-            setResources((data as ResourceWithRelations[]) ?? []);
-            setLoading(false);
-          });
-      });
+      }
+      setLoading(false);
+    };
+    fetchData();
   }, [courseCode]);
 
   if (loading) return <div className="container max-w-2xl py-10"><div className="h-8 w-48 animate-pulse rounded bg-muted" /></div>;

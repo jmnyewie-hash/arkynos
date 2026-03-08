@@ -41,8 +41,10 @@ export default function ResourcePage() {
           .eq("user_id", data.uploaded_by)
           .single();
         setResource({ ...data, profiles: profile } as ResourceWithRelations);
-        setLoading(false);
-      });
+      }
+      setLoading(false);
+    };
+    fetchResource();
   }, [id]);
 
   const handleDownload = async () => {

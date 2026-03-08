@@ -15,12 +15,30 @@ export default function Index() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase
-      .from("resources")
-      .select("*, courses(*), profiles!resources_uploaded_by_fkey(*)")
-      .order("created_at", { ascending: false })
-      .limit(10)
-      .then(({ data }) => {
+    const fetchResources = async () => {
+      const { data: resourcesData } = await supabase
+        .from("resources")
+        .select("*, courses(*)")
+        .order("created_at", { ascending: false })
+        .limit(10);
+
+      if (resourcesData) {
+        const userIds = [...new Set(resourcesData.map(r => r.uploaded_by))];
+        const { data: profilesData } = await supabase
+          .from("profiles")
+          .select("*")
+          .in("user_id", userIds);
+
+        const profilesMap = new Map((profilesData ?? []).map(p => [p.user_id, p]));
+        const merged = resourcesData.map(r => ({
+          ...r,
+          profiles: profilesMap.get(r.uploaded_by) ?? null,
+        }));
+        setRecentResources(merged as ResourceWithRelations[]);
+      }
+      setLoading(false);
+    };
+    fetchResources();
         setRecentResources((data as ResourceWithRelations[]) ?? []);
         setLoading(false);
       });

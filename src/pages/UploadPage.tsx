@@ -89,7 +89,8 @@ export default function UploadPage() {
         file_url: urlData.publicUrl,
         file_path: filePath,
         uploaded_by: user.id,
-      });
+        ...(classTagId ? { class_tag_id: classTagId } : {}),
+      } as any);
       if (insertError) throw insertError;
 
       toast.success("Resource uploaded!");

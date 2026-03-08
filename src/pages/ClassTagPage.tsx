@@ -319,6 +319,21 @@ export default function ClassTagPage() {
     }
   };
 
+  const handleToggleFree = async () => {
+    if (!tag || !isAdmin) return;
+    const newVal = !tag.is_free;
+    const { error } = await supabase
+      .from("class_tags")
+      .update({ is_free: newVal } as any)
+      .eq("id", tag.id);
+    if (error) {
+      sonnerToast.error("Failed to update paywall status");
+    } else {
+      setTag({ ...tag, is_free: newVal });
+      sonnerToast.success(newVal ? "Paywall removed — class is now free" : "Paywall restored");
+    }
+  };
+
 
   if (loading || checkingAccess || authLoading || adminLoading) {
     return (

@@ -20,6 +20,7 @@ import BrowseTagsPage from "./pages/BrowseTagsPage";
 import ClassTagPage from "./pages/ClassTagPage";
 import UpgradePage from "./pages/UpgradePage";
 import MyLibraryPage from "./pages/MyLibraryPage";
+import ViewerPage from "./pages/ViewerPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -48,6 +49,7 @@ const App = () => (
             <Route path="/classes" element={<BrowseTagsPage />} />
             <Route path="/class/:tagId" element={<ClassTagPage />} />
             <Route path="/library" element={<MyLibraryPage />} />
+            <Route path="/view/:id" element={<ViewerPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

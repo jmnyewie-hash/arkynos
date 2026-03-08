@@ -49,7 +49,7 @@ export default function ResourcePage() {
     const fetchResource = async () => {
       const { data } = await supabase
         .from("resources")
-        .select("*, courses(*)")
+        .select("*, courses(*), class_tags(*)")
         .eq("id", id)
         .single();
 

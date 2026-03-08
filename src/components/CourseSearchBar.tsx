@@ -64,7 +64,7 @@ export default function CourseSearchBar({ className = "" }: { className?: string
   const navigateToCourse = (courseCode: string) => {
     setQuery(courseCode);
     setShowSuggestions(false);
-    navigate(`/search?q=${encodeURIComponent(courseCode)}`);
+    navigate(`/course/${encodeURIComponent(courseCode)}`);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

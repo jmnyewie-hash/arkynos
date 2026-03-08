@@ -428,7 +428,7 @@ export default function ClassTagPage() {
             </p>
           )}
         </div>
-      ) : hasAccess ? (
+      ) : (hasAccess || tag.is_free) ? (
         <>
           <div className="mt-4 flex items-center justify-between">
             <div className="flex items-center gap-1.5 text-xs text-green-600">

@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 import ResourceCard from "@/components/ResourceCard";
+import { useRealtimeResources } from "@/hooks/useRealtimeResources";
 import { TrendingUp, Star, Clock, SlidersHorizontal, FolderOpen } from "lucide-react";
 
 type ResourceWithRelations = Tables<"resources"> & {
@@ -55,45 +56,49 @@ export default function CoursePage() {
   const [sortMode, setSortMode] = useState<SortMode>("preferred");
   const [typeFilter, setTypeFilter] = useState<string>("all");
 
-  useEffect(() => {
+  const fetchData = useCallback(async () => {
     if (!courseCode) return;
     const decoded = decodeURIComponent(courseCode);
 
-    const fetchData = async () => {
-      const { data: courseData } = await supabase
-        .from("courses")
+    const { data: courseData } = await supabase
+      .from("courses")
+      .select("*")
+      .eq("course_code", decoded)
+      .single();
+
+    setCourse(courseData);
+    if (!courseData) { setLoading(false); return; }
+
+    const { data: resourcesData } = await supabase
+      .from("resources")
+      .select("*, courses(*)")
+      .eq("course_id", courseData.id)
+      .eq("is_hidden", false)
+      .order("created_at", { ascending: false });
+
+    if (resourcesData) {
+      const userIds = [...new Set(resourcesData.map(r => r.uploaded_by))];
+      const { data: profilesData } = await supabase
+        .from("profiles")
         .select("*")
-        .eq("course_code", decoded)
-        .single();
+        .in("user_id", userIds);
 
-      setCourse(courseData);
-      if (!courseData) { setLoading(false); return; }
-
-      const { data: resourcesData } = await supabase
-        .from("resources")
-        .select("*, courses(*)")
-        .eq("course_id", courseData.id)
-        .eq("is_hidden", false)
-        .order("created_at", { ascending: false });
-
-      if (resourcesData) {
-        const userIds = [...new Set(resourcesData.map(r => r.uploaded_by))];
-        const { data: profilesData } = await supabase
-          .from("profiles")
-          .select("*")
-          .in("user_id", userIds);
-
-        const profilesMap = new Map((profilesData ?? []).map(p => [p.user_id, p]));
-        const merged = resourcesData.map(r => ({
-          ...r,
-          profiles: profilesMap.get(r.uploaded_by) ?? null,
-        }));
-        setResources(merged as ResourceWithRelations[]);
-      }
-      setLoading(false);
-    };
-    fetchData();
+      const profilesMap = new Map((profilesData ?? []).map(p => [p.user_id, p]));
+      const merged = resourcesData.map(r => ({
+        ...r,
+        profiles: profilesMap.get(r.uploaded_by) ?? null,
+      }));
+      setResources(merged as ResourceWithRelations[]);
+    }
+    setLoading(false);
   }, [courseCode]);
+
+  // Realtime subscription
+  useRealtimeResources(fetchData, course ? { column: "course_id", value: course.id } : undefined);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   if (loading) return <div className="container max-w-2xl py-10"><div className="h-8 w-48 animate-pulse rounded bg-muted" /></div>;
   if (!course) return <div className="container max-w-2xl py-10"><p className="text-muted-foreground">Course not found.</p></div>;

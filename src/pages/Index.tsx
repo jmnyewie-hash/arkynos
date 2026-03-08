@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 import CourseSearchBar from "@/components/CourseSearchBar";
 import ResourceCard from "@/components/ResourceCard";
 import FoundingBanner from "@/components/FoundingBanner";
+import { useRealtimeResources } from "@/hooks/useRealtimeResources";
 import arkynosLogo from "@/assets/arkynos-logo-full.png";
 import { Users, BookOpen, FolderOpen, Shield, Upload, Share2 } from "lucide-react";
 
@@ -18,33 +19,50 @@ export default function Index() {
   const [userCount, setUserCount] = useState<number>(0);
   const [totalFiles, setTotalFiles] = useState<number>(0);
 
+  const fetchResources = useCallback(async () => {
+    const { data: resourcesData } = await supabase
+      .from("resources")
+      .select("*, courses(*)")
+      .eq("is_hidden", false)
+      .order("is_preferred", { ascending: false })
+      .order("downloads", { ascending: false })
+      .order("created_at", { ascending: false })
+      .limit(6);
+
+    if (resourcesData) {
+      const userIds = [...new Set(resourcesData.map(r => r.uploaded_by))];
+      const { data: profilesData } = await supabase
+        .from("profiles")
+        .select("*")
+        .in("user_id", userIds);
+
+      const profilesMap = new Map((profilesData ?? []).map(p => [p.user_id, p]));
+      const merged = resourcesData.map(r => ({
+        ...r,
+        profiles: profilesMap.get(r.uploaded_by) ?? null,
+      }));
+      setRecentResources(merged as ResourceWithRelations[]);
+    }
+    setLoading(false);
+  }, []);
+
+  const fetchFileCount = useCallback(async () => {
+    const { count } = await supabase
+      .from("resources")
+      .select("id", { count: "exact", head: true })
+      .eq("is_hidden", false);
+    setTotalFiles(count ?? 0);
+  }, []);
+
+  // Realtime subscription — re-fetch on any resource change
+  useRealtimeResources(useCallback(() => {
+    fetchResources();
+    fetchFileCount();
+  }, [fetchResources, fetchFileCount]));
+
   useEffect(() => {
-    const fetchResources = async () => {
-      const { data: resourcesData } = await supabase
-        .from("resources")
-        .select("*, courses(*)")
-        .eq("is_hidden", false)
-        .order("is_preferred", { ascending: false })
-        .order("downloads", { ascending: false })
-        .order("created_at", { ascending: false })
-        .limit(6);
-
-      if (resourcesData) {
-        const userIds = [...new Set(resourcesData.map(r => r.uploaded_by))];
-        const { data: profilesData } = await supabase
-          .from("profiles")
-          .select("*")
-          .in("user_id", userIds);
-
-        const profilesMap = new Map((profilesData ?? []).map(p => [p.user_id, p]));
-        const merged = resourcesData.map(r => ({
-          ...r,
-          profiles: profilesMap.get(r.uploaded_by) ?? null,
-        }));
-        setRecentResources(merged as ResourceWithRelations[]);
-      }
-      setLoading(false);
-    };
+    fetchResources();
+    fetchFileCount();
 
     const fetchUserCount = async () => {
       const { count } = await supabase
@@ -52,19 +70,8 @@ export default function Index() {
         .select("id", { count: "exact", head: true });
       setUserCount(count ?? 0);
     };
-
-    const fetchFileCount = async () => {
-      const { count } = await supabase
-        .from("resources")
-        .select("id", { count: "exact", head: true })
-        .eq("is_hidden", false);
-      setTotalFiles(count ?? 0);
-    };
-
-    fetchResources();
     fetchUserCount();
-    fetchFileCount();
-  }, []);
+  }, [fetchResources, fetchFileCount]);
 
   const features = [
     { icon: BookOpen, label: "Curated Resources", desc: "Past questions, lecture notes, textbooks & more — organized by course" },

@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Download, FileText, Star, BookMarked } from "lucide-react";
 import { toast } from "sonner";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
+import FlagResourceDialog from "@/components/FlagResourceDialog";
 
 type ResourceWithRelations = Tables<"resources"> & {
   courses: Tables<"courses"> | null;

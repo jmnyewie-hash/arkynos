@@ -75,6 +75,7 @@ export function useLibrary() {
             is_preferred: resource.is_preferred,
             course_code: (resource as any).courses?.course_code,
             course_name: (resource as any).courses?.course_name,
+            cached_at: new Date().toISOString(),
           };
 
           toast.loading("Downloading for offline use...", { id: "cache-" + resourceId });

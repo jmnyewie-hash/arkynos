@@ -154,7 +154,7 @@ export default function CourseSearchBar({ className = "", initialQuery = "" }: {
               if (query.trim().length >= 1) setOpen(true);
             }}
             onKeyDown={handleKeyDown}
-            className="h-12 rounded-xl border-2 pl-12 pr-10 text-base font-body shadow-card transition-all focus:shadow-card-hover focus:border-primary bg-background placeholder:opacity-60"
+            className="h-12 rounded-xl border-2 pl-12 pr-10 text-base font-body shadow-card transition-all focus:shadow-card-hover focus:border-primary bg-background placeholder:opacity-60 placeholder:text-sm"
           />
           {query && (
             <button

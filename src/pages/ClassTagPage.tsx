@@ -17,7 +17,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Lock, Loader2, CheckCircle, Download, Upload, Plus } from "lucide-react";
+import { Lock, Loader2, CheckCircle, Download, Upload, Plus, Star } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner";
 import CourseSearchSelect from "@/components/CourseSearchSelect";

@@ -86,6 +86,7 @@ const App = () => (
             <Route path="/offline" element={<OfflinePage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <UpdateBanner />
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

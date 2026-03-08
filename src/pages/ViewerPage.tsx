@@ -23,6 +23,7 @@ export default function ViewerPage() {
         const meta = JSON.parse(localStorage.getItem("arkynos-library-meta") || "{}");
         const item = meta[id!];
         setFileName(item?.title || "Document");
+        setFilePath(item?.file_path || "");
         setFileUrl(cachedUrl);
         setLoading(false);
         return;

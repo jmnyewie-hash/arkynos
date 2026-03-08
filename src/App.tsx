@@ -19,6 +19,7 @@ import ContactAdminPage from "./pages/ContactAdminPage";
 import BrowseTagsPage from "./pages/BrowseTagsPage";
 import ClassTagPage from "./pages/ClassTagPage";
 import UpgradePage from "./pages/UpgradePage";
+import MyLibraryPage from "./pages/MyLibraryPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();

@@ -25,6 +25,9 @@ export default function Navbar() {
           <Button variant="ghost" size="sm" asChild>
             <Link to="/"><Home className="mr-1.5 h-4 w-4" />Home</Link>
           </Button>
+          <Button variant="ghost" size="sm" asChild>
+            <Link to="/classes"><Tag className="mr-1.5 h-4 w-4" />Classes</Link>
+          </Button>
           {user ? (
             <>
               {isAdmin && (

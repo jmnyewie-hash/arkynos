@@ -36,6 +36,8 @@ const App = () => (
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/admin/flags" element={<AdminFlagsPage />} />
+            <Route path="/classes" element={<BrowseTagsPage />} />
+            <Route path="/class/:tagId" element={<ClassTagPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

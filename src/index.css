@@ -152,12 +152,12 @@
     background:
       url('/images/gears-texture.jpg') top right / 420px auto no-repeat,
       url('/images/puzzle-texture.jpg') bottom left / 380px auto no-repeat;
-    opacity: 0.04;
+    opacity: 0.08;
     pointer-events: none;
   }
 
   .dark body::before {
-    opacity: 0.03;
+    opacity: 0.06;
   }
 
   h1, h2, h3, h4, h5, h6 {

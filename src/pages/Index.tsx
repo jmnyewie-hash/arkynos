@@ -76,6 +76,7 @@ export default function Index() {
           </div>
         )}
       </section>
-    </div>
+      </div>
+    </>
   );
 }

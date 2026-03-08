@@ -43,6 +43,9 @@ export default function Navbar() {
               <Button variant="ghost" size="sm" asChild>
                 <Link to="/upload"><Upload className="mr-1.5 h-4 w-4" />Upload</Link>
               </Button>
+              <Button variant="ghost" size="sm" asChild>
+                <Link to="/upgrade"><Crown className="mr-1.5 h-4 w-4" />Upgrade</Link>
+              </Button>
               <Button variant="ghost" size="sm" onClick={handleSignOut}>
                 <LogOut className="mr-1.5 h-4 w-4" />Sign Out
               </Button>

@@ -78,9 +78,18 @@ export default function BrowseTagsPage() {
         );
       }
       setLoading(false);
+
+      // Count user's classes
+      if (user) {
+        const { count } = await supabase
+          .from("class_tags")
+          .select("id", { count: "exact", head: true })
+          .eq("created_by", user.id);
+        setUserClassCount(count ?? 0);
+      }
     };
     fetchTags();
-  }, []);
+  }, [user]);
 
   // Fetch programs when dialog opens
   useEffect(() => {

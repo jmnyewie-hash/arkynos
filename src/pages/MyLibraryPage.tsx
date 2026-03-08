@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useLibrary } from "@/hooks/useLibrary";
-import ResourceCard from "@/components/ResourceCard";
-import { BookOpen, Download, Smartphone, WifiOff, FileText } from "lucide-react";
+import { BookOpen, Download, Smartphone, WifiOff, FileText, Star, Bookmark, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tables } from "@/integrations/supabase/types";
-import { getCachedMeta, getCachedFileUrl, type CachedResourceMeta } from "@/lib/offlineCache";
+import { getCachedMeta, getCachedFileUrl, isResourceCached, type CachedResourceMeta } from "@/lib/offlineCache";
+import { toast } from "sonner";
 
 type ResourceWithRelations = Tables<"resources"> & {
   courses?: Tables<"courses"> | null;
@@ -51,37 +51,140 @@ const typeLabels: Record<string, string> = {
   solution_manual: "Solution Manual",
 };
 
-function OfflineCachedCard({ meta, onOpen }: { meta: CachedResourceMeta; onOpen: () => void }) {
+function LibraryItemCard({
+  title,
+  courseCode,
+  courseName,
+  resourceType,
+  isPreferred,
+  isCached,
+  isSaved,
+  uploaderName,
+  downloads,
+  onOpen,
+  onToggleSave,
+  resourceId,
+  detailUrl,
+}: {
+  title: string;
+  courseCode?: string;
+  courseName?: string;
+  resourceType: string;
+  isPreferred?: boolean;
+  isCached: boolean;
+  isSaved?: boolean;
+  uploaderName?: string;
+  downloads?: number;
+  onOpen: () => void;
+  onToggleSave?: (id: string) => void;
+  resourceId: string;
+  detailUrl?: string;
+}) {
   return (
     <div
-      className={`group relative rounded-xl border bg-card p-4 shadow-card ${
-        meta.is_preferred ? "ring-2 ring-accent/50 border-accent/30" : ""
+      className={`group relative rounded-xl border bg-card p-4 shadow-card transition-all hover:shadow-card-hover hover:-translate-y-0.5 ${
+        isPreferred ? "ring-2 ring-accent/50 border-accent/30" : ""
       }`}
     >
-      <button onClick={onOpen} className="block w-full text-left">
+      {onToggleSave && (
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onToggleSave(resourceId);
+          }}
+          className="absolute top-3 right-3 p-1.5 rounded-lg hover:bg-muted transition-colors z-10"
+          title={isSaved ? "Remove from library" : "Save to library"}
+        >
+          <Bookmark
+            className={`h-4 w-4 transition-colors ${
+              isSaved ? "fill-primary text-primary" : "text-muted-foreground hover:text-foreground"
+            }`}
+          />
+        </button>
+      )}
+      <button onClick={onOpen} className="block w-full text-left pr-8">
         <div className="flex items-start gap-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
             <FileText className="h-5 w-5 text-primary" />
           </div>
           <div className="min-w-0 flex-1">
-            <h3 className="font-heading font-semibold text-card-foreground truncate">
-              {meta.title}
-            </h3>
-            {meta.course_code && (
+            <div className="flex items-center gap-2">
+              {isPreferred && (
+                <Star className="h-4 w-4 shrink-0 fill-accent text-accent" />
+              )}
+              <h3 className="font-heading font-semibold text-card-foreground truncate group-hover:text-primary transition-colors">
+                {title}
+              </h3>
+            </div>
+            {courseCode && (
               <p className="mt-1 text-sm text-muted-foreground">
-                {meta.course_code} · {meta.course_name}
+                {courseCode} · {courseName}
               </p>
             )}
-            <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
-              <Badge variant="secondary" className="text-xs">{typeLabels[meta.resource_type] || meta.resource_type}</Badge>
-              <span className="flex items-center gap-1 text-emerald-600">
-                <Download className="h-3 w-3" /> Cached offline
-              </span>
+            <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+              <Badge variant="secondary" className="text-xs">
+                {typeLabels[resourceType] || resourceType}
+              </Badge>
+              {isCached && (
+                <span className="flex items-center gap-1 text-emerald-600">
+                  <Download className="h-3 w-3" /> Offline ready
+                </span>
+              )}
+              {downloads !== undefined && (
+                <span className="flex items-center gap-1 shrink-0">
+                  <Download className="h-3 w-3" />{downloads}
+                </span>
+              )}
+              {uploaderName && (
+                <span className="truncate">by {uploaderName}</span>
+              )}
             </div>
           </div>
         </div>
       </button>
+      {detailUrl && (
+        <Link
+          to={detailUrl}
+          className="absolute bottom-3 right-3 p-1.5 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+          title="View details"
+        >
+          <ExternalLink className="h-3.5 w-3.5" />
+        </Link>
+      )}
     </div>
+  );
+}
+
+function LibraryResourceCard({
+  resource,
+  isCached,
+  isSaved,
+  onToggleSave,
+  onOpen,
+}: {
+  resource: ResourceWithRelations;
+  isCached: boolean;
+  isSaved?: boolean;
+  onToggleSave?: (id: string) => void;
+  onOpen: () => void;
+}) {
+  return (
+    <LibraryItemCard
+      title={resource.title}
+      courseCode={resource.courses?.course_code}
+      courseName={resource.courses?.course_name}
+      resourceType={resource.resource_type}
+      isPreferred={resource.is_preferred}
+      isCached={isCached}
+      isSaved={isSaved}
+      uploaderName={resource.profiles?.name}
+      downloads={resource.downloads}
+      onOpen={onOpen}
+      onToggleSave={onToggleSave}
+      resourceId={resource.id}
+      detailUrl={`/resource/${resource.id}`}
+    />
   );
 }
 
@@ -164,6 +267,25 @@ export default function MyLibraryPage() {
     const url = await getCachedFileUrl(resourceId);
     if (url) {
       window.open(url, "_blank");
+    } else {
+      toast.error("File not available offline");
+    }
+  };
+
+  const handleOpenOrNavigate = async (resourceId: string) => {
+    // Try to open from cache first (instant, works offline)
+    const url = await getCachedFileUrl(resourceId);
+    if (url) {
+      window.open(url, "_blank");
+    } else {
+      // Fallback: get public URL from storage
+      const resource = resources.find((r) => r.id === resourceId);
+      if (resource) {
+        const { data } = supabase.storage.from("resources").getPublicUrl(resource.file_path);
+        window.open(data.publicUrl, "_blank");
+      } else {
+        navigate(`/resource/${resourceId}`);
+      }
     }
   };
 
@@ -237,9 +359,16 @@ export default function MyLibraryPage() {
         ) : (
           <div className="space-y-3">
             {cachedItems.map((item) => (
-              <OfflineCachedCard
+              <LibraryItemCard
                 key={item.id}
-                meta={item}
+                title={item.title}
+                courseCode={item.course_code}
+                courseName={item.course_name}
+                resourceType={item.resource_type}
+                isPreferred={item.is_preferred}
+                isCached={true}
+                resourceId={item.id}
+                downloads={item.downloads}
                 onOpen={() => handleOpenCached(item.id)}
               />
             ))}
@@ -280,9 +409,19 @@ export default function MyLibraryPage() {
         </div>
       ) : (
         <div className="space-y-3">
-          {resources.map((r) => (
-            <ResourceCard key={r.id} resource={r} isSaved={isSaved(r.id)} onToggleSave={toggleSave} />
-          ))}
+          {resources.map((r) => {
+            const cached = cachedItems.find((c) => c.id === r.id);
+            return (
+              <LibraryResourceCard
+                key={r.id}
+                resource={r}
+                isCached={!!cached}
+                isSaved={isSaved(r.id)}
+                onToggleSave={toggleSave}
+                onOpen={() => handleOpenOrNavigate(r.id)}
+              />
+            );
+          })}
         </div>
       )}
     </div>

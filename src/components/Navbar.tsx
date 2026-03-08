@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Button } from "@/components/ui/button";
-import { Upload, LogOut, Flag, Home, Tag, Crown, BarChart3 } from "lucide-react";
+import { Upload, LogOut, Flag, Home, Tag, Crown, BarChart3, MessageSquare } from "lucide-react";
 import arkynosLogo from "@/assets/arkynos-logo-full.png";
 
 export default function Navbar() {
@@ -38,8 +38,14 @@ export default function Navbar() {
                   <Button variant="ghost" size="sm" asChild>
                     <Link to="/admin/dashboard"><BarChart3 className="mr-1.5 h-4 w-4" />Stats</Link>
                   </Button>
+                  <Button variant="ghost" size="sm" asChild>
+                    <Link to="/admin/messages"><MessageSquare className="mr-1.5 h-4 w-4" />Messages</Link>
+                  </Button>
                 </>
               )}
+              <Button variant="ghost" size="sm" asChild>
+                <Link to="/contact"><MessageSquare className="mr-1.5 h-4 w-4" />Contact</Link>
+              </Button>
               <Button variant="ghost" size="sm" asChild>
                 <Link to="/upload"><Upload className="mr-1.5 h-4 w-4" />Upload</Link>
               </Button>

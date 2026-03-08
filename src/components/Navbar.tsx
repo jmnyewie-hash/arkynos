@@ -4,6 +4,7 @@ import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Button } from "@/components/ui/button";
 import { Upload, LogOut, Flag, Home, Tag, Crown, BarChart3, MessageSquare, ArrowLeft, ChevronRight, BookOpen, RefreshCw } from "lucide-react";
 import { useRef, useState, useEffect } from "react";
+import { useRegisterSW } from "virtual:pwa-register/react";
 
 export default function Navbar() {
   const { user, signOut } = useAuth();

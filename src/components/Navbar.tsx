@@ -19,9 +19,7 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-md">
       <div className="container flex h-14 items-center justify-between">
-        <Link to="/" className="flex items-center">
-          <img src={arkynosLogo} alt="Arkynos" className="h-28" />
-        </Link>
+        <Link to="/" className="text-lg font-bold tracking-tight">Arkynos</Link>
         <nav className="flex items-center gap-1">
           <Button variant="ghost" size="sm" asChild>
             <Link to="/"><Home className="mr-1.5 h-4 w-4" />Home</Link>

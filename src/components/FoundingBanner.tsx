@@ -21,7 +21,7 @@ export default function FoundingBanner() {
     >
       <span className="inline-flex items-center gap-2">
         <Crown className="h-4 w-4" />
-        Founding User Spots Remaining: {spotsRemaining} / 500 — Sign up now for free lifetime premium!
+        Founding User Spots Remaining: {spotsRemaining} / 1260 — Sign up now for free lifetime premium!
       </span>
     </Link>
   );

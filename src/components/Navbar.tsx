@@ -65,6 +65,5 @@ export default function Navbar() {
         </nav>
       </div>
     </header>
-    </header>
   );
 }

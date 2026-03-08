@@ -10,6 +10,28 @@ export default function Navbar() {
   const { isAdmin } = useIsAdmin();
   const navigate = useNavigate();
   const location = useLocation();
+  const navRef = useRef<HTMLElement>(null);
+  const [canScroll, setCanScroll] = useState(false);
+
+  const checkScroll = () => {
+    const el = navRef.current;
+    if (el) {
+      setCanScroll(el.scrollWidth > el.clientWidth && el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+    }
+  };
+
+  useEffect(() => {
+    checkScroll();
+    const el = navRef.current;
+    if (el) {
+      el.addEventListener("scroll", checkScroll);
+      window.addEventListener("resize", checkScroll);
+      return () => {
+        el.removeEventListener("scroll", checkScroll);
+        window.removeEventListener("resize", checkScroll);
+      };
+    }
+  }, [user, isAdmin]);
 
   const isHome = location.pathname === "/";
 

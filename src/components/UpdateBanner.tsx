@@ -8,17 +8,25 @@ export default function UpdateBanner() {
     updateServiceWorker,
   } = useRegisterSW({
     onRegisteredSW(swUrl, r) {
+      console.log("Service Worker registered:", swUrl, r);
       // Poll every 60s for updates
       if (r) {
         setInterval(async () => {
+          console.log("Checking for updates...");
           if (!(!r.installing && navigator)) return;
           if (("connection" in navigator) && !(navigator as Navigator & { onLine: boolean }).onLine) return;
           const resp = await fetch(swUrl, { cache: "no-store", headers: { "cache": "no-store", "cache-control": "no-cache" } });
+          console.log("Update check response:", resp?.status);
           if (resp?.status === 200) await r.update();
         }, 60 * 1000);
       }
     },
+    onNeedRefresh() {
+      console.log("Need refresh triggered!");
+    },
   });
+
+  console.log("UpdateBanner render - needRefresh:", needRefresh);
 
   if (!needRefresh) return null;
 

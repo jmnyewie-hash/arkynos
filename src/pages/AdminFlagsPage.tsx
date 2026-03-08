@@ -6,7 +6,18 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Flag, CheckCircle, XCircle, ExternalLink } from "lucide-react";
+import { Flag, CheckCircle, XCircle, ExternalLink, Trash2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const reasonLabels: Record<string, string> = {
   wrong_category: "Wrong category",
@@ -85,6 +96,22 @@ export default function AdminFlagsPage() {
     }
   };
 
+  const handleDeleteResource = async (flag: FlagRow) => {
+    // Delete flags for this resource
+    await supabase.from("resource_flags").delete().eq("resource_id", flag.resource_id);
+    // Delete the file from storage (fetch file_path first)
+    const { data: res } = await supabase.from("resources").select("file_path").eq("id", flag.resource_id).single();
+    if (res) await supabase.storage.from("resources").remove([res.file_path]);
+    // Delete the resource
+    const { error } = await supabase.from("resources").delete().eq("id", flag.resource_id);
+    if (error) {
+      toast.error("Failed to delete resource");
+    } else {
+      setFlags((prev) => prev.filter((f) => f.resource_id !== flag.resource_id));
+      toast.success("Resource deleted");
+    }
+  };
+
   if (adminLoading || authLoading || loading) {
     return <div className="container max-w-3xl py-10"><div className="h-8 w-48 animate-pulse rounded bg-muted" /></div>;
   }
@@ -145,6 +172,25 @@ export default function AdminFlagsPage() {
                   <Button size="sm" variant="ghost" onClick={() => handleAction(flag.id, "dismissed")}>
                     <XCircle className="mr-1.5 h-3 w-3" /> Dismiss
                   </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button size="sm" variant="destructive">
+                        <Trash2 className="mr-1.5 h-3 w-3" /> Delete Resource
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete this resource?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This will permanently delete "{flag.resources?.title}" and its file. This cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => handleDeleteResource(flag)}>Delete</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               </div>
             ))}

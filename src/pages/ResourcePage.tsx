@@ -1,14 +1,24 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Download, FileText, Star, BookMarked } from "lucide-react";
+import { Download, FileText, Star, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import FlagResourceDialog from "@/components/FlagResourceDialog";
-
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 type ResourceWithRelations = Tables<"resources"> & {
   courses: Tables<"courses"> | null;
   profiles: Tables<"profiles"> | null;
@@ -24,10 +34,12 @@ const typeLabels: Record<string, string> = {
 
 export default function ResourcePage() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [resource, setResource] = useState<ResourceWithRelations | null>(null);
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
   const [toggling, setToggling] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const { isAdmin } = useIsAdmin();
 
   useEffect(() => {
@@ -84,6 +96,24 @@ export default function ResourcePage() {
     setToggling(false);
   };
 
+  const handleDelete = async () => {
+    if (!resource) return;
+    setDeleting(true);
+    // Delete associated flags first
+    await supabase.from("resource_flags").delete().eq("resource_id", resource.id);
+    // Delete the file from storage
+    await supabase.storage.from("resources").remove([resource.file_path]);
+    // Delete the resource record
+    const { error } = await supabase.from("resources").delete().eq("id", resource.id);
+    if (error) {
+      toast.error("Failed to delete resource");
+      setDeleting(false);
+    } else {
+      toast.success("Resource deleted");
+      navigate("/");
+    }
+  };
+
   if (loading) return <div className="container max-w-2xl py-10"><div className="h-32 animate-pulse rounded-xl bg-muted" /></div>;
   if (!resource) return <div className="container max-w-2xl py-10"><p className="text-muted-foreground">Resource not found.</p></div>;
 
@@ -127,15 +157,37 @@ export default function ResourcePage() {
           </div>
           <div className="flex items-center gap-2">
             {isAdmin && (
-              <Button
-                variant={resource.is_preferred ? "secondary" : "outline"}
-                size="sm"
-                onClick={handleTogglePreferred}
-                disabled={toggling}
-              >
-                <Star className={`mr-1.5 h-4 w-4 ${resource.is_preferred ? "fill-accent text-accent" : ""}`} />
-                {resource.is_preferred ? "Unmark Preferred" : "Mark Preferred"}
-              </Button>
+              <>
+                <Button
+                  variant={resource.is_preferred ? "secondary" : "outline"}
+                  size="sm"
+                  onClick={handleTogglePreferred}
+                  disabled={toggling}
+                >
+                  <Star className={`mr-1.5 h-4 w-4 ${resource.is_preferred ? "fill-accent text-accent" : ""}`} />
+                  {resource.is_preferred ? "Unmark Preferred" : "Mark Preferred"}
+                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" size="sm" disabled={deleting}>
+                      <Trash2 className="mr-1.5 h-4 w-4" />
+                      {deleting ? "Deleting..." : "Delete"}
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete this resource?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This will permanently delete "{resource.title}" and its file. This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </>
             )}
             <Button onClick={handleDownload} disabled={downloading}>
               <Download className="mr-2 h-4 w-4" />

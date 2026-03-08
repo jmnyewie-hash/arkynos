@@ -129,6 +129,23 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-body);
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background:
+      url('/images/gears-texture.jpg') top right / 420px auto no-repeat,
+      url('/images/puzzle-texture.jpg') bottom left / 380px auto no-repeat;
+    opacity: 0.04;
+    pointer-events: none;
+  }
+
+  .dark body::before {
+    opacity: 0.03;
   }
 
   h1, h2, h3, h4, h5, h6 {

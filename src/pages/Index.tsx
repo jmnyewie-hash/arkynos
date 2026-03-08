@@ -24,7 +24,7 @@ export default function Index() {
         .select("*, courses(*)")
         .eq("is_hidden", false)
         .order("created_at", { ascending: false })
-        .limit(10);
+        .limit(6);
 
       if (resourcesData) {
         const userIds = [...new Set(resourcesData.map(r => r.uploaded_by))];

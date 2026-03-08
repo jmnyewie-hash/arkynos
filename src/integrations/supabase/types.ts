@@ -153,6 +153,7 @@ export type Database = {
           file_path: string
           file_url: string
           id: string
+          is_hidden: boolean
           is_preferred: boolean
           resource_type: Database["public"]["Enums"]["resource_type"]
           title: string
@@ -166,6 +167,7 @@ export type Database = {
           file_path: string
           file_url: string
           id?: string
+          is_hidden?: boolean
           is_preferred?: boolean
           resource_type: Database["public"]["Enums"]["resource_type"]
           title: string
@@ -179,6 +181,7 @@ export type Database = {
           file_path?: string
           file_url?: string
           id?: string
+          is_hidden?: boolean
           is_preferred?: boolean
           resource_type?: Database["public"]["Enums"]["resource_type"]
           title?: string

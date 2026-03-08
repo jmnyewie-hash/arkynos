@@ -73,9 +73,20 @@ export default function ResourcePage() {
 
   const handleDownload = async () => {
     if (!resource) return;
+    if (!user) {
+      toast.error("Please sign in to download resources.");
+      return;
+    }
     setDownloading(true);
     try {
-      await supabase.rpc("increment_downloads", { resource_id: resource.id });
+      const { data: allowed } = await supabase.rpc("attempt_download", { p_resource_id: resource.id });
+      if (!allowed) {
+        toast.error("Daily download limit reached. Upgrade to premium for unlimited downloads.", {
+          action: { label: "Upgrade", onClick: () => navigate("/upgrade") },
+        });
+        setDownloading(false);
+        return;
+      }
       const { data } = supabase.storage.from("resources").getPublicUrl(resource.file_path);
       window.open(data.publicUrl, "_blank");
       setResource((prev) => prev ? { ...prev, downloads: prev.downloads + 1 } : prev);

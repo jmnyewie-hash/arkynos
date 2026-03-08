@@ -121,7 +121,7 @@ export default function Index() {
               <Share2 className="h-3.5 w-3.5 shrink-0" /> Share The App Link To Help Community Grow
             </button>
           </div>
-          <img src={arkynosLogo} alt="Arkynos" className="mx-auto mb-2 w-[50rem] max-w-full h-[22rem] object-contain" />
+          <img ref={logoRef} src={arkynosLogo} alt="Arkynos" className="mx-auto mb-2 w-[50rem] max-w-full h-[22rem] object-contain" />
           <p className="text-base font-medium tracking-[0.25em] uppercase text-muted-foreground/50 italic">The Labyrinth Of Knowledge</p>
           <p className="mt-3 text-lg text-muted-foreground">
             Find and share study resources for your courses

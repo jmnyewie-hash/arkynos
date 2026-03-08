@@ -20,10 +20,10 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-md">
       <div className="container flex h-14 items-center justify-between">
         <Link to="/" className="relative flex items-center gap-1 text-xl font-extrabold tracking-tight bg-gradient-to-r from-primary to-accent-foreground bg-clip-text text-transparent drop-shadow-sm">
-          <Sparkles className="h-3.5 w-3.5 text-primary opacity-70 -translate-y-1" />
+          <Sparkles className="h-3.5 w-3.5 text-yellow-400 opacity-90 -translate-y-1" />
           Arkynos
-          <Sparkles className="h-2.5 w-2.5 text-accent-foreground opacity-60 translate-y-1" />
-          <Sparkles className="h-2 w-2 text-primary opacity-50 -translate-y-2 -ml-1" />
+          <Sparkles className="h-2.5 w-2.5 text-yellow-300 opacity-80 translate-y-1" />
+          <Sparkles className="h-2 w-2 text-yellow-500 opacity-70 -translate-y-2 -ml-1" />
         </Link>
         <nav className="flex items-center gap-1">
           <Button variant="ghost" size="sm" asChild>

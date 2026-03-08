@@ -17,7 +17,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Lock, Loader2, CheckCircle, Download, Upload, Plus, Star, LayoutGrid } from "lucide-react";
+import { Lock, Loader2, CheckCircle, Download, Upload, Plus, Star, LayoutGrid, ShieldOff, Shield } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner";
@@ -34,6 +34,7 @@ interface ClassTag {
   description: string | null;
   created_by: string;
   is_preferred: boolean;
+  is_free: boolean;
 }
 
 export default function ClassTagPage() {
@@ -318,6 +319,21 @@ export default function ClassTagPage() {
     }
   };
 
+  const handleToggleFree = async () => {
+    if (!tag || !isAdmin) return;
+    const newVal = !tag.is_free;
+    const { error } = await supabase
+      .from("class_tags")
+      .update({ is_free: newVal } as any)
+      .eq("id", tag.id);
+    if (error) {
+      sonnerToast.error("Failed to update paywall status");
+    } else {
+      setTag({ ...tag, is_free: newVal });
+      sonnerToast.success(newVal ? "Paywall removed — class is now free" : "Paywall restored");
+    }
+  };
+
 
   if (loading || checkingAccess || authLoading || adminLoading) {
     return (
@@ -335,7 +351,7 @@ export default function ClassTagPage() {
     );
   }
 
-  const showPaywall = !hasAccess;
+  const showPaywall = !hasAccess && !tag.is_free;
 
   return (
     <div className="container max-w-2xl py-10 animate-fade-in">
@@ -349,14 +365,27 @@ export default function ClassTagPage() {
         </div>
         <div className="flex items-center gap-2 shrink-0">
           {isAdmin && (
-            <Button
-              variant={tag.is_preferred ? "secondary" : "outline"}
-              size="sm"
-              onClick={handleTogglePreferred}
-            >
-              <Star className={`mr-1.5 h-4 w-4 ${tag.is_preferred ? "fill-accent text-accent" : ""}`} />
-              {tag.is_preferred ? "Preferred" : "Mark Preferred"}
-            </Button>
+            <>
+              <Button
+                variant={tag.is_free ? "secondary" : "outline"}
+                size="sm"
+                onClick={handleToggleFree}
+              >
+                {tag.is_free ? (
+                  <><ShieldOff className="mr-1.5 h-4 w-4" />Free</>
+                ) : (
+                  <><Shield className="mr-1.5 h-4 w-4" />Remove Paywall</>
+                )}
+              </Button>
+              <Button
+                variant={tag.is_preferred ? "secondary" : "outline"}
+                size="sm"
+                onClick={handleTogglePreferred}
+              >
+                <Star className={`mr-1.5 h-4 w-4 ${tag.is_preferred ? "fill-accent text-accent" : ""}`} />
+                {tag.is_preferred ? "Preferred" : "Mark Preferred"}
+              </Button>
+            </>
           )}
           {canUpload && hasAccess && (
             <Button onClick={() => setUploadOpen(true)} size="sm">
@@ -399,7 +428,7 @@ export default function ClassTagPage() {
             </p>
           )}
         </div>
-      ) : hasAccess ? (
+      ) : (hasAccess || tag.is_free) ? (
         <>
           <div className="mt-4 flex items-center justify-between">
             <div className="flex items-center gap-1.5 text-xs text-green-600">

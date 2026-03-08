@@ -52,6 +52,7 @@ export type Database = {
           created_by: string
           description: string | null
           id: string
+          is_free: boolean
           is_preferred: boolean
           name: string
         }
@@ -60,6 +61,7 @@ export type Database = {
           created_by: string
           description?: string | null
           id?: string
+          is_free?: boolean
           is_preferred?: boolean
           name: string
         }
@@ -68,6 +70,7 @@ export type Database = {
           created_by?: string
           description?: string | null
           id?: string
+          is_free?: boolean
           is_preferred?: boolean
           name?: string
         }

@@ -81,8 +81,8 @@ export default function Index() {
         </div>
         <div className="text-center animate-fade-in">
           <p className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground/50 italic">A total of <span className="text-sm font-bold text-primary not-italic">{totalFiles.toLocaleString()}</span> files available today</p>
-          <a href="/upload" className="mt-2 inline-flex items-center rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90">
-            Upload New Files To Help The Library Grow
+          <a href="/upload" className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90">
+            <Upload className="h-3.5 w-3.5" /> Upload New Files To Help The Library Grow
           </a>
           <button
             onClick={() => {

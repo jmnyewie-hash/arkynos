@@ -96,6 +96,24 @@ export default function ResourcePage() {
     setToggling(false);
   };
 
+  const handleDelete = async () => {
+    if (!resource) return;
+    setDeleting(true);
+    // Delete associated flags first
+    await supabase.from("resource_flags").delete().eq("resource_id", resource.id);
+    // Delete the file from storage
+    await supabase.storage.from("resources").remove([resource.file_path]);
+    // Delete the resource record
+    const { error } = await supabase.from("resources").delete().eq("id", resource.id);
+    if (error) {
+      toast.error("Failed to delete resource");
+      setDeleting(false);
+    } else {
+      toast.success("Resource deleted");
+      navigate("/");
+    }
+  };
+
   if (loading) return <div className="container max-w-2xl py-10"><div className="h-32 animate-pulse rounded-xl bg-muted" /></div>;
   if (!resource) return <div className="container max-w-2xl py-10"><p className="text-muted-foreground">Resource not found.</p></div>;
 

@@ -280,9 +280,19 @@ export default function MyLibraryPage() {
         </div>
       ) : (
         <div className="space-y-3">
-          {resources.map((r) => (
-            <ResourceCard key={r.id} resource={r} isSaved={isSaved(r.id)} onToggleSave={toggleSave} />
-          ))}
+          {resources.map((r) => {
+            const cached = cachedItems.find((c) => c.id === r.id);
+            return (
+              <LibraryResourceCard
+                key={r.id}
+                resource={r}
+                isCached={!!cached}
+                isSaved={isSaved(r.id)}
+                onToggleSave={toggleSave}
+                onOpen={() => handleOpenOrNavigate(r.id)}
+              />
+            );
+          })}
         </div>
       )}
     </div>

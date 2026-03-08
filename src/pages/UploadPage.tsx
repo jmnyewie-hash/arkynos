@@ -42,6 +42,7 @@ export default function UploadPage() {
   const [selectedCourse, setSelectedCourse] = useState<Tables<"courses"> | null>(null);
   const [resourceType, setResourceType] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [classTagId, setClassTagId] = useState("");
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/login");

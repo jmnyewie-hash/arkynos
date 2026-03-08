@@ -185,7 +185,7 @@ export default function ClassTagPage() {
     }
   };
 
-  if (loading || checkingAccess || authLoading) {
+  if (loading || checkingAccess || authLoading || adminLoading) {
     return (
       <div className="container max-w-2xl py-10">
         <div className="h-8 w-48 animate-pulse rounded bg-muted" />

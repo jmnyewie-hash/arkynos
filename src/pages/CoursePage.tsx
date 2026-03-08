@@ -195,7 +195,7 @@ export default function CoursePage() {
                 <section key={type}>
                   <h2 className="font-heading text-base font-semibold text-foreground mb-3">{typeLabels[type]}</h2>
                   <div className="space-y-2">
-                    {items.map((r) => <ResourceCard key={r.id} resource={r} />)}
+                    {items.map((r) => <ResourceCard key={r.id} resource={r} isSaved={isSaved(r.id)} onToggleSave={toggleSave} />)}
                   </div>
                 </section>
               ))

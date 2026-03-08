@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Button } from "@/components/ui/button";
-import { Upload, LogOut, Flag, Home, Tag, Crown, BarChart3, MessageSquare } from "lucide-react";
+import { Upload, LogOut, Flag, Home, Tag, Crown, BarChart3, MessageSquare, Sparkles } from "lucide-react";
 
 
 
@@ -19,7 +19,12 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-md">
       <div className="container flex h-14 items-center justify-between">
-        <Link to="/" className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-primary to-accent-foreground bg-clip-text text-transparent drop-shadow-sm">Arkynos</Link>
+        <Link to="/" className="relative flex items-center gap-1 text-xl font-extrabold tracking-tight bg-gradient-to-r from-primary to-accent-foreground bg-clip-text text-transparent drop-shadow-sm">
+          <Sparkles className="h-3.5 w-3.5 text-primary opacity-70 -translate-y-1" />
+          Arkynos
+          <Sparkles className="h-2.5 w-2.5 text-accent-foreground opacity-60 translate-y-1" />
+          <Sparkles className="h-2 w-2 text-primary opacity-50 -translate-y-2 -ml-1" />
+        </Link>
         <nav className="flex items-center gap-1">
           <Button variant="ghost" size="sm" asChild>
             <Link to="/"><Home className="mr-1.5 h-4 w-4" />Home</Link>

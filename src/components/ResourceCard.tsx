@@ -8,6 +8,7 @@ import lectureNotesThumb from "@/assets/thumbnails/lecture-notes.png";
 import textbookThumb from "@/assets/thumbnails/textbook.png";
 import labManualThumb from "@/assets/thumbnails/lab-manual.png";
 import recommendedBooksThumb from "@/assets/thumbnails/recommended-books.png";
+import solutionManualThumb from "@/assets/thumbnails/solution-manual.png";
 
 const typeLabels: Record<string, string> = {
   past_question: "Past Question",
@@ -15,6 +16,7 @@ const typeLabels: Record<string, string> = {
   textbook: "Textbook",
   lab_manual: "Lab Manual",
   recommended_books: "Recommended Book",
+  solution_manual: "Solution Manual",
 };
 
 const typeThumbnails: Record<string, string> = {
@@ -23,6 +25,7 @@ const typeThumbnails: Record<string, string> = {
   textbook: textbookThumb,
   lab_manual: labManualThumb,
   recommended_books: recommendedBooksThumb,
+  solution_manual: solutionManualThumb,
 };
 
 interface ResourceCardProps {

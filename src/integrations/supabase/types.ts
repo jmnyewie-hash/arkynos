@@ -245,6 +245,7 @@ export type Database = {
         | "textbook"
         | "lab_manual"
         | "recommended_books"
+        | "solution_manual"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -388,6 +389,7 @@ export const Constants = {
         "textbook",
         "lab_manual",
         "recommended_books",
+        "solution_manual",
       ],
     },
   },

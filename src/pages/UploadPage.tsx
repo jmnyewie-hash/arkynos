@@ -19,6 +19,7 @@ const ALLOWED_TYPES = [
 ];
 const MAX_SIZE_DEFAULT = 50 * 1024 * 1024; // 50MB
 const MAX_SIZE_RECOMMENDED = 100 * 1024 * 1024; // 100MB
+const MAX_SIZE_SOLUTION = 200 * 1024 * 1024; // 200MB
 
 const resourceTypes = [
   { value: "past_question", label: "Past Question" },
@@ -26,6 +27,7 @@ const resourceTypes = [
   { value: "textbook", label: "Textbook" },
   { value: "lab_manual", label: "Lab Manual" },
   { value: "recommended_books", label: "Recommended Book" },
+  { value: "solution_manual", label: "Solution Manual" },
 ];
 
 export default function UploadPage() {
@@ -51,9 +53,10 @@ export default function UploadPage() {
       toast.error("Only PDF, DOCX, and PPTX files are allowed");
       return;
     }
-    const maxSize = resourceType === "recommended_books" ? MAX_SIZE_RECOMMENDED : MAX_SIZE_DEFAULT;
+    const maxSize = resourceType === "solution_manual" ? MAX_SIZE_SOLUTION : resourceType === "recommended_books" ? MAX_SIZE_RECOMMENDED : MAX_SIZE_DEFAULT;
     if (f.size > maxSize) {
-      toast.error(`File must be under ${resourceType === "recommended_books" ? "100" : "50"}MB`);
+      const label = resourceType === "solution_manual" ? "200" : resourceType === "recommended_books" ? "100" : "50";
+      toast.error(`File must be under ${label}MB`);
       return;
     }
     setFile(f);
@@ -80,7 +83,7 @@ export default function UploadPage() {
         title: title.trim(),
         description: description.trim() || null,
         course_id: courseId,
-        resource_type: resourceType as "past_question" | "lecture_notes" | "textbook" | "lab_manual",
+        resource_type: resourceType as any,
         file_url: urlData.publicUrl,
         file_path: filePath,
         uploaded_by: user.id,
@@ -141,7 +144,7 @@ export default function UploadPage() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="file">File * (PDF, DOCX, PPTX — max {resourceType === "recommended_books" ? "100" : "50"}MB)</Label>
+          <Label htmlFor="file">File * (PDF, DOCX, PPTX — max {resourceType === "solution_manual" ? "200" : resourceType === "recommended_books" ? "100" : "50"}MB)</Label>
           <Input id="file" type="file" accept=".pdf,.docx,.pptx" onChange={handleFileChange} required />
           {file && <p className="text-xs text-muted-foreground">{file.name} ({(file.size / 1024 / 1024).toFixed(1)} MB)</p>}
         </div>

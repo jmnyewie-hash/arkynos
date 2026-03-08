@@ -15,9 +15,10 @@ const typeLabels: Record<string, string> = {
   textbook: "Textbooks",
   lab_manual: "Lab Manuals",
   recommended_books: "Recommended Books",
+  solution_manual: "Solution Manuals",
 };
 
-const typeOrder = ["past_question", "lecture_notes", "textbook", "lab_manual", "recommended_books"];
+const typeOrder = ["past_question", "lecture_notes", "textbook", "lab_manual", "recommended_books", "solution_manual"];
 
 export default function CoursePage() {
   const { courseCode } = useParams<{ courseCode: string }>();

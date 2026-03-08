@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Download, FileText, Star, Trash2, EyeOff, Eye, Tag } from "lucide-react";
+import { Download, FileText, Star, Trash2, EyeOff, Eye, Tag, Bookmark } from "lucide-react";
 import { toast } from "sonner";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useProfile } from "@/hooks/useProfile";

@@ -245,16 +245,49 @@ export default function ClassTagPage() {
         </div>
       ) : hasAccess ? (
         <>
-          <div className="mt-4 flex items-center gap-1.5 text-xs text-green-600">
-            <CheckCircle className="h-3.5 w-3.5" />
-            <span>You have permanent access</span>
+          <div className="mt-4 flex items-center justify-between">
+            <div className="flex items-center gap-1.5 text-xs text-green-600">
+              <CheckCircle className="h-3.5 w-3.5" />
+              <span>You have permanent access</span>
+            </div>
+            {resources.length > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleDownloadAll}
+                disabled={downloadingAll}
+              >
+                {downloadingAll ? (
+                  <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Download className="mr-1.5 h-3.5 w-3.5" />
+                )}
+                {downloadingAll ? "Saving..." : "Save All for Offline"}
+              </Button>
+            )}
           </div>
           {resources.length === 0 ? (
             <p className="mt-8 text-sm text-muted-foreground">No resources uploaded to this class yet.</p>
           ) : (
             <div className="mt-6 space-y-2">
               {resources.map((r) => (
-                <ResourceCard key={r.id} resource={r} />
+                <div key={r.id} className="flex items-center gap-2">
+                  <div className="flex-1 min-w-0">
+                    <ResourceCard resource={r} />
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="shrink-0 h-9 w-9"
+                    title="Save for offline"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleSaveOffline(r);
+                    }}
+                  >
+                    <Download className="h-4 w-4" />
+                  </Button>
+                </div>
               ))}
             </div>
           )}

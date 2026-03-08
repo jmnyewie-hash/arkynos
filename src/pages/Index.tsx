@@ -5,7 +5,7 @@ import CourseSearchBar from "@/components/CourseSearchBar";
 import ResourceCard from "@/components/ResourceCard";
 import FoundingBanner from "@/components/FoundingBanner";
 import arkynosLogo from "@/assets/arkynos-logo-full.png";
-import { Users, BookOpen, FolderOpen, Shield } from "lucide-react";
+import { Users, BookOpen, FolderOpen, Shield, Upload, Share2 } from "lucide-react";
 
 type ResourceWithRelations = Tables<"resources"> & {
   courses: Tables<"courses"> | null;

@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Download, FileText, Star, Trash2, EyeOff, Eye } from "lucide-react";
+import { Download, FileText, Star, Trash2, EyeOff, Eye, Tag } from "lucide-react";
 import { toast } from "sonner";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import FlagResourceDialog from "@/components/FlagResourceDialog";
@@ -49,7 +49,7 @@ export default function ResourcePage() {
     const fetchResource = async () => {
       const { data } = await supabase
         .from("resources")
-        .select("*, courses(*)")
+        .select("*, courses(*), class_tags(*)")
         .eq("id", id)
         .single();
 
@@ -164,6 +164,12 @@ export default function ResourcePage() {
                 <span className="text-sm text-muted-foreground">
                   {resource.courses.course_code} · {resource.courses.course_name}
                 </span>
+              )}
+              {(resource as any).class_tag_id && (resource as any).class_tags && (
+                <a href={`/class/${(resource as any).class_tag_id}`} className="inline-flex items-center gap-1 text-sm text-primary hover:underline">
+                  <Tag className="h-3.5 w-3.5" />
+                  {(resource as any).class_tags.name}
+                </a>
               )}
             </div>
           </div>

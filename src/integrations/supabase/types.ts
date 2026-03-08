@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      class_tags: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       courses: {
         Row: {
           course_code: string
@@ -146,6 +170,7 @@ export type Database = {
       }
       resources: {
         Row: {
+          class_tag_id: string | null
           course_id: string
           created_at: string
           description: string | null
@@ -160,6 +185,7 @@ export type Database = {
           uploaded_by: string
         }
         Insert: {
+          class_tag_id?: string | null
           course_id: string
           created_at?: string
           description?: string | null
@@ -174,6 +200,7 @@ export type Database = {
           uploaded_by: string
         }
         Update: {
+          class_tag_id?: string | null
           course_id?: string
           created_at?: string
           description?: string | null
@@ -188,6 +215,13 @@ export type Database = {
           uploaded_by?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "resources_class_tag_id_fkey"
+            columns: ["class_tag_id"]
+            isOneToOne: false
+            referencedRelation: "class_tags"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "resources_course_id_fkey"
             columns: ["course_id"]

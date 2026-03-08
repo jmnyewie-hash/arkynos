@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Upload } from "lucide-react";
 import CourseSearchSelect from "@/components/CourseSearchSelect";
+import ClassTagSelect from "@/components/ClassTagSelect";
 
 const ALLOWED_TYPES = [
   "application/pdf",
@@ -41,6 +42,7 @@ export default function UploadPage() {
   const [selectedCourse, setSelectedCourse] = useState<Tables<"courses"> | null>(null);
   const [resourceType, setResourceType] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [classTagId, setClassTagId] = useState("");
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/login");
@@ -87,7 +89,8 @@ export default function UploadPage() {
         file_url: urlData.publicUrl,
         file_path: filePath,
         uploaded_by: user.id,
-      });
+        ...(classTagId ? { class_tag_id: classTagId } : {}),
+      } as any);
       if (insertError) throw insertError;
 
       toast.success("Resource uploaded!");
@@ -141,6 +144,15 @@ export default function UploadPage() {
         <div className="space-y-2">
           <Label htmlFor="description">Description</Label>
           <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Optional description..." maxLength={1000} rows={3} />
+        </div>
+
+        <div className="space-y-2">
+          <Label>Class Tag <span className="text-muted-foreground font-normal">(optional — group resources by class)</span></Label>
+          <ClassTagSelect
+            value={classTagId}
+            onSelect={setClassTagId}
+            onClear={() => setClassTagId("")}
+          />
         </div>
 
         <div className="space-y-2">

@@ -13,6 +13,8 @@ import UploadPage from "./pages/UploadPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AdminFlagsPage from "./pages/AdminFlagsPage";
+import BrowseTagsPage from "./pages/BrowseTagsPage";
+import ClassTagPage from "./pages/ClassTagPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +36,8 @@ const App = () => (
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/admin/flags" element={<AdminFlagsPage />} />
+            <Route path="/classes" element={<BrowseTagsPage />} />
+            <Route path="/class/:tagId" element={<ClassTagPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

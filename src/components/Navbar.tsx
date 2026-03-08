@@ -1,15 +1,16 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Button } from "@/components/ui/button";
-import { Upload, LogOut, Flag, Home, Tag, Crown, BarChart3, MessageSquare, Sparkles } from "lucide-react";
-
-
+import { Upload, LogOut, Flag, Home, Tag, Crown, BarChart3, MessageSquare, ArrowLeft } from "lucide-react";
 
 export default function Navbar() {
   const { user, signOut } = useAuth();
   const { isAdmin } = useIsAdmin();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isHome = location.pathname === "/";
 
   const handleSignOut = async () => {
     await signOut();
@@ -19,9 +20,16 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-md">
       <div className="container flex h-14 items-center justify-between">
-        <Link to="/" className="shrink-0">
-          <img src="/favicon.png" alt="Arkynos" className="h-8 w-8" />
-        </Link>
+        <div className="flex items-center shrink-0">
+          {!isHome && (
+            <Button variant="ghost" size="icon" className="h-8 w-8 mr-1" onClick={() => navigate(-1)}>
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+          )}
+          <Link to="/" className="shrink-0">
+            <img src="/favicon.png" alt="Arkynos" className="h-8 w-8" />
+          </Link>
+        </div>
         <nav className="flex items-center gap-1 overflow-x-auto scrollbar-hide ml-4">
           <Button variant="ghost" size="sm" asChild className="shrink-0">
             <Link to="/"><Home className="mr-1.5 h-4 w-4" />Home</Link>

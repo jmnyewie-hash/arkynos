@@ -100,6 +100,50 @@ export type Database = {
         }
         Relationships: []
       }
+      resource_flags: {
+        Row: {
+          created_at: string
+          description: string | null
+          flagged_by: string
+          id: string
+          reason: Database["public"]["Enums"]["flag_reason"]
+          resolved_at: string | null
+          resolved_by: string | null
+          resource_id: string
+          status: Database["public"]["Enums"]["flag_status"]
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          flagged_by: string
+          id?: string
+          reason: Database["public"]["Enums"]["flag_reason"]
+          resolved_at?: string | null
+          resolved_by?: string | null
+          resource_id: string
+          status?: Database["public"]["Enums"]["flag_status"]
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          flagged_by?: string
+          id?: string
+          reason?: Database["public"]["Enums"]["flag_reason"]
+          resolved_at?: string | null
+          resolved_by?: string | null
+          resource_id?: string
+          status?: Database["public"]["Enums"]["flag_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resource_flags_resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: false
+            referencedRelation: "resources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       resources: {
         Row: {
           course_id: string
@@ -184,6 +228,14 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      flag_reason:
+        | "wrong_category"
+        | "inappropriate_content"
+        | "spam"
+        | "copyright_violation"
+        | "low_quality"
+        | "other"
+      flag_status: "pending" | "resolved" | "dismissed"
       resource_type:
         | "past_question"
         | "lecture_notes"
@@ -318,6 +370,15 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      flag_reason: [
+        "wrong_category",
+        "inappropriate_content",
+        "spam",
+        "copyright_violation",
+        "low_quality",
+        "other",
+      ],
+      flag_status: ["pending", "resolved", "dismissed"],
       resource_type: [
         "past_question",
         "lecture_notes",

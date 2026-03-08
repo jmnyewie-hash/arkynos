@@ -51,6 +51,33 @@ export default function ClassTagPage() {
   const [verifying, setVerifying] = useState(false);
   const [downloadingAll, setDownloadingAll] = useState(false);
 
+  // Upload dialog state
+  const [uploadOpen, setUploadOpen] = useState(false);
+  const [uploadTitle, setUploadTitle] = useState("");
+  const [uploadDesc, setUploadDesc] = useState("");
+  const [uploadCourseId, setUploadCourseId] = useState("");
+  const [uploadCourse, setUploadCourse] = useState<Tables<"courses"> | null>(null);
+  const [uploadType, setUploadType] = useState("");
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const ALLOWED_TYPES = [
+    "application/pdf",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  ];
+  const resourceTypes = [
+    { value: "past_question", label: "Past Question" },
+    { value: "lecture_notes", label: "Lecture Notes" },
+    { value: "textbook", label: "Textbook" },
+    { value: "lab_manual", label: "Lab Manual" },
+    { value: "recommended_books", label: "Recommended Book" },
+    { value: "solution_manual", label: "Solution Manual" },
+  ];
+
+  const isCreator = user && tag?.created_by === user.id;
+  const canUpload = isCreator || isAdmin;
+
   // Check access — admins always have access
   useEffect(() => {
     if (authLoading || adminLoading) return;

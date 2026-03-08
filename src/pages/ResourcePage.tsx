@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { Download, FileText, Star, Trash2, EyeOff, Eye, Tag } from "lucide-react";
 import { toast } from "sonner";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
+import { useProfile } from "@/hooks/useProfile";
+import { useAuth } from "@/hooks/useAuth";
+import FounderBadge from "@/components/FounderBadge";
 import FlagResourceDialog from "@/components/FlagResourceDialog";
 import {
   AlertDialog,
@@ -43,6 +46,8 @@ export default function ResourcePage() {
   const [hiding, setHiding] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const { isAdmin } = useIsAdmin();
+  const { user } = useAuth();
+  const { profile } = useProfile();
 
   useEffect(() => {
     if (!id) return;
@@ -68,9 +73,20 @@ export default function ResourcePage() {
 
   const handleDownload = async () => {
     if (!resource) return;
+    if (!user) {
+      toast.error("Please sign in to download resources.");
+      return;
+    }
     setDownloading(true);
     try {
-      await supabase.rpc("increment_downloads", { resource_id: resource.id });
+      const { data: allowed } = await supabase.rpc("attempt_download", { p_resource_id: resource.id });
+      if (!allowed) {
+        toast.error("Daily download limit reached. Upgrade to premium for unlimited downloads.", {
+          action: { label: "Upgrade", onClick: () => navigate("/upgrade") },
+        });
+        setDownloading(false);
+        return;
+      }
       const { data } = supabase.storage.from("resources").getPublicUrl(resource.file_path);
       window.open(data.publicUrl, "_blank");
       setResource((prev) => prev ? { ...prev, downloads: prev.downloads + 1 } : prev);
@@ -183,7 +199,12 @@ export default function ResourcePage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="text-xs text-muted-foreground space-y-1">
-                {resource.profiles && <p>Uploaded by {resource.profiles.name}</p>}
+              {resource.profiles && (
+                  <p className="flex items-center gap-1.5">
+                    Uploaded by {resource.profiles.name}
+                    <FounderBadge tier={(resource.profiles as any).subscription_tier} />
+                  </p>
+                )}
                 <p>{resource.downloads} downloads</p>
               </div>
               <FlagResourceDialog resourceId={resource.id} />

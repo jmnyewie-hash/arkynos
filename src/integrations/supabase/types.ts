@@ -79,23 +79,35 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string
+          downloads_today: number
           email: string
+          founding_user: boolean
           id: string
+          last_download_date: string
           name: string
+          subscription_tier: Database["public"]["Enums"]["subscription_tier"]
           user_id: string
         }
         Insert: {
           created_at?: string
+          downloads_today?: number
           email: string
+          founding_user?: boolean
           id?: string
+          last_download_date?: string
           name: string
+          subscription_tier?: Database["public"]["Enums"]["subscription_tier"]
           user_id: string
         }
         Update: {
           created_at?: string
+          downloads_today?: number
           email?: string
+          founding_user?: boolean
           id?: string
+          last_download_date?: string
           name?: string
+          subscription_tier?: Database["public"]["Enums"]["subscription_tier"]
           user_id?: string
         }
         Relationships: []
@@ -254,6 +266,9 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      attempt_download: { Args: { p_resource_id: string }; Returns: boolean }
+      get_admin_user_stats: { Args: never; Returns: Json }
+      get_founding_spots_remaining: { Args: never; Returns: number }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -280,6 +295,7 @@ export type Database = {
         | "lab_manual"
         | "recommended_books"
         | "solution_manual"
+      subscription_tier: "free" | "premium" | "founder"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -425,6 +441,7 @@ export const Constants = {
         "recommended_books",
         "solution_manual",
       ],
+      subscription_tier: ["free", "premium", "founder"],
     },
   },
 } as const

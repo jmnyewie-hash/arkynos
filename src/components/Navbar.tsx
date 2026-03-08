@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Button } from "@/components/ui/button";
-import { Upload, LogOut, Flag, Home, Tag } from "lucide-react";
+import { Upload, LogOut, Flag, Home, Tag, Crown, BarChart3 } from "lucide-react";
 import arkynosLogo from "@/assets/arkynos-logo-full.png";
 
 export default function Navbar() {
@@ -31,12 +31,20 @@ export default function Navbar() {
           {user ? (
             <>
               {isAdmin && (
-                <Button variant="ghost" size="sm" asChild>
-                  <Link to="/admin/flags"><Flag className="mr-1.5 h-4 w-4" />Flags</Link>
-                </Button>
+                <>
+                  <Button variant="ghost" size="sm" asChild>
+                    <Link to="/admin/flags"><Flag className="mr-1.5 h-4 w-4" />Flags</Link>
+                  </Button>
+                  <Button variant="ghost" size="sm" asChild>
+                    <Link to="/admin/dashboard"><BarChart3 className="mr-1.5 h-4 w-4" />Stats</Link>
+                  </Button>
+                </>
               )}
               <Button variant="ghost" size="sm" asChild>
                 <Link to="/upload"><Upload className="mr-1.5 h-4 w-4" />Upload</Link>
+              </Button>
+              <Button variant="ghost" size="sm" asChild>
+                <Link to="/upgrade"><Crown className="mr-1.5 h-4 w-4" />Upgrade</Link>
               </Button>
               <Button variant="ghost" size="sm" onClick={handleSignOut}>
                 <LogOut className="mr-1.5 h-4 w-4" />Sign Out

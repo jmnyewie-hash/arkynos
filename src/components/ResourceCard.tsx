@@ -68,7 +68,14 @@ export default function ResourceCard({ resource }: ResourceCardProps) {
               {typeLabels[resource.resource_type]}
             </Badge>
             <span className="flex items-center gap-1"><Download className="h-3 w-3" />{resource.downloads}</span>
-            {resource.profiles && <span>by {resource.profiles.name}</span>}
+            {resource.profiles && (
+              <span className="flex items-center gap-1">
+                by {resource.profiles.name}
+                {(resource.profiles as any).subscription_tier === "founder" && (
+                  <span className="ml-1 text-amber-500 font-semibold">👑</span>
+                )}
+              </span>
+            )}
           </div>
         </div>
       </div>

@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 import CourseSearchBar from "@/components/CourseSearchBar";
 import ResourceCard from "@/components/ResourceCard";
+import FoundingBanner from "@/components/FoundingBanner";
 import arkynosLogo from "@/assets/arkynos-logo-full.png";
 
 type ResourceWithRelations = Tables<"resources"> & {
@@ -43,7 +44,9 @@ export default function Index() {
   }, []);
 
   return (
-    <div className="container max-w-2xl py-16">
+    <>
+      <FoundingBanner />
+      <div className="container max-w-2xl py-16">
       <div className="text-center animate-fade-in">
         <img src={arkynosLogo} alt="Arkynos" className="mx-auto mb-4 h-72" />
         <p className="mt-3 text-lg text-muted-foreground">
@@ -73,6 +76,7 @@ export default function Index() {
           </div>
         )}
       </section>
-    </div>
+      </div>
+    </>
   );
 }

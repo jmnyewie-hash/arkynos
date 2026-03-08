@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Button } from "@/components/ui/button";
-import { Upload, LogOut, Flag, Home, Tag, Crown, BarChart3, MessageSquare } from "lucide-react";
+import { Upload, LogOut, Flag, Home, Tag, Crown, BarChart3, MessageSquare, Sparkles } from "lucide-react";
 
 
 

@@ -17,7 +17,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Lock, Loader2, CheckCircle, Download, Upload, Plus, Star, LayoutGrid } from "lucide-react";
+import { Lock, Loader2, CheckCircle, Download, Upload, Plus, Star, LayoutGrid, ShieldOff, Shield } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner";

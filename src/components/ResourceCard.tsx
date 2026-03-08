@@ -8,6 +8,7 @@ import lectureNotesThumb from "@/assets/thumbnails/lecture-notes.png";
 import textbookThumb from "@/assets/thumbnails/textbook.png";
 import labManualThumb from "@/assets/thumbnails/lab-manual.png";
 import recommendedBooksThumb from "@/assets/thumbnails/recommended-books.png";
+import solutionManualThumb from "@/assets/thumbnails/solution-manual.png";
 
 const typeLabels: Record<string, string> = {
   past_question: "Past Question",

@@ -336,7 +336,7 @@ export default function ClassTagPage() {
     );
   }
 
-  const showPaywall = !hasAccess;
+  const showPaywall = !hasAccess && !tag.is_free;
 
   return (
     <div className="container max-w-2xl py-10 animate-fade-in">

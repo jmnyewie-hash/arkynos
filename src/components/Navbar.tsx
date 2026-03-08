@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Upload, LogOut } from "lucide-react";
-import arkynosLogo from "@/assets/arkynos-logo.png";
+import arkynosLogo from "@/assets/arkynos-logo-full.png";
 
 export default function Navbar() {
   const { user, signOut } = useAuth();

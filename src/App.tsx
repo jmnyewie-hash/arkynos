@@ -49,6 +49,7 @@ const App = () => (
             <Route path="/classes" element={<BrowseTagsPage />} />
             <Route path="/class/:tagId" element={<ClassTagPage />} />
             <Route path="/library" element={<MyLibraryPage />} />
+            <Route path="/view/:id" element={<ViewerPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

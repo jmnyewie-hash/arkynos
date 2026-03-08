@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Button } from "@/components/ui/button";
-import { Upload, LogOut, Flag } from "lucide-react";
+import { Upload, LogOut, Flag, Home } from "lucide-react";
 import arkynosLogo from "@/assets/arkynos-logo-full.png";
 
 export default function Navbar() {
@@ -21,7 +21,10 @@ export default function Navbar() {
         <Link to="/" className="flex items-center">
           <img src={arkynosLogo} alt="Arkynos" className="h-28" />
         </Link>
-        <nav className="flex items-center gap-2">
+        <nav className="flex items-center gap-1">
+          <Button variant="ghost" size="sm" asChild>
+            <Link to="/"><Home className="mr-1.5 h-4 w-4" />Home</Link>
+          </Button>
           {user ? (
             <>
               {isAdmin && (

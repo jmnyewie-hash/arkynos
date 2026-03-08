@@ -136,7 +136,7 @@ export default function CourseSearchBar({ className = "", initialQuery = "" }: {
 
   return (
     <>
-      <div ref={wrapperRef} className={`relative ${className}`}>
+      <div ref={wrapperRef} className={`relative ${className}`} style={{ zIndex: isActive ? 60 : undefined }}>
         <form onSubmit={handleSubmit} className="relative" style={{ zIndex: isActive ? 60 : undefined }}>
           <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground pointer-events-none" />
           <Input

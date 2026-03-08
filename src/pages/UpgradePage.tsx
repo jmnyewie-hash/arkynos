@@ -48,7 +48,7 @@ export default function UpgradePage() {
         "All Premium features",
         "Lifetime access — never expires",
         "Exclusive Founding Member badge",
-        "Limited to first 500 users",
+        "Limited to first 1,260 users",
       ],
       cta: profile?.subscription_tier === "founder"
         ? "Your Plan"

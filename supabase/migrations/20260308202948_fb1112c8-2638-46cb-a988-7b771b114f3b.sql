@@ -1,0 +1,1 @@
+ALTER TABLE public.class_tags ADD COLUMN is_free boolean NOT NULL DEFAULT false;

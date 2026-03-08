@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.admin-update-tier]
 verify_jwt = false
+
+[functions.admin-manage-role]
+verify_jwt = false

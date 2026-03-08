@@ -23,6 +23,7 @@ interface ClassTag {
   name: string;
   description: string | null;
   resource_count: number;
+  is_preferred: boolean;
 }
 
 interface Program {

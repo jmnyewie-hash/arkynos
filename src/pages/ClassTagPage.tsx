@@ -32,6 +32,7 @@ interface ClassTag {
   name: string;
   description: string | null;
   created_by: string;
+  is_preferred: boolean;
 }
 
 export default function ClassTagPage() {

@@ -9,6 +9,7 @@ export default function ViewerPage() {
   const navigate = useNavigate();
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [fileName, setFileName] = useState("");
+  const [filePath, setFilePath] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -22,6 +23,7 @@ export default function ViewerPage() {
         const meta = JSON.parse(localStorage.getItem("arkynos-library-meta") || "{}");
         const item = meta[id!];
         setFileName(item?.title || "Document");
+        setFilePath(item?.file_path || "");
         setFileUrl(cachedUrl);
         setLoading(false);
         return;
@@ -37,6 +39,7 @@ export default function ViewerPage() {
       if (resource) {
         const { data } = supabase.storage.from("resources").getPublicUrl(resource.file_path);
         setFileName(resource.title);
+        setFilePath(resource.file_path);
         setFileUrl(data.publicUrl);
       }
       setLoading(false);
@@ -70,7 +73,7 @@ export default function ViewerPage() {
     );
   }
 
-  const fileType = getFileType(fileName || fileUrl);
+  const fileType = getFileType(filePath || fileUrl || "");
 
   return (
     <div className="h-[calc(100vh-4rem)]">

@@ -132,9 +132,19 @@ export default function ResourcePage() {
   if (loading) return <div className="container max-w-2xl py-10"><div className="h-32 animate-pulse rounded-xl bg-muted" /></div>;
   if (!resource) return <div className="container max-w-2xl py-10"><p className="text-muted-foreground">Resource not found.</p></div>;
 
+  const isHidden = (resource as any).is_hidden;
+
+  if (isHidden && !isAdmin) return <div className="container max-w-2xl py-10"><p className="text-muted-foreground">This resource is not available.</p></div>;
+
   return (
     <div className="container max-w-2xl py-10 animate-fade-in">
-      <div className={`rounded-xl border bg-card p-6 shadow-card ${resource.is_preferred ? "ring-2 ring-accent/50 border-accent/30" : ""}`}>
+      {isHidden && isAdmin && (
+        <div className="mb-4 rounded-lg border border-destructive/30 bg-destructive/5 p-3 flex items-center gap-2 text-sm text-destructive">
+          <EyeOff className="h-4 w-4 shrink-0" />
+          This resource is hidden from users.
+        </div>
+      )}
+      <div className={`rounded-xl border bg-card p-6 shadow-card ${resource.is_preferred ? "ring-2 ring-accent/50 border-accent/30" : ""} ${isHidden ? "opacity-60" : ""}`}>
         <div className="flex items-start gap-4">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
             <FileText className="h-6 w-6 text-primary" />

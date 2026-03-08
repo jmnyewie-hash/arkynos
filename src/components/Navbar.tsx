@@ -4,7 +4,7 @@ import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Button } from "@/components/ui/button";
 import { Upload, LogOut, Flag, Home, Tag, Crown, BarChart3, MessageSquare } from "lucide-react";
 import arkynosLogo from "@/assets/arkynos-logo-full.png";
-
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function Navbar() {
   const { user, signOut } = useAuth();
@@ -63,6 +63,9 @@ export default function Navbar() {
             </Button>
           )}
         </nav>
+      </div>
+      <div className="container flex justify-end py-1">
+        <ThemeToggle />
       </div>
     </header>
   );

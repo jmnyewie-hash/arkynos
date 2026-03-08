@@ -31,9 +31,14 @@ export default function Navbar() {
           {user ? (
             <>
               {isAdmin && (
-                <Button variant="ghost" size="sm" asChild>
-                  <Link to="/admin/flags"><Flag className="mr-1.5 h-4 w-4" />Flags</Link>
-                </Button>
+                <>
+                  <Button variant="ghost" size="sm" asChild>
+                    <Link to="/admin/flags"><Flag className="mr-1.5 h-4 w-4" />Flags</Link>
+                  </Button>
+                  <Button variant="ghost" size="sm" asChild>
+                    <Link to="/admin/dashboard"><BarChart3 className="mr-1.5 h-4 w-4" />Stats</Link>
+                  </Button>
+                </>
               )}
               <Button variant="ghost" size="sm" asChild>
                 <Link to="/upload"><Upload className="mr-1.5 h-4 w-4" />Upload</Link>

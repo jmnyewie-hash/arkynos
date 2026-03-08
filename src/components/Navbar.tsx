@@ -43,13 +43,13 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-md">
       <div className="container flex h-14 items-center justify-between">
-        <div className="flex items-center shrink-0">
+        <div className="flex items-center shrink-0 min-w-fit">
           {!isHome && (
-            <Button variant="ghost" size="icon" className="h-8 w-8 mr-1" onClick={() => navigate(-1)}>
+            <Button variant="ghost" size="icon" className="h-8 w-8 mr-1 shrink-0" onClick={() => navigate(-1)}>
               <ArrowLeft className="h-4 w-4" />
             </Button>
           )}
-          <Link to="/" className="shrink-0">
+          <Link to="/" className="shrink-0 block">
             <img src="/favicon.png" alt="Arkynos" className="h-8 w-8" />
           </Link>
         </div>

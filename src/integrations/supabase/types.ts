@@ -117,7 +117,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      increment_downloads: { Args: { resource_id: string }; Returns: undefined }
     }
     Enums: {
       resource_type:

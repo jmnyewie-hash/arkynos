@@ -141,7 +141,7 @@ export default function UploadPage() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="file">File * (PDF, DOCX, PPTX — max 50MB)</Label>
+          <Label htmlFor="file">File * (PDF, DOCX, PPTX — max {resourceType === "recommended_books" ? "100" : "50"}MB)</Label>
           <Input id="file" type="file" accept=".pdf,.docx,.pptx" onChange={handleFileChange} required />
           {file && <p className="text-xs text-muted-foreground">{file.name} ({(file.size / 1024 / 1024).toFixed(1)} MB)</p>}
         </div>

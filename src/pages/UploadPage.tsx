@@ -38,6 +38,7 @@ export default function UploadPage() {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [author, setAuthor] = useState("");
   const [courseId, setCourseId] = useState("");
   const [selectedCourse, setSelectedCourse] = useState<Tables<"courses"> | null>(null);
   const [resourceType, setResourceType] = useState("");

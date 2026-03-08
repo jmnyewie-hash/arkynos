@@ -103,7 +103,7 @@ function LibraryItemCard({
           />
         </button>
       )}
-      <button onClick={onOpen} className="block w-full text-left pr-8">
+      <button onClick={onOpen} className="block w-full text-left pr-20">
         <div className="flex items-start gap-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
             <FileText className="h-5 w-5 text-primary" />

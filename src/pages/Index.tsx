@@ -84,6 +84,21 @@ export default function Index() {
           <a href="/upload" className="mt-2 inline-flex items-center rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90">
             Upload New Files To Help The Library Grow
           </a>
+          <button
+            onClick={() => {
+              const url = "https://arkynos.lovable.app";
+              const text = "Check out Arkynos — a free library of university study resources!";
+              if (navigator.share) {
+                navigator.share({ title: "Arkynos", text, url }).catch(() => {});
+              } else {
+                navigator.clipboard.writeText(`${text} ${url}`);
+                alert("Link copied to clipboard!");
+              }
+            }}
+            className="mt-2 inline-flex items-center rounded-full border border-primary/30 bg-background px-4 py-1.5 text-xs font-semibold text-primary shadow-sm transition-colors hover:bg-primary/10"
+          >
+            Share The App Link To Help Community Grow
+          </button>
           <img src={arkynosLogo} alt="Arkynos" className="mx-auto mb-2 w-[50rem] max-w-full h-[22rem] object-contain" />
           <p className="text-base font-medium tracking-[0.25em] uppercase text-muted-foreground/50 italic">The Labyrinth Of Knowledge</p>
           <p className="mt-3 text-lg text-muted-foreground">

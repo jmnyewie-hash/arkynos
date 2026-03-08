@@ -254,6 +254,52 @@ export default function ClassTagPage() {
     setDownloadingAll(false);
   };
 
+  const handleUploadToClass = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user || !uploadFile || !uploadCourseId || !uploadType || !uploadTitle.trim() || !tagId) return;
+    setUploading(true);
+    try {
+      const ext = uploadFile.name.split(".").pop();
+      const filePath = `${user.id}/${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage.from("resources").upload(filePath, uploadFile);
+      if (upErr) throw upErr;
+
+      const { data: urlData } = supabase.storage.from("resources").getPublicUrl(filePath);
+      const { data: newResource, error: insertError } = await supabase
+        .from("resources")
+        .insert({
+          title: uploadTitle.trim(),
+          description: uploadDesc.trim() || null,
+          course_id: uploadCourseId,
+          resource_type: uploadType as any,
+          file_url: urlData.publicUrl,
+          file_path: filePath,
+          uploaded_by: user.id,
+          class_tag_id: tagId,
+        } as any)
+        .select("*, courses(*)")
+        .single();
+      if (insertError) throw insertError;
+
+      if (newResource) {
+        const { data: prof } = await supabase.from("profiles").select("*").eq("user_id", user.id).single();
+        setResources((prev) => [{ ...newResource, profiles: prof } as ResourceWithRelations, ...prev]);
+      }
+
+      sonnerToast.success("Resource uploaded to class!");
+      setUploadOpen(false);
+      setUploadTitle("");
+      setUploadDesc("");
+      setUploadCourseId("");
+      setUploadCourse(null);
+      setUploadType("");
+      setUploadFile(null);
+    } catch (err: any) {
+      sonnerToast.error(err.message || "Upload failed");
+    }
+    setUploading(false);
+  };
+
 
   if (loading || checkingAccess || authLoading || adminLoading) {
     return (

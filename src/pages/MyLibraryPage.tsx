@@ -267,6 +267,25 @@ export default function MyLibraryPage() {
     const url = await getCachedFileUrl(resourceId);
     if (url) {
       window.open(url, "_blank");
+    } else {
+      toast.error("File not available offline");
+    }
+  };
+
+  const handleOpenOrNavigate = async (resourceId: string) => {
+    // Try to open from cache first (instant, works offline)
+    const url = await getCachedFileUrl(resourceId);
+    if (url) {
+      window.open(url, "_blank");
+    } else {
+      // Fallback: get public URL from storage
+      const resource = resources.find((r) => r.id === resourceId);
+      if (resource) {
+        const { data } = supabase.storage.from("resources").getPublicUrl(resource.file_path);
+        window.open(data.publicUrl, "_blank");
+      } else {
+        navigate(`/resource/${resourceId}`);
+      }
     }
   };
 

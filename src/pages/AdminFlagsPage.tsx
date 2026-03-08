@@ -172,6 +172,25 @@ export default function AdminFlagsPage() {
                   <Button size="sm" variant="ghost" onClick={() => handleAction(flag.id, "dismissed")}>
                     <XCircle className="mr-1.5 h-3 w-3" /> Dismiss
                   </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button size="sm" variant="destructive">
+                        <Trash2 className="mr-1.5 h-3 w-3" /> Delete Resource
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete this resource?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This will permanently delete "{flag.resources?.title}" and its file. This cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => handleDeleteResource(flag)}>Delete</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               </div>
             ))}

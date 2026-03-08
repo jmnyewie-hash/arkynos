@@ -13,6 +13,30 @@ export default function Navbar() {
   const location = useLocation();
   const navRef = useRef<HTMLElement>(null);
   const [canScroll, setCanScroll] = useState(false);
+  const [isCheckingForUpdates, setIsCheckingForUpdates] = useState(false);
+
+  const { updateServiceWorker } = useRegisterSW();
+
+  const handleManualUpdateCheck = async () => {
+    setIsCheckingForUpdates(true);
+    try {
+      // Force reload the page to check for updates
+      const registration = await navigator.serviceWorker.getRegistration();
+      if (registration) {
+        await registration.update();
+        console.log("Manual update check triggered");
+      }
+      // Alternative: force reload after a short delay
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    } catch (error) {
+      console.error("Error checking for updates:", error);
+      // Fallback: just reload the page
+      window.location.reload();
+    }
+    setIsCheckingForUpdates(false);
+  };
 
   const checkScroll = () => {
     const el = navRef.current;

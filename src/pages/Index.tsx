@@ -65,15 +65,8 @@ export default function Index() {
       <FoundingBanner />
       <div className="container max-w-2xl py-16">
         <div className="text-center animate-fade-in">
-          <svg viewBox="0 0 400 60" className="mx-auto w-[40rem] mb-1">
-            <defs>
-              <path id="curve" d="M 30,50 Q 200,0 370,50" fill="transparent" />
-            </defs>
-            <text className="fill-muted-foreground/90" style={{ fontSize: '16px', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', fontStyle: 'italic' }}>
-              <textPath href="#curve" startOffset="50%" textAnchor="middle">The Labyrinth Of Knowledge</textPath>
-            </text>
-          </svg>
-          <img src={arkynosLogo} alt="Arkynos" className="mx-auto mb-4 h-72" />
+          <img src={arkynosLogo} alt="Arkynos" className="mx-auto mb-2 h-72" />
+          <p className="text-sm font-medium tracking-[0.25em] uppercase text-muted-foreground/80 italic">The Labyrinth Of Knowledge</p>
           <p className="mt-3 text-lg text-muted-foreground">
             Find and share study resources for your courses
           </p>

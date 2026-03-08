@@ -46,6 +46,8 @@ export default function ResourcePage() {
   const [hiding, setHiding] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const { isAdmin } = useIsAdmin();
+  const { user } = useAuth();
+  const { profile } = useProfile();
 
   useEffect(() => {
     if (!id) return;

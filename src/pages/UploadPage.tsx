@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Upload } from "lucide-react";
 import CourseSearchSelect from "@/components/CourseSearchSelect";
+import ClassTagSelect from "@/components/ClassTagSelect";
 
 const ALLOWED_TYPES = [
   "application/pdf",

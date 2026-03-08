@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 import ResourceCard from "@/components/ResourceCard";
 import { useAuth } from "@/hooks/useAuth";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Button } from "@/components/ui/button";
 import { Lock, Loader2, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -24,6 +25,7 @@ export default function ClassTagPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
+  const { isAdmin, loading: adminLoading } = useIsAdmin();
   const { toast } = useToast();
 
   const [tag, setTag] = useState<ClassTag | null>(null);
@@ -34,9 +36,14 @@ export default function ClassTagPage() {
   const [paying, setPaying] = useState(false);
   const [verifying, setVerifying] = useState(false);
 
-  // Check access
+  // Check access — admins always have access
   useEffect(() => {
-    if (authLoading) return;
+    if (authLoading || adminLoading) return;
+    if (isAdmin) {
+      setHasAccess(true);
+      setCheckingAccess(false);
+      return;
+    }
     if (!user || !tagId) {
       setCheckingAccess(false);
       return;
@@ -54,7 +61,7 @@ export default function ClassTagPage() {
       setCheckingAccess(false);
     };
     checkAccess();
-  }, [user, tagId, authLoading]);
+  }, [user, tagId, authLoading, adminLoading, isAdmin]);
 
   // Verify payment on redirect back
   useEffect(() => {
@@ -178,7 +185,7 @@ export default function ClassTagPage() {
     }
   };
 
-  if (loading || checkingAccess || authLoading) {
+  if (loading || checkingAccess || authLoading || adminLoading) {
     return (
       <div className="container max-w-2xl py-10">
         <div className="h-8 w-48 animate-pulse rounded bg-muted" />

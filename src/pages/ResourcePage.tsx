@@ -165,6 +165,12 @@ export default function ResourcePage() {
                   {resource.courses.course_code} · {resource.courses.course_name}
                 </span>
               )}
+              {(resource as any).class_tag_id && (resource as any).class_tags && (
+                <a href={`/class/${(resource as any).class_tag_id}`} className="inline-flex items-center gap-1 text-sm text-primary hover:underline">
+                  <Tag className="h-3.5 w-3.5" />
+                  {(resource as any).class_tags.name}
+                </a>
+              )}
             </div>
           </div>
         </div>

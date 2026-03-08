@@ -199,7 +199,12 @@ export default function ResourcePage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="text-xs text-muted-foreground space-y-1">
-                {resource.profiles && <p>Uploaded by {resource.profiles.name}</p>}
+              {resource.profiles && (
+                  <p className="flex items-center gap-1.5">
+                    Uploaded by {resource.profiles.name}
+                    <FounderBadge tier={(resource.profiles as any).subscription_tier} />
+                  </p>
+                )}
                 <p>{resource.downloads} downloads</p>
               </div>
               <FlagResourceDialog resourceId={resource.id} />

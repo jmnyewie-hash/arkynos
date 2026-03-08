@@ -6,7 +6,7 @@ import ResourceCard from "@/components/ResourceCard";
 import FoundingBanner from "@/components/FoundingBanner";
 import { useRealtimeResources } from "@/hooks/useRealtimeResources";
 import arkynosLogo from "@/assets/arkynos-logo-full.png";
-import { Users, BookOpen, FolderOpen, Shield, Upload, Share2, ArrowUp } from "lucide-react";
+import { Users, BookOpen, FolderOpen, Shield, Upload, Share2, ArrowUp, Download } from "lucide-react";
 
 type ResourceWithRelations = Tables<"resources"> & {
   courses: Tables<"courses"> | null;
@@ -19,7 +19,28 @@ export default function Index() {
   const [userCount, setUserCount] = useState<number>(0);
   const [totalFiles, setTotalFiles] = useState<number>(0);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isInstalled, setIsInstalled] = useState(false);
   const logoRef = useRef<HTMLImageElement>(null);
+
+  // Detect if app is already installed (standalone mode)
+  useEffect(() => {
+    const mq = window.matchMedia("(display-mode: standalone)");
+    setIsInstalled(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsInstalled(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  // Capture the beforeinstallprompt event
+  useEffect(() => {
+    const handler = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener("beforeinstallprompt", handler);
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
 
   useEffect(() => {
     const el = logoRef.current;
@@ -168,6 +189,32 @@ export default function Index() {
             </div>
           )}
         </section>
+
+        {/* Install app prompt — only in browser, not installed */}
+        {!isInstalled && (
+          <div className="mt-14 animate-fade-in rounded-2xl border border-primary/20 bg-card p-5 text-center">
+            <Download className="mx-auto h-6 w-6 text-primary mb-2" />
+            <p className="text-sm font-semibold text-foreground">Install Arkynos on your device</p>
+            <p className="mt-1 text-xs text-muted-foreground">Get faster access, offline support, and a native app experience.</p>
+            {deferredPrompt ? (
+              <button
+                onClick={async () => {
+                  deferredPrompt.prompt();
+                  const { outcome } = await deferredPrompt.userChoice;
+                  if (outcome === "accepted") setIsInstalled(true);
+                  setDeferredPrompt(null);
+                }}
+                className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2 text-xs font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
+              >
+                <Download className="h-3.5 w-3.5" /> Install Now
+              </button>
+            ) : (
+              <p className="mt-3 text-xs text-muted-foreground italic">
+                On <span className="font-medium">iOS</span>: tap Share → "Add to Home Screen". On <span className="font-medium">desktop</span>: look for the install icon in your browser's address bar.
+              </p>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Scroll to top button */}

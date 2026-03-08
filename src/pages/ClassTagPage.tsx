@@ -355,15 +355,15 @@ export default function ClassTagPage() {
 
   return (
     <div className="container max-w-2xl py-10 animate-fade-in">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            {tag.is_preferred && <Star className="h-5 w-5 shrink-0 fill-accent text-accent" />}
-            <h1 className="font-heading text-3xl font-bold">{tag.name}</h1>
-          </div>
-          {tag.description && <p className="mt-1 text-muted-foreground">{tag.description}</p>}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          {tag.is_preferred && <Star className="h-5 w-5 shrink-0 fill-accent text-accent" />}
+          <h1 className="font-heading text-2xl sm:text-3xl font-bold break-words">{tag.name}</h1>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
+        {tag.description && (
+          <p className="text-sm text-muted-foreground leading-relaxed">{tag.description}</p>
+        )}
+        <div className="flex flex-wrap items-center gap-2">
           {isAdmin && (
             <>
               <Button
@@ -387,7 +387,7 @@ export default function ClassTagPage() {
               </Button>
             </>
           )}
-          {canUpload && hasAccess && (
+          {canUpload && (hasAccess || tag.is_free) && (
             <Button onClick={() => setUploadOpen(true)} size="sm">
               <Plus className="mr-1.5 h-4 w-4" />
               Add Resource

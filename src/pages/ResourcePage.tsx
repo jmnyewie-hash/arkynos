@@ -187,7 +187,7 @@ export default function ResourcePage() {
             </Button>
           </div>
           {isAdmin && (
-            <div className="flex items-center gap-2 border-t pt-3">
+            <div className="flex flex-wrap items-center gap-2 border-t pt-3">
               <Button
                 variant={resource.is_preferred ? "secondary" : "outline"}
                 size="sm"
@@ -196,6 +196,15 @@ export default function ResourcePage() {
               >
                 <Star className={`mr-1.5 h-4 w-4 ${resource.is_preferred ? "fill-accent text-accent" : ""}`} />
                 {resource.is_preferred ? "Unmark Preferred" : "Mark Preferred"}
+              </Button>
+              <Button
+                variant={isHidden ? "outline" : "secondary"}
+                size="sm"
+                onClick={handleToggleHidden}
+                disabled={hiding}
+              >
+                {isHidden ? <Eye className="mr-1.5 h-4 w-4" /> : <EyeOff className="mr-1.5 h-4 w-4" />}
+                {isHidden ? "Unhide" : "Hide"}
               </Button>
               <AlertDialog>
                 <AlertDialogTrigger asChild>

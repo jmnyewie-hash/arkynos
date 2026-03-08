@@ -13,6 +13,8 @@ import UploadPage from "./pages/UploadPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AdminFlagsPage from "./pages/AdminFlagsPage";
+import BrowseTagsPage from "./pages/BrowseTagsPage";
+import ClassTagPage from "./pages/ClassTagPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();

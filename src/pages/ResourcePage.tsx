@@ -39,6 +39,7 @@ export default function ResourcePage() {
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
   const [toggling, setToggling] = useState(false);
+  const [hiding, setHiding] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const { isAdmin } = useIsAdmin();
 

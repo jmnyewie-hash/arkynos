@@ -34,9 +34,11 @@ interface Program {
 
 export default function BrowseTagsPage() {
   const { user } = useAuth();
+  const { isAdmin } = useIsAdmin();
   const [tags, setTags] = useState<ClassTag[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [userClassCount, setUserClassCount] = useState(0);
 
   // Create dialog state
   const [open, setOpen] = useState(false);
@@ -45,6 +47,9 @@ export default function BrowseTagsPage() {
   const [className, setClassName] = useState("");
   const [classDesc, setClassDesc] = useState("");
   const [creating, setCreating] = useState(false);
+
+  const CLASS_LIMIT = 5;
+  const canCreateMore = isAdmin || userClassCount < CLASS_LIMIT;
 
   useEffect(() => {
     const fetchTags = async () => {

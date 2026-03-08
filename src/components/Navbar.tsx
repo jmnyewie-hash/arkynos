@@ -55,9 +55,11 @@ export default function Navbar() {
         </div>
         <div className="relative flex-1 min-w-0 ml-4">
           <nav ref={navRef} className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
-            <Button variant="ghost" size="sm" asChild className="shrink-0">
-              <Link to="/"><Home className="mr-1.5 h-4 w-4" />Home</Link>
-            </Button>
+            {!isHome && (
+              <Button variant="ghost" size="sm" asChild className="shrink-0">
+                <Link to="/"><Home className="mr-1.5 h-4 w-4" />Home</Link>
+              </Button>
+            )}
             <Button variant="ghost" size="sm" asChild className="shrink-0">
               <Link to="/classes"><Tag className="mr-1.5 h-4 w-4" />Classes</Link>
             </Button>

@@ -83,7 +83,7 @@ export default function UploadPage() {
         title: title.trim(),
         description: description.trim() || null,
         course_id: courseId,
-        resource_type: resourceType as "past_question" | "lecture_notes" | "textbook" | "lab_manual",
+        resource_type: resourceType as any,
         file_url: urlData.publicUrl,
         file_path: filePath,
         uploaded_by: user.id,

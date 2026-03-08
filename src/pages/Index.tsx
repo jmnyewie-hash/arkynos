@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 import CourseSearchBar from "@/components/CourseSearchBar";
 import ResourceCard from "@/components/ResourceCard";
-import arkynosLogo from "@/assets/arkynos-logo.png";
+import arkynosLogo from "@/assets/arkynos-logo-full.png";
 
 type ResourceWithRelations = Tables<"resources"> & {
   courses: Tables<"courses"> | null;

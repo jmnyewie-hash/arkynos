@@ -35,29 +35,18 @@ export default function CourseSearchBar({ className = "" }: { className?: string
     }
 
     const timeout = setTimeout(async () => {
-      // Fetch courses that have at least one visible resource, matching the query
-      const { data } = await supabase
-        .from("resources")
-        .select("courses!inner(course_code, course_name)")
-        .eq("is_hidden", false)
-        .or(
-          `courses.course_code.ilike.%${trimmed}%,courses.course_name.ilike.%${trimmed}%`
-        );
+      // Search courses directly by code or name
+      const { data: courses } = await supabase
+        .from("courses")
+        .select("course_code, course_name")
+        .or(`course_code.ilike.%${trimmed}%,course_name.ilike.%${trimmed}%`)
+        .order("course_code")
+        .limit(8);
 
-      if (data) {
-        const seen = new Set<string>();
-        const unique: Suggestion[] = [];
-        for (const r of data) {
-          const c = r.courses as unknown as Suggestion;
-          if (c && !seen.has(c.course_code)) {
-            seen.add(c.course_code);
-            unique.push(c);
-          }
-        }
-        unique.sort((a, b) => a.course_code.localeCompare(b.course_code));
-        setSuggestions(unique.slice(0, 6));
+      if (courses) {
+        setSuggestions(courses);
       }
-    }, 250);
+    }, 200);
 
     return () => clearTimeout(timeout);
   }, [query]);

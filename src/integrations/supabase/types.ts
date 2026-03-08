@@ -14,6 +14,38 @@ export type Database = {
   }
   public: {
     Tables: {
+      class_access: {
+        Row: {
+          class_tag_id: string
+          created_at: string
+          id: string
+          payment_reference: string
+          user_id: string
+        }
+        Insert: {
+          class_tag_id: string
+          created_at?: string
+          id?: string
+          payment_reference: string
+          user_id: string
+        }
+        Update: {
+          class_tag_id?: string
+          created_at?: string
+          id?: string
+          payment_reference?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "class_access_class_tag_id_fkey"
+            columns: ["class_tag_id"]
+            isOneToOne: false
+            referencedRelation: "class_tags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       class_tags: {
         Row: {
           created_at: string

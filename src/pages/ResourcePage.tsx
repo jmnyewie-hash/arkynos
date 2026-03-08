@@ -74,7 +74,9 @@ export default function ResourcePage() {
   const handleDownload = async () => {
     if (!resource) return;
     if (!user) {
-      toast.error("Please sign in to download resources.");
+      toast.error("You need an account to download resources. Register or sign in to continue.", {
+        action: { label: "Register", onClick: () => navigate("/register") },
+      });
       return;
     }
     setDownloading(true);

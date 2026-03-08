@@ -195,24 +195,22 @@ export default function ResourcePage() {
           <p className="mt-5 text-sm text-muted-foreground leading-relaxed">{resource.description}</p>
         )}
 
-        <div className="mt-6 border-t pt-4 space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="text-xs text-muted-foreground space-y-1">
-              {resource.profiles && (
-                  <p className="flex items-center gap-1.5">
-                    Uploaded by {resource.profiles.name}
-                    <FounderBadge tier={(resource.profiles as any).subscription_tier} />
-                  </p>
-                )}
-                <p>{resource.downloads} downloads</p>
-              </div>
-              <FlagResourceDialog resourceId={resource.id} />
-            </div>
+        <div className="mt-6 border-t pt-4 space-y-4">
+          <div className="text-xs text-muted-foreground space-y-1">
+            {resource.profiles && (
+              <p className="flex items-center gap-1.5">
+                Uploaded by {resource.profiles.name}
+                <FounderBadge tier={(resource.profiles as any).subscription_tier} />
+              </p>
+            )}
+            <p>{resource.downloads} downloads</p>
+          </div>
+          <div className="flex items-center gap-2">
             <Button onClick={handleDownload} disabled={downloading} size="sm">
               <Download className="mr-2 h-4 w-4" />
               {downloading ? "Downloading..." : "Download"}
             </Button>
+            <FlagResourceDialog resourceId={resource.id} />
           </div>
           {isAdmin && (
             <div className="flex flex-wrap items-center gap-2 border-t pt-3">

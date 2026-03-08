@@ -19,7 +19,28 @@ export default function Index() {
   const [userCount, setUserCount] = useState<number>(0);
   const [totalFiles, setTotalFiles] = useState<number>(0);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isInstalled, setIsInstalled] = useState(false);
   const logoRef = useRef<HTMLImageElement>(null);
+
+  // Detect if app is already installed (standalone mode)
+  useEffect(() => {
+    const mq = window.matchMedia("(display-mode: standalone)");
+    setIsInstalled(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsInstalled(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  // Capture the beforeinstallprompt event
+  useEffect(() => {
+    const handler = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener("beforeinstallprompt", handler);
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
 
   useEffect(() => {
     const el = logoRef.current;

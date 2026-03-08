@@ -3,8 +3,7 @@ import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 import ResourceCard from "@/components/ResourceCard";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TrendingUp, Star, Clock } from "lucide-react";
+import { TrendingUp, Star, Clock, SlidersHorizontal, FolderOpen } from "lucide-react";
 
 type ResourceWithRelations = Tables<"resources"> & {
   courses: Tables<"courses"> | null;
@@ -12,6 +11,7 @@ type ResourceWithRelations = Tables<"resources"> & {
 };
 
 const typeLabels: Record<string, string> = {
+  all: "All Types",
   past_question: "Past Questions",
   lecture_notes: "Lecture Notes",
   textbook: "Textbooks",
@@ -41,12 +41,19 @@ function sortResources(items: ResourceWithRelations[], mode: SortMode): Resource
   }
 }
 
+const sortOptions: { value: SortMode; label: string; icon: typeof Star }[] = [
+  { value: "preferred", label: "Preferred", icon: Star },
+  { value: "downloads", label: "Most Downloaded", icon: TrendingUp },
+  { value: "recent", label: "Most Recent", icon: Clock },
+];
+
 export default function CoursePage() {
   const { courseCode } = useParams<{ courseCode: string }>();
   const [course, setCourse] = useState<Tables<"courses"> | null>(null);
   const [resources, setResources] = useState<ResourceWithRelations[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortMode, setSortMode] = useState<SortMode>("preferred");
+  const [typeFilter, setTypeFilter] = useState<string>("all");
 
   useEffect(() => {
     if (!courseCode) return;
@@ -91,11 +98,24 @@ export default function CoursePage() {
   if (loading) return <div className="container max-w-2xl py-10"><div className="h-8 w-48 animate-pulse rounded bg-muted" /></div>;
   if (!course) return <div className="container max-w-2xl py-10"><p className="text-muted-foreground">Course not found.</p></div>;
 
-  const grouped = typeOrder.reduce((acc, type) => {
-    const items = resources.filter((r) => r.resource_type === type);
-    if (items.length > 0) acc[type] = sortResources(items, sortMode);
-    return acc;
-  }, {} as Record<string, ResourceWithRelations[]>);
+  // Available types in this course's resources
+  const availableTypes = typeOrder.filter(t => resources.some(r => r.resource_type === t));
+
+  // Filter then sort
+  const filtered = typeFilter === "all"
+    ? resources
+    : resources.filter(r => r.resource_type === typeFilter);
+  const sorted = sortResources(filtered, sortMode);
+
+  // Group by type for display (only when showing all types)
+  const showGrouped = typeFilter === "all";
+  const grouped = showGrouped
+    ? typeOrder.reduce((acc, type) => {
+        const items = sorted.filter(r => r.resource_type === type);
+        if (items.length > 0) acc[type] = items;
+        return acc;
+      }, {} as Record<string, ResourceWithRelations[]>)
+    : {};
 
   return (
     <div className="container max-w-2xl py-10 animate-fade-in">
@@ -104,33 +124,84 @@ export default function CoursePage() {
         <p className="mt-1 text-muted-foreground">{course.course_name} · {course.department} · {course.university}</p>
       </div>
 
-      {Object.keys(grouped).length === 0 ? (
+      {resources.length === 0 ? (
         <p className="mt-8 text-sm text-muted-foreground">No resources uploaded yet for this course.</p>
       ) : (
         <>
-          <Tabs value={sortMode} onValueChange={(v) => setSortMode(v as SortMode)} className="mt-6">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="recent" className="text-xs gap-1.5">
-                <Clock className="h-3.5 w-3.5" />Most Recent
-              </TabsTrigger>
-              <TabsTrigger value="downloads" className="text-xs gap-1.5">
-                <TrendingUp className="h-3.5 w-3.5" />Most Downloaded
-              </TabsTrigger>
-              <TabsTrigger value="preferred" className="text-xs gap-1.5">
-                <Star className="h-3.5 w-3.5" />Preferred
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+          {/* Filter rows */}
+          <div className="mt-6 space-y-3">
+            {/* Sort filter */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground shrink-0">
+                <SlidersHorizontal className="h-3.5 w-3.5" /> Sort
+              </span>
+              {sortOptions.map((opt) => (
+                <button
+                  key={opt.value}
+                  onClick={() => setSortMode(opt.value)}
+                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
+                    sortMode === opt.value
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                  }`}
+                >
+                  <opt.icon className="h-3 w-3" />
+                  {opt.label}
+                </button>
+              ))}
+            </div>
 
+            {/* Type filter */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground shrink-0">
+                <FolderOpen className="h-3.5 w-3.5" /> Type
+              </span>
+              <button
+                onClick={() => setTypeFilter("all")}
+                className={`inline-flex items-center rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
+                  typeFilter === "all"
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                }`}
+              >
+                All
+              </button>
+              {availableTypes.map((type) => (
+                <button
+                  key={type}
+                  onClick={() => setTypeFilter(type)}
+                  className={`inline-flex items-center rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
+                    typeFilter === type
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                  }`}
+                >
+                  {typeLabels[type]}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Results */}
           <div className="mt-6 space-y-8">
-            {Object.entries(grouped).map(([type, items]) => (
-              <section key={type}>
-                <h2 className="font-heading text-base font-semibold text-foreground mb-3">{typeLabels[type]}</h2>
-                <div className="space-y-2">
-                  {items.map((r) => <ResourceCard key={r.id} resource={r} />)}
-                </div>
-              </section>
-            ))}
+            {showGrouped ? (
+              Object.entries(grouped).map(([type, items]) => (
+                <section key={type}>
+                  <h2 className="font-heading text-base font-semibold text-foreground mb-3">{typeLabels[type]}</h2>
+                  <div className="space-y-2">
+                    {items.map((r) => <ResourceCard key={r.id} resource={r} />)}
+                  </div>
+                </section>
+              ))
+            ) : (
+              <div className="space-y-2">
+                {sorted.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">No resources of this type.</p>
+                ) : (
+                  sorted.map((r) => <ResourceCard key={r.id} resource={r} />)
+                )}
+              </div>
+            )}
           </div>
         </>
       )}

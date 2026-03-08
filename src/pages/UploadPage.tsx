@@ -116,6 +116,11 @@ export default function UploadPage() {
         </div>
 
         <div className="space-y-2">
+          <Label htmlFor="author">Author <span className="text-muted-foreground font-normal">(optional)</span></Label>
+          <Input id="author" value={author} onChange={(e) => setAuthor(e.target.value)} placeholder="e.g. Prof. Adeyemi, John Smith" maxLength={150} />
+        </div>
+
+        <div className="space-y-2">
           <Label>Course *</Label>
           <CourseSearchSelect
             value={courseId}

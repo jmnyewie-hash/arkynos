@@ -142,7 +142,7 @@ export default function CourseSearchBar({ className = "", initialQuery = "" }: {
           <Input
             ref={inputRef}
             type="text"
-            placeholder="Course name or code..."
+            placeholder="Search via course name or code..."
             autoComplete="off"
             value={query}
             onChange={(e) => {

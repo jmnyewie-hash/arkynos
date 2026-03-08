@@ -9,9 +9,8 @@ type Suggestion = {
   course_name: string;
 };
 
-export default function CourseSearchBar({ className = "" }: { className?: string }) {
-  const [searchParams] = useSearchParams();
-  const [query, setQuery] = useState(searchParams.get("q") || "");
+export default function CourseSearchBar({ className = "", initialQuery = "" }: { className?: string; initialQuery?: string }) {
+  const [query, setQuery] = useState(initialQuery);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);

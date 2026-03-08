@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 import ResourceCard from "@/components/ResourceCard";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TrendingUp, Star, Clock } from "lucide-react";
 
 type ResourceWithRelations = Tables<"resources"> & {
   courses: Tables<"courses"> | null;
@@ -20,11 +22,27 @@ const typeLabels: Record<string, string> = {
 
 const typeOrder = ["past_question", "lecture_notes", "textbook", "lab_manual", "recommended_books", "solution_manual"];
 
+type SortMode = "recent" | "downloads" | "preferred";
+
+function sortResources(items: ResourceWithRelations[], mode: SortMode): ResourceWithRelations[] {
+  const copy = [...items];
+  switch (mode) {
+    case "downloads":
+      return copy.sort((a, b) => b.downloads - a.downloads);
+    case "preferred":
+      return copy.sort((a, b) => (b.is_preferred ? 1 : 0) - (a.is_preferred ? 1 : 0) || new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    case "recent":
+    default:
+      return copy.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  }
+}
+
 export default function CoursePage() {
   const { courseCode } = useParams<{ courseCode: string }>();
   const [course, setCourse] = useState<Tables<"courses"> | null>(null);
   const [resources, setResources] = useState<ResourceWithRelations[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sortMode, setSortMode] = useState<SortMode>("recent");
 
   useEffect(() => {
     if (!courseCode) return;
@@ -71,7 +89,7 @@ export default function CoursePage() {
 
   const grouped = typeOrder.reduce((acc, type) => {
     const items = resources.filter((r) => r.resource_type === type);
-    if (items.length > 0) acc[type] = items;
+    if (items.length > 0) acc[type] = sortResources(items, sortMode);
     return acc;
   }, {} as Record<string, ResourceWithRelations[]>);
 
@@ -85,16 +103,32 @@ export default function CoursePage() {
       {Object.keys(grouped).length === 0 ? (
         <p className="mt-8 text-sm text-muted-foreground">No resources uploaded yet for this course.</p>
       ) : (
-        <div className="mt-8 space-y-8">
-          {Object.entries(grouped).map(([type, items]) => (
-            <section key={type}>
-              <h2 className="font-heading text-base font-semibold text-foreground mb-3">{typeLabels[type]}</h2>
-              <div className="space-y-2">
-                {items.map((r) => <ResourceCard key={r.id} resource={r} />)}
-              </div>
-            </section>
-          ))}
-        </div>
+        <>
+          <Tabs value={sortMode} onValueChange={(v) => setSortMode(v as SortMode)} className="mt-6">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="recent" className="text-xs gap-1.5">
+                <Clock className="h-3.5 w-3.5" />Most Recent
+              </TabsTrigger>
+              <TabsTrigger value="downloads" className="text-xs gap-1.5">
+                <TrendingUp className="h-3.5 w-3.5" />Most Downloaded
+              </TabsTrigger>
+              <TabsTrigger value="preferred" className="text-xs gap-1.5">
+                <Star className="h-3.5 w-3.5" />Preferred
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+
+          <div className="mt-6 space-y-8">
+            {Object.entries(grouped).map(([type, items]) => (
+              <section key={type}>
+                <h2 className="font-heading text-base font-semibold text-foreground mb-3">{typeLabels[type]}</h2>
+                <div className="space-y-2">
+                  {items.map((r) => <ResourceCard key={r.id} resource={r} />)}
+                </div>
+              </section>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );

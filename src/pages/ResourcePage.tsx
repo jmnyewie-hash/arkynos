@@ -147,53 +147,53 @@ export default function ResourcePage() {
           <p className="mt-5 text-sm text-muted-foreground leading-relaxed">{resource.description}</p>
         )}
 
-        <div className="mt-6 flex items-center justify-between border-t pt-4">
-          <div className="flex items-center gap-3">
-            <div className="text-xs text-muted-foreground space-y-1">
-              {resource.profiles && <p>Uploaded by {resource.profiles.name}</p>}
-              <p>{resource.downloads} downloads</p>
+        <div className="mt-6 border-t pt-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="text-xs text-muted-foreground space-y-1">
+                {resource.profiles && <p>Uploaded by {resource.profiles.name}</p>}
+                <p>{resource.downloads} downloads</p>
+              </div>
+              <FlagResourceDialog resourceId={resource.id} />
             </div>
-            <FlagResourceDialog resourceId={resource.id} />
-          </div>
-          <div className="flex items-center gap-2">
-            {isAdmin && (
-              <>
-                <Button
-                  variant={resource.is_preferred ? "secondary" : "outline"}
-                  size="sm"
-                  onClick={handleTogglePreferred}
-                  disabled={toggling}
-                >
-                  <Star className={`mr-1.5 h-4 w-4 ${resource.is_preferred ? "fill-accent text-accent" : ""}`} />
-                  {resource.is_preferred ? "Unmark Preferred" : "Mark Preferred"}
-                </Button>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="destructive" size="sm" disabled={deleting}>
-                      <Trash2 className="mr-1.5 h-4 w-4" />
-                      {deleting ? "Deleting..." : "Delete"}
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Delete this resource?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This will permanently delete "{resource.title}" and its file. This action cannot be undone.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </>
-            )}
-            <Button onClick={handleDownload} disabled={downloading}>
+            <Button onClick={handleDownload} disabled={downloading} size="sm">
               <Download className="mr-2 h-4 w-4" />
               {downloading ? "Downloading..." : "Download"}
             </Button>
           </div>
+          {isAdmin && (
+            <div className="flex items-center gap-2 border-t pt-3">
+              <Button
+                variant={resource.is_preferred ? "secondary" : "outline"}
+                size="sm"
+                onClick={handleTogglePreferred}
+                disabled={toggling}
+              >
+                <Star className={`mr-1.5 h-4 w-4 ${resource.is_preferred ? "fill-accent text-accent" : ""}`} />
+                {resource.is_preferred ? "Unmark Preferred" : "Mark Preferred"}
+              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive" size="sm" disabled={deleting}>
+                    <Trash2 className="mr-1.5 h-4 w-4" />
+                    {deleting ? "Deleting..." : "Delete"}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Delete this resource?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This will permanently delete "{resource.title}" and its file. This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -51,8 +51,17 @@ export default function Index() {
       setUserCount(count ?? 0);
     };
 
+    const fetchFileCount = async () => {
+      const { count } = await supabase
+        .from("resources")
+        .select("id", { count: "exact", head: true })
+        .eq("is_hidden", false);
+      setTotalFiles(count ?? 0);
+    };
+
     fetchResources();
     fetchUserCount();
+    fetchFileCount();
   }, []);
 
   const features = [

@@ -135,6 +135,7 @@ export default function BrowseTagsPage() {
     } else if (data) {
       const newTag = { ...(data as any), resource_count: 0 } as ClassTag;
       setTags((prev) => [...prev, newTag].sort((a, b) => a.name.localeCompare(b.name)));
+      setUserClassCount((prev) => prev + 1);
       toast.success("Class created!");
       setOpen(false);
       setClassName("");

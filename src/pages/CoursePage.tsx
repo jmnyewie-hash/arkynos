@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 import ResourceCard from "@/components/ResourceCard";
+import { useRealtimeResources } from "@/hooks/useRealtimeResources";
 import { TrendingUp, Star, Clock, SlidersHorizontal, FolderOpen } from "lucide-react";
 
 type ResourceWithRelations = Tables<"resources"> & {

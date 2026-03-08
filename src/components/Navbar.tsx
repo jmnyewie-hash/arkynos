@@ -31,47 +31,56 @@ export default function Navbar() {
             <img src="/favicon.png" alt="Arkynos" className="h-8 w-8" />
           </Link>
         </div>
-        <nav className="flex items-center gap-1 overflow-x-auto scrollbar-hide ml-4">
-          <Button variant="ghost" size="sm" asChild className="shrink-0">
-            <Link to="/"><Home className="mr-1.5 h-4 w-4" />Home</Link>
-          </Button>
-          <Button variant="ghost" size="sm" asChild className="shrink-0">
-            <Link to="/classes"><Tag className="mr-1.5 h-4 w-4" />Classes</Link>
-          </Button>
-          {user ? (
-            <>
-              {isAdmin && (
-                <>
-                  <Button variant="ghost" size="sm" asChild className="shrink-0">
-                    <Link to="/admin/flags"><Flag className="mr-1.5 h-4 w-4" />Flags</Link>
-                  </Button>
-                  <Button variant="ghost" size="sm" asChild className="shrink-0">
-                    <Link to="/admin/dashboard"><BarChart3 className="mr-1.5 h-4 w-4" />Stats</Link>
-                  </Button>
-                  <Button variant="ghost" size="sm" asChild className="shrink-0">
-                    <Link to="/admin/messages"><MessageSquare className="mr-1.5 h-4 w-4" />Messages</Link>
-                  </Button>
-                </>
-              )}
-              <Button variant="ghost" size="sm" asChild className="shrink-0">
-                <Link to="/contact"><MessageSquare className="mr-1.5 h-4 w-4" />Contact</Link>
-              </Button>
-              <Button variant="ghost" size="sm" asChild className="shrink-0">
-                <Link to="/upload"><Upload className="mr-1.5 h-4 w-4" />Upload</Link>
-              </Button>
-              <Button variant="ghost" size="sm" asChild className="shrink-0">
-                <Link to="/upgrade"><Crown className="mr-1.5 h-4 w-4" />Upgrade</Link>
-              </Button>
-              <Button variant="ghost" size="sm" onClick={handleSignOut} className="shrink-0">
-                <LogOut className="mr-1.5 h-4 w-4" />Sign Out
-              </Button>
-            </>
-          ) : (
-            <Button size="sm" asChild className="shrink-0">
-              <Link to="/login">Sign In</Link>
+        <div className="relative flex-1 min-w-0 ml-4">
+          <nav ref={navRef} className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
+            <Button variant="ghost" size="sm" asChild className="shrink-0">
+              <Link to="/"><Home className="mr-1.5 h-4 w-4" />Home</Link>
             </Button>
+            <Button variant="ghost" size="sm" asChild className="shrink-0">
+              <Link to="/classes"><Tag className="mr-1.5 h-4 w-4" />Classes</Link>
+            </Button>
+            {user ? (
+              <>
+                {isAdmin && (
+                  <>
+                    <Button variant="ghost" size="sm" asChild className="shrink-0">
+                      <Link to="/admin/flags"><Flag className="mr-1.5 h-4 w-4" />Flags</Link>
+                    </Button>
+                    <Button variant="ghost" size="sm" asChild className="shrink-0">
+                      <Link to="/admin/dashboard"><BarChart3 className="mr-1.5 h-4 w-4" />Stats</Link>
+                    </Button>
+                    <Button variant="ghost" size="sm" asChild className="shrink-0">
+                      <Link to="/admin/messages"><MessageSquare className="mr-1.5 h-4 w-4" />Messages</Link>
+                    </Button>
+                  </>
+                )}
+                <Button variant="ghost" size="sm" asChild className="shrink-0">
+                  <Link to="/contact"><MessageSquare className="mr-1.5 h-4 w-4" />Contact</Link>
+                </Button>
+                <Button variant="ghost" size="sm" asChild className="shrink-0">
+                  <Link to="/upload"><Upload className="mr-1.5 h-4 w-4" />Upload</Link>
+                </Button>
+                <Button variant="ghost" size="sm" asChild className="shrink-0">
+                  <Link to="/upgrade"><Crown className="mr-1.5 h-4 w-4" />Upgrade</Link>
+                </Button>
+                <Button variant="ghost" size="sm" onClick={handleSignOut} className="shrink-0">
+                  <LogOut className="mr-1.5 h-4 w-4" />Sign Out
+                </Button>
+              </>
+            ) : (
+              <Button size="sm" asChild className="shrink-0">
+                <Link to="/login">Sign In</Link>
+              </Button>
+            )}
+          </nav>
+          {canScroll && (
+            <div className="absolute right-0 top-0 bottom-0 flex items-center pointer-events-none">
+              <div className="bg-gradient-to-l from-card/80 via-card/80 to-transparent pl-6 pr-1 flex items-center animate-pulse">
+                <ChevronRight className="h-4 w-4 text-muted-foreground" />
+              </div>
+            </div>
           )}
-        </nav>
+        </div>
       </div>
     </header>
   );

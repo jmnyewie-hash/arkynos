@@ -43,6 +43,7 @@ export default function CoursePage() {
         .from("resources")
         .select("*, courses(*)")
         .eq("course_id", courseData.id)
+        .eq("is_hidden", false)
         .order("created_at", { ascending: false });
 
       if (resourcesData) {

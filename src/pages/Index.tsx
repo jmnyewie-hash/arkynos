@@ -19,6 +19,7 @@ export default function Index() {
       const { data: resourcesData } = await supabase
         .from("resources")
         .select("*, courses(*)")
+        .eq("is_hidden", false)
         .order("created_at", { ascending: false })
         .limit(10);
 

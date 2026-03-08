@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,9 +9,8 @@ type Suggestion = {
   course_name: string;
 };
 
-export default function CourseSearchBar({ className = "" }: { className?: string }) {
-  const [searchParams] = useSearchParams();
-  const [query, setQuery] = useState(searchParams.get("q") || "");
+export default function CourseSearchBar({ className = "", initialQuery = "" }: { className?: string; initialQuery?: string }) {
+  const [query, setQuery] = useState(initialQuery);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);

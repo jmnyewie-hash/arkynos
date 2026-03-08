@@ -27,7 +27,7 @@ export default function SearchPage() {
 
   return (
     <div className="container max-w-2xl py-10">
-      <CourseSearchBar />
+      <CourseSearchBar initialQuery={query} />
       <div className="mt-8">
         <h2 className="font-heading text-lg font-semibold">
           {query ? `Results for "${query}"` : "Search for a course"}

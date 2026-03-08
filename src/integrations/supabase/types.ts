@@ -52,6 +52,7 @@ export type Database = {
           created_by: string
           description: string | null
           id: string
+          is_preferred: boolean
           name: string
         }
         Insert: {
@@ -59,6 +60,7 @@ export type Database = {
           created_by: string
           description?: string | null
           id?: string
+          is_preferred?: boolean
           name: string
         }
         Update: {
@@ -66,6 +68,7 @@ export type Database = {
           created_by?: string
           description?: string | null
           id?: string
+          is_preferred?: boolean
           name?: string
         }
         Relationships: []

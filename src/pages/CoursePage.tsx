@@ -28,20 +28,35 @@ export default function CoursePage() {
     if (!courseCode) return;
     const decoded = decodeURIComponent(courseCode);
 
-    supabase
-      .from("courses")
-      .select("*")
-      .eq("course_code", decoded)
-      .single()
-      .then(({ data: courseData }) => {
-        setCourse(courseData);
-        if (!courseData) { setLoading(false); return; }
-        supabase
-          .from("resources")
-          .select("*, courses(*), profiles!resources_uploaded_by_fkey(*)")
-          .eq("course_id", courseData.id)
-          .order("created_at", { ascending: false })
-          .then(({ data }) => {
+    const fetchData = async () => {
+      const { data: courseData } = await supabase
+        .from("courses")
+        .select("*")
+        .eq("course_code", decoded)
+        .single();
+
+      setCourse(courseData);
+      if (!courseData) { setLoading(false); return; }
+
+      const { data: resourcesData } = await supabase
+        .from("resources")
+        .select("*, courses(*)")
+        .eq("course_id", courseData.id)
+        .order("created_at", { ascending: false });
+
+      if (resourcesData) {
+        const userIds = [...new Set(resourcesData.map(r => r.uploaded_by))];
+        const { data: profilesData } = await supabase
+          .from("profiles")
+          .select("*")
+          .in("user_id", userIds);
+
+        const profilesMap = new Map((profilesData ?? []).map(p => [p.user_id, p]));
+        const merged = resourcesData.map(r => ({
+          ...r,
+          profiles: profilesMap.get(r.uploaded_by) ?? null,
+        }));
+        setResources(merged as ResourceWithRelations[]);
             setResources((data as ResourceWithRelations[]) ?? []);
             setLoading(false);
           });

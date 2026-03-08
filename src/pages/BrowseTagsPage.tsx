@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -33,9 +34,11 @@ interface Program {
 
 export default function BrowseTagsPage() {
   const { user } = useAuth();
+  const { isAdmin } = useIsAdmin();
   const [tags, setTags] = useState<ClassTag[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [userClassCount, setUserClassCount] = useState(0);
 
   // Create dialog state
   const [open, setOpen] = useState(false);
@@ -44,6 +47,9 @@ export default function BrowseTagsPage() {
   const [className, setClassName] = useState("");
   const [classDesc, setClassDesc] = useState("");
   const [creating, setCreating] = useState(false);
+
+  const CLASS_LIMIT = 5;
+  const canCreateMore = isAdmin || userClassCount < CLASS_LIMIT;
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -72,9 +78,18 @@ export default function BrowseTagsPage() {
         );
       }
       setLoading(false);
+
+      // Count user's classes
+      if (user) {
+        const { count } = await supabase
+          .from("class_tags")
+          .select("id", { count: "exact", head: true })
+          .eq("created_by", user.id);
+        setUserClassCount(count ?? 0);
+      }
     };
     fetchTags();
-  }, []);
+  }, [user]);
 
   // Fetch programs when dialog opens
   useEffect(() => {
@@ -88,6 +103,10 @@ export default function BrowseTagsPage() {
 
   const handleCreate = async () => {
     if (!user || !className.trim()) return;
+    if (!canCreateMore) {
+      toast.error(`You can only create up to ${CLASS_LIMIT} classes.`);
+      return;
+    }
     setCreating(true);
 
     const selectedProgram = programs.find((p) => p.id === programId);
@@ -116,6 +135,7 @@ export default function BrowseTagsPage() {
     } else if (data) {
       const newTag = { ...(data as any), resource_count: 0 } as ClassTag;
       setTags((prev) => [...prev, newTag].sort((a, b) => a.name.localeCompare(b.name)));
+      setUserClassCount((prev) => prev + 1);
       toast.success("Class created!");
       setOpen(false);
       setClassName("");
@@ -141,10 +161,17 @@ export default function BrowseTagsPage() {
           </p>
         </div>
         {user && (
-          <Button onClick={() => setOpen(true)} size="sm">
-            <Plus className="mr-1.5 h-4 w-4" />
-            New Class
-          </Button>
+          <div className="flex flex-col items-end gap-1">
+            <Button onClick={() => setOpen(true)} size="sm" disabled={!canCreateMore}>
+              <Plus className="mr-1.5 h-4 w-4" />
+              New Class
+            </Button>
+            {!isAdmin && (
+              <span className="text-xs text-muted-foreground">
+                {userClassCount}/{CLASS_LIMIT} classes used
+              </span>
+            )}
+          </div>
         )}
       </div>
 

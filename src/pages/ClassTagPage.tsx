@@ -6,9 +6,21 @@ import ResourceCard from "@/components/ResourceCard";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Button } from "@/components/ui/button";
-import { Lock, Loader2, CheckCircle, Download, Wifi, WifiOff } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Lock, Loader2, CheckCircle, Download, Upload, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner";
+import CourseSearchSelect from "@/components/CourseSearchSelect";
 
 type ResourceWithRelations = Tables<"resources"> & {
   courses: Tables<"courses"> | null;
@@ -19,6 +31,7 @@ interface ClassTag {
   id: string;
   name: string;
   description: string | null;
+  created_by: string;
 }
 
 export default function ClassTagPage() {
@@ -37,6 +50,33 @@ export default function ClassTagPage() {
   const [paying, setPaying] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [downloadingAll, setDownloadingAll] = useState(false);
+
+  // Upload dialog state
+  const [uploadOpen, setUploadOpen] = useState(false);
+  const [uploadTitle, setUploadTitle] = useState("");
+  const [uploadDesc, setUploadDesc] = useState("");
+  const [uploadCourseId, setUploadCourseId] = useState("");
+  const [uploadCourse, setUploadCourse] = useState<Tables<"courses"> | null>(null);
+  const [uploadType, setUploadType] = useState("");
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const ALLOWED_TYPES = [
+    "application/pdf",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  ];
+  const resourceTypes = [
+    { value: "past_question", label: "Past Question" },
+    { value: "lecture_notes", label: "Lecture Notes" },
+    { value: "textbook", label: "Textbook" },
+    { value: "lab_manual", label: "Lab Manual" },
+    { value: "recommended_books", label: "Recommended Book" },
+    { value: "solution_manual", label: "Solution Manual" },
+  ];
+
+  const isCreator = user && tag?.created_by === user.id;
+  const canUpload = isCreator || isAdmin;
 
   // Check access — admins always have access
   useEffect(() => {
@@ -214,6 +254,52 @@ export default function ClassTagPage() {
     setDownloadingAll(false);
   };
 
+  const handleUploadToClass = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user || !uploadFile || !uploadCourseId || !uploadType || !uploadTitle.trim() || !tagId) return;
+    setUploading(true);
+    try {
+      const ext = uploadFile.name.split(".").pop();
+      const filePath = `${user.id}/${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage.from("resources").upload(filePath, uploadFile);
+      if (upErr) throw upErr;
+
+      const { data: urlData } = supabase.storage.from("resources").getPublicUrl(filePath);
+      const { data: newResource, error: insertError } = await supabase
+        .from("resources")
+        .insert({
+          title: uploadTitle.trim(),
+          description: uploadDesc.trim() || null,
+          course_id: uploadCourseId,
+          resource_type: uploadType as any,
+          file_url: urlData.publicUrl,
+          file_path: filePath,
+          uploaded_by: user.id,
+          class_tag_id: tagId,
+        } as any)
+        .select("*, courses(*)")
+        .single();
+      if (insertError) throw insertError;
+
+      if (newResource) {
+        const { data: prof } = await supabase.from("profiles").select("*").eq("user_id", user.id).single();
+        setResources((prev) => [{ ...newResource, profiles: prof } as ResourceWithRelations, ...prev]);
+      }
+
+      sonnerToast.success("Resource uploaded to class!");
+      setUploadOpen(false);
+      setUploadTitle("");
+      setUploadDesc("");
+      setUploadCourseId("");
+      setUploadCourse(null);
+      setUploadType("");
+      setUploadFile(null);
+    } catch (err: any) {
+      sonnerToast.error(err.message || "Upload failed");
+    }
+    setUploading(false);
+  };
+
 
   if (loading || checkingAccess || authLoading || adminLoading) {
     return (
@@ -235,9 +321,17 @@ export default function ClassTagPage() {
 
   return (
     <div className="container max-w-2xl py-10 animate-fade-in">
-      <div>
-        <h1 className="font-heading text-3xl font-bold">{tag.name}</h1>
-        {tag.description && <p className="mt-1 text-muted-foreground">{tag.description}</p>}
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="font-heading text-3xl font-bold">{tag.name}</h1>
+          {tag.description && <p className="mt-1 text-muted-foreground">{tag.description}</p>}
+        </div>
+        {canUpload && hasAccess && (
+          <Button onClick={() => setUploadOpen(true)} size="sm">
+            <Plus className="mr-1.5 h-4 w-4" />
+            Add Resource
+          </Button>
+        )}
       </div>
 
       {verifying && (
@@ -322,6 +416,81 @@ export default function ClassTagPage() {
           )}
         </>
       ) : null}
+
+      {/* Upload Dialog */}
+      <Dialog open={uploadOpen} onOpenChange={setUploadOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Upload to {tag.name}</DialogTitle>
+            <DialogDescription>Add a resource directly to this class.</DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleUploadToClass} className="space-y-4 pt-2">
+            <div className="space-y-2">
+              <Label htmlFor="up-title">Title *</Label>
+              <Input id="up-title" placeholder="e.g. Calculus Final 2024" value={uploadTitle} onChange={(e) => setUploadTitle(e.target.value)} maxLength={200} required />
+            </div>
+            <div className="space-y-2">
+              <Label>Course *</Label>
+              <CourseSearchSelect
+                value={uploadCourseId}
+                onSelect={(id, course) => { setUploadCourseId(id); setUploadCourse(course); }}
+                onClear={() => { setUploadCourseId(""); setUploadCourse(null); }}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Resource Type *</Label>
+              <Select value={uploadType} onValueChange={setUploadType} required>
+                <SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
+                <SelectContent>
+                  {resourceTypes.map((t) => (
+                    <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="up-desc">Description</Label>
+              <Textarea id="up-desc" placeholder="Optional..." value={uploadDesc} onChange={(e) => setUploadDesc(e.target.value)} maxLength={1000} rows={2} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="up-file">File * (PDF, DOCX, PPTX)</Label>
+              <Input
+                id="up-file"
+                type="file"
+                accept=".pdf,.docx,.pptx"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f && !ALLOWED_TYPES.includes(f.type)) {
+                    sonnerToast.error("Only PDF, DOCX, and PPTX files are allowed");
+                    return;
+                  }
+                  if (f && f.size > 100 * 1024 * 1024) {
+                    sonnerToast.error("File must be under 100MB");
+                    return;
+                  }
+                  setUploadFile(f || null);
+                }}
+                required
+              />
+              {uploadFile && <p className="text-xs text-muted-foreground">{uploadFile.name} ({(uploadFile.size / 1024 / 1024).toFixed(1)} MB)</p>}
+            </div>
+            <Button type="submit" className="w-full" disabled={uploading || !uploadTitle.trim() || !uploadCourseId || !uploadType || !uploadFile}>
+              {uploading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Uploading...
+                </>
+              ) : (
+                <>
+                  <Upload className="mr-2 h-4 w-4" />
+                  Upload Resource
+                </>
+              )}
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
+

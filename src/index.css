@@ -152,7 +152,7 @@
     background:
       url('/images/gears-texture.jpg') top right / 420px auto no-repeat,
       url('/images/puzzle-texture.jpg') bottom left / 380px auto no-repeat;
-    opacity: 0.04;
+    opacity: 0.08;
     pointer-events: none;
   }
 

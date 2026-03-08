@@ -36,6 +36,7 @@ export default function ClassTagPage() {
   const [checkingAccess, setCheckingAccess] = useState(true);
   const [paying, setPaying] = useState(false);
   const [verifying, setVerifying] = useState(false);
+  const [downloadingAll, setDownloadingAll] = useState(false);
 
   // Check access — admins always have access
   useEffect(() => {

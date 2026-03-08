@@ -30,6 +30,7 @@ const typeLabels: Record<string, string> = {
   textbook: "Textbook",
   lab_manual: "Lab Manual",
   recommended_books: "Recommended Book",
+  solution_manual: "Solution Manual",
 };
 
 export default function ResourcePage() {

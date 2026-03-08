@@ -25,6 +25,7 @@ const typeThumbnails: Record<string, string> = {
   textbook: textbookThumb,
   lab_manual: labManualThumb,
   recommended_books: recommendedBooksThumb,
+  solution_manual: solutionManualThumb,
 };
 
 interface ResourceCardProps {

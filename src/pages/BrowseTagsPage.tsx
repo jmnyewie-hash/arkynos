@@ -103,6 +103,10 @@ export default function BrowseTagsPage() {
 
   const handleCreate = async () => {
     if (!user || !className.trim()) return;
+    if (!canCreateMore) {
+      toast.error(`You can only create up to ${CLASS_LIMIT} classes.`);
+      return;
+    }
     setCreating(true);
 
     const selectedProgram = programs.find((p) => p.id === programId);

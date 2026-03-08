@@ -14,7 +14,104 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      courses: {
+        Row: {
+          course_code: string
+          course_name: string
+          created_at: string
+          department: string
+          id: string
+          university: string
+        }
+        Insert: {
+          course_code: string
+          course_name: string
+          created_at?: string
+          department: string
+          id?: string
+          university: string
+        }
+        Update: {
+          course_code?: string
+          course_name?: string
+          created_at?: string
+          department?: string
+          id?: string
+          university?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      resources: {
+        Row: {
+          course_id: string
+          created_at: string
+          description: string | null
+          downloads: number
+          file_path: string
+          file_url: string
+          id: string
+          resource_type: Database["public"]["Enums"]["resource_type"]
+          title: string
+          uploaded_by: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          description?: string | null
+          downloads?: number
+          file_path: string
+          file_url: string
+          id?: string
+          resource_type: Database["public"]["Enums"]["resource_type"]
+          title: string
+          uploaded_by: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          description?: string | null
+          downloads?: number
+          file_path?: string
+          file_url?: string
+          id?: string
+          resource_type?: Database["public"]["Enums"]["resource_type"]
+          title?: string
+          uploaded_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resources_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +120,11 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      resource_type:
+        | "past_question"
+        | "lecture_notes"
+        | "textbook"
+        | "lab_manual"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +251,13 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      resource_type: [
+        "past_question",
+        "lecture_notes",
+        "textbook",
+        "lab_manual",
+      ],
+    },
   },
 } as const

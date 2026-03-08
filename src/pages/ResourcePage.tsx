@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { Download, FileText, Star, Trash2, EyeOff, Eye, Tag } from "lucide-react";
 import { toast } from "sonner";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
+import { useProfile } from "@/hooks/useProfile";
+import { useAuth } from "@/hooks/useAuth";
+import FounderBadge from "@/components/FounderBadge";
 import FlagResourceDialog from "@/components/FlagResourceDialog";
 import {
   AlertDialog,

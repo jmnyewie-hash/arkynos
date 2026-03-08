@@ -4,8 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Download, FileText } from "lucide-react";
+import { Download, FileText, Star, BookMarked } from "lucide-react";
 import { toast } from "sonner";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 
 type ResourceWithRelations = Tables<"resources"> & {
   courses: Tables<"courses"> | null;
@@ -17,6 +18,7 @@ const typeLabels: Record<string, string> = {
   lecture_notes: "Lecture Notes",
   textbook: "Textbook",
   lab_manual: "Lab Manual",
+  recommended_books: "Recommended Book",
 };
 
 export default function ResourcePage() {
@@ -24,6 +26,8 @@ export default function ResourcePage() {
   const [resource, setResource] = useState<ResourceWithRelations | null>(null);
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
+  const [toggling, setToggling] = useState(false);
+  const { isAdmin } = useIsAdmin();
 
   useEffect(() => {
     if (!id) return;
@@ -51,13 +55,9 @@ export default function ResourcePage() {
     if (!resource) return;
     setDownloading(true);
     try {
-      // Increment download counter
       await supabase.rpc("increment_downloads", { resource_id: resource.id });
-
-      // Get download URL
       const { data } = supabase.storage.from("resources").getPublicUrl(resource.file_path);
       window.open(data.publicUrl, "_blank");
-
       setResource((prev) => prev ? { ...prev, downloads: prev.downloads + 1 } : prev);
     } catch {
       toast.error("Failed to download");
@@ -65,19 +65,43 @@ export default function ResourcePage() {
     setDownloading(false);
   };
 
+  const handleTogglePreferred = async () => {
+    if (!resource) return;
+    setToggling(true);
+    const newValue = !resource.is_preferred;
+    const { error } = await supabase
+      .from("resources")
+      .update({ is_preferred: newValue })
+      .eq("id", resource.id);
+
+    if (error) {
+      toast.error("Failed to update preferred status");
+    } else {
+      setResource((prev) => prev ? { ...prev, is_preferred: newValue } : prev);
+      toast.success(newValue ? "Marked as preferred" : "Removed preferred status");
+    }
+    setToggling(false);
+  };
+
   if (loading) return <div className="container max-w-2xl py-10"><div className="h-32 animate-pulse rounded-xl bg-muted" /></div>;
   if (!resource) return <div className="container max-w-2xl py-10"><p className="text-muted-foreground">Resource not found.</p></div>;
 
   return (
     <div className="container max-w-2xl py-10 animate-fade-in">
-      <div className="rounded-xl border bg-card p-6 shadow-card">
+      <div className={`rounded-xl border bg-card p-6 shadow-card ${resource.is_preferred ? "ring-2 ring-accent/50 border-accent/30" : ""}`}>
         <div className="flex items-start gap-4">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
             <FileText className="h-6 w-6 text-primary" />
           </div>
           <div className="min-w-0 flex-1">
-            <h1 className="font-heading text-2xl font-bold">{resource.title}</h1>
+            <div className="flex items-center gap-2">
+              {resource.is_preferred && <Star className="h-5 w-5 shrink-0 fill-accent text-accent" />}
+              <h1 className="font-heading text-2xl font-bold">{resource.title}</h1>
+            </div>
             <div className="mt-2 flex flex-wrap items-center gap-2">
+              {resource.is_preferred && (
+                <Badge className="bg-accent text-accent-foreground">Preferred</Badge>
+              )}
               <Badge variant="secondary">{typeLabels[resource.resource_type]}</Badge>
               {resource.courses && (
                 <span className="text-sm text-muted-foreground">
@@ -97,10 +121,23 @@ export default function ResourcePage() {
             {resource.profiles && <p>Uploaded by {resource.profiles.name}</p>}
             <p>{resource.downloads} downloads</p>
           </div>
-          <Button onClick={handleDownload} disabled={downloading}>
-            <Download className="mr-2 h-4 w-4" />
-            {downloading ? "Downloading..." : "Download"}
-          </Button>
+          <div className="flex items-center gap-2">
+            {isAdmin && (
+              <Button
+                variant={resource.is_preferred ? "secondary" : "outline"}
+                size="sm"
+                onClick={handleTogglePreferred}
+                disabled={toggling}
+              >
+                <Star className={`mr-1.5 h-4 w-4 ${resource.is_preferred ? "fill-accent text-accent" : ""}`} />
+                {resource.is_preferred ? "Unmark Preferred" : "Mark Preferred"}
+              </Button>
+            )}
+            <Button onClick={handleDownload} disabled={downloading}>
+              <Download className="mr-2 h-4 w-4" />
+              {downloading ? "Downloading..." : "Download"}
+            </Button>
+          </div>
         </div>
       </div>
     </div>

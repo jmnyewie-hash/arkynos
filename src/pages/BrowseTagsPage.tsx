@@ -161,10 +161,17 @@ export default function BrowseTagsPage() {
           </p>
         </div>
         {user && (
-          <Button onClick={() => setOpen(true)} size="sm">
-            <Plus className="mr-1.5 h-4 w-4" />
-            New Class
-          </Button>
+          <div className="flex flex-col items-end gap-1">
+            <Button onClick={() => setOpen(true)} size="sm" disabled={!canCreateMore}>
+              <Plus className="mr-1.5 h-4 w-4" />
+              New Class
+            </Button>
+            {!isAdmin && (
+              <span className="text-xs text-muted-foreground">
+                {userClassCount}/{CLASS_LIMIT} classes used
+              </span>
+            )}
+          </div>
         )}
       </div>
 

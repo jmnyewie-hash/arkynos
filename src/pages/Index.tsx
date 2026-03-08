@@ -16,6 +16,7 @@ export default function Index() {
   const [recentResources, setRecentResources] = useState<ResourceWithRelations[]>([]);
   const [loading, setLoading] = useState(true);
   const [userCount, setUserCount] = useState<number>(0);
+  const [totalFiles, setTotalFiles] = useState<number>(0);
 
   useEffect(() => {
     const fetchResources = async () => {

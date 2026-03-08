@@ -15,7 +15,8 @@ interface DocumentViewerProps {
   onClose: () => void;
 }
 
-function PdfViewer({ fileUrl, fileName, onClose }: { fileUrl: string; fileName: string; onClose: () => void }) {
+/** Offline-capable PDF viewer using react-pdf */
+function PdfViewerOffline({ fileUrl, fileName, onClose }: { fileUrl: string; fileName: string; onClose: () => void }) {
   const [numPages, setNumPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [scale, setScale] = useState(1.0);
@@ -35,7 +36,6 @@ function PdfViewer({ fileUrl, fileName, onClose }: { fileUrl: string; fileName: 
   const goToNext = () => setCurrentPage((p) => Math.min(numPages, p + 1));
   const zoomIn = () => setScale((s) => Math.min(3, s + 0.25));
   const zoomOut = () => setScale((s) => Math.max(0.5, s - 0.25));
-
   const toggleFullscreen = () => setIsFullscreen((f) => !f);
 
   if (loadError) {
@@ -54,7 +54,6 @@ function PdfViewer({ fileUrl, fileName, onClose }: { fileUrl: string; fileName: 
 
   return (
     <div className={`flex flex-col ${isFullscreen ? "fixed inset-0 z-50 bg-background" : "h-full"}`}>
-      {/* Toolbar */}
       <div className="flex items-center justify-between border-b bg-card px-3 py-2 shrink-0">
         <div className="flex items-center gap-1">
           <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8">
@@ -75,8 +74,6 @@ function PdfViewer({ fileUrl, fileName, onClose }: { fileUrl: string; fileName: 
           </Button>
         </div>
       </div>
-
-      {/* PDF Content */}
       <div className="flex-1 overflow-auto bg-muted/30 flex justify-center">
         <Document
           file={fileUrl}
@@ -88,25 +85,15 @@ function PdfViewer({ fileUrl, fileName, onClose }: { fileUrl: string; fileName: 
             </div>
           }
         >
-          <Page
-            pageNumber={currentPage}
-            scale={scale}
-            className="shadow-lg my-4"
-            renderTextLayer={true}
-            renderAnnotationLayer={true}
-          />
+          <Page pageNumber={currentPage} scale={scale} className="shadow-lg my-4" renderTextLayer renderAnnotationLayer />
         </Document>
       </div>
-
-      {/* Page navigation */}
       {numPages > 0 && (
         <div className="flex items-center justify-center gap-3 border-t bg-card px-3 py-2 shrink-0">
           <Button variant="ghost" size="icon" onClick={goToPrev} disabled={currentPage <= 1} className="h-8 w-8">
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <span className="text-sm text-muted-foreground">
-            Page {currentPage} of {numPages}
-          </span>
+          <span className="text-sm text-muted-foreground">Page {currentPage} of {numPages}</span>
           <Button variant="ghost" size="icon" onClick={goToNext} disabled={currentPage >= numPages} className="h-8 w-8">
             <ChevronRight className="h-4 w-4" />
           </Button>
@@ -116,8 +103,49 @@ function PdfViewer({ fileUrl, fileName, onClose }: { fileUrl: string; fileName: 
   );
 }
 
+/** Online PDF viewer using Google Docs Viewer (iframe) */
+function PdfViewerOnline({ fileUrl, fileName, onClose }: { fileUrl: string; fileName: string; onClose: () => void }) {
+  const viewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(fileUrl)}&embedded=true`;
+
+  return (
+    <div className="flex flex-col h-full">
+      <div className="flex items-center justify-between border-b bg-card px-3 py-2 shrink-0">
+        <div className="flex items-center gap-1">
+          <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8">
+            <X className="h-4 w-4" />
+          </Button>
+          <span className="text-sm font-medium truncate max-w-[200px]">{fileName}</span>
+        </div>
+        <Button variant="ghost" size="sm" onClick={() => window.open(fileUrl, "_blank")}>
+          <Download className="mr-2 h-4 w-4" /> Download
+        </Button>
+      </div>
+      <div className="flex-1">
+        <iframe
+          src={viewerUrl}
+          className="w-full h-full border-0"
+          title={fileName}
+          sandbox="allow-scripts allow-same-origin allow-popups"
+        />
+      </div>
+    </div>
+  );
+}
+
+/** Smart PDF viewer: Google Docs when online, react-pdf when offline */
+function PdfViewer({ fileUrl, fileName, onClose }: { fileUrl: string; fileName: string; onClose: () => void }) {
+  const isOnline = navigator.onLine;
+
+  // Blob URLs (from cache) can't be used with Google Docs — always use offline viewer
+  const isBlobUrl = fileUrl.startsWith("blob:");
+
+  if (isOnline && !isBlobUrl) {
+    return <PdfViewerOnline fileUrl={fileUrl} fileName={fileName} onClose={onClose} />;
+  }
+  return <PdfViewerOffline fileUrl={fileUrl} fileName={fileName} onClose={onClose} />;
+}
+
 function OfficeViewer({ fileUrl, fileName, onClose }: { fileUrl: string; fileName: string; onClose: () => void }) {
-  // Use Google Docs Viewer for DOCX/PPTX - works with public URLs
   const viewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(fileUrl)}&embedded=true`;
 
   return (
@@ -164,7 +192,6 @@ export default function DocumentViewer({ fileUrl, fileName, fileType, onClose }:
     return <OfficeViewer fileUrl={fileUrl} fileName={fileName} onClose={onClose} />;
   }
 
-  // Fallback: open in new tab
   return (
     <div className="flex flex-col items-center justify-center gap-4 py-16">
       <p className="text-muted-foreground">This file type can't be previewed in-app.</p>

@@ -143,15 +143,30 @@ function LibraryItemCard({
           </div>
         </div>
       </button>
-      {detailUrl && (
-        <Link
-          to={detailUrl}
-          className="absolute bottom-3 right-3 p-1.5 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
-          title="View details"
+      <div className="absolute top-1/2 -translate-y-1/2 right-3 flex flex-col items-center gap-1.5 z-10">
+        <Button
+          size="sm"
+          variant="default"
+          className="h-8 px-3 text-xs font-medium"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onOpen();
+          }}
         >
-          <ExternalLink className="h-3.5 w-3.5" />
-        </Link>
-      )}
+          Open
+        </Button>
+        {detailUrl && (
+          <Link
+            to={detailUrl}
+            className="p-1 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+            title="View details"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ExternalLink className="h-3.5 w-3.5" />
+          </Link>
+        )}
+      </div>
     </div>
   );
 }

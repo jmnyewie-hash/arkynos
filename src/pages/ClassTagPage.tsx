@@ -36,9 +36,14 @@ export default function ClassTagPage() {
   const [paying, setPaying] = useState(false);
   const [verifying, setVerifying] = useState(false);
 
-  // Check access
+  // Check access — admins always have access
   useEffect(() => {
-    if (authLoading) return;
+    if (authLoading || adminLoading) return;
+    if (isAdmin) {
+      setHasAccess(true);
+      setCheckingAccess(false);
+      return;
+    }
     if (!user || !tagId) {
       setCheckingAccess(false);
       return;
@@ -56,7 +61,7 @@ export default function ClassTagPage() {
       setCheckingAccess(false);
     };
     checkAccess();
-  }, [user, tagId, authLoading]);
+  }, [user, tagId, authLoading, adminLoading, isAdmin]);
 
   // Verify payment on redirect back
   useEffect(() => {

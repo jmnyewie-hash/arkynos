@@ -74,7 +74,7 @@ export default function Index() {
     <>
       <FoundingBanner />
       <div className="container max-w-2xl py-16">
-        <div className="mb-6 animate-fade-in">
+        <div className="mb-6 animate-fade-in relative z-[60]">
           <CourseSearchBar />
         </div>
         <div className="text-center animate-fade-in">

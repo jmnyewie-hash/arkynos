@@ -74,6 +74,9 @@ export default function Index() {
     <>
       <FoundingBanner />
       <div className="container max-w-2xl py-16">
+        <div className="mb-6 animate-fade-in">
+          <CourseSearchBar />
+        </div>
         <div className="text-center animate-fade-in">
           <p className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground/50 italic">A total of <span className="text-sm font-bold text-primary not-italic">{totalFiles.toLocaleString()}</span> files available today</p>
           <img src={arkynosLogo} alt="Arkynos" className="mx-auto mb-2 w-[50rem] max-w-full h-[22rem] object-contain" />

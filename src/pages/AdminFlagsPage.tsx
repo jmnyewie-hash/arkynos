@@ -96,6 +96,22 @@ export default function AdminFlagsPage() {
     }
   };
 
+  const handleDeleteResource = async (flag: FlagRow) => {
+    // Delete flags for this resource
+    await supabase.from("resource_flags").delete().eq("resource_id", flag.resource_id);
+    // Delete the file from storage (fetch file_path first)
+    const { data: res } = await supabase.from("resources").select("file_path").eq("id", flag.resource_id).single();
+    if (res) await supabase.storage.from("resources").remove([res.file_path]);
+    // Delete the resource
+    const { error } = await supabase.from("resources").delete().eq("id", flag.resource_id);
+    if (error) {
+      toast.error("Failed to delete resource");
+    } else {
+      setFlags((prev) => prev.filter((f) => f.resource_id !== flag.resource_id));
+      toast.success("Resource deleted");
+    }
+  };
+
   if (adminLoading || authLoading || loading) {
     return <div className="container max-w-3xl py-10"><div className="h-8 w-48 animate-pulse rounded bg-muted" /></div>;
   }

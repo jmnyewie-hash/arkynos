@@ -95,9 +95,9 @@ export default function Index() {
                 alert("Link copied to clipboard!");
               }
             }}
-            className="mt-2 inline-flex items-center rounded-full border border-primary/30 bg-background px-4 py-1.5 text-xs font-semibold text-primary shadow-sm transition-colors hover:bg-primary/10"
+            className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-background px-4 py-1.5 text-xs font-semibold text-primary shadow-sm transition-colors hover:bg-primary/10"
           >
-            Share The App Link To Help Community Grow
+            <Share2 className="h-3.5 w-3.5" /> Share The App Link To Help Community Grow
           </button>
           <img src={arkynosLogo} alt="Arkynos" className="mx-auto mb-2 w-[50rem] max-w-full h-[22rem] object-contain" />
           <p className="text-base font-medium tracking-[0.25em] uppercase text-muted-foreground/50 italic">The Labyrinth Of Knowledge</p>

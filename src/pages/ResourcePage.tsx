@@ -27,13 +27,20 @@ export default function ResourcePage() {
 
   useEffect(() => {
     if (!id) return;
-    supabase
-      .from("resources")
-      .select("*, courses(*), profiles!resources_uploaded_by_fkey(*)")
-      .eq("id", id)
-      .single()
-      .then(({ data }) => {
-        setResource(data as ResourceWithRelations | null);
+    const fetchResource = async () => {
+      const { data } = await supabase
+        .from("resources")
+        .select("*, courses(*)")
+        .eq("id", id)
+        .single();
+
+      if (data) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("user_id", data.uploaded_by)
+          .single();
+        setResource({ ...data, profiles: profile } as ResourceWithRelations);
         setLoading(false);
       });
   }, [id]);

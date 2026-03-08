@@ -214,6 +214,16 @@ export default function ResourcePage() {
               <Download className="mr-2 h-4 w-4" />
               {downloading ? "Downloading..." : "Download"}
             </Button>
+            {user && (
+              <Button
+                variant={isSaved(resource.id) ? "secondary" : "outline"}
+                size="sm"
+                onClick={() => toggleSave(resource.id)}
+              >
+                <Bookmark className={`mr-2 h-4 w-4 ${isSaved(resource.id) ? "fill-primary text-primary" : ""}`} />
+                {isSaved(resource.id) ? "Saved" : "Save to Library"}
+              </Button>
+            )}
             <FlagResourceDialog resourceId={resource.id} />
           </div>
           {isAdmin && (

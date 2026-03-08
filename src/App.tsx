@@ -47,6 +47,7 @@ const App = () => (
             <Route path="/upgrade" element={<UpgradePage />} />
             <Route path="/classes" element={<BrowseTagsPage />} />
             <Route path="/class/:tagId" element={<ClassTagPage />} />
+            <Route path="/library" element={<MyLibraryPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

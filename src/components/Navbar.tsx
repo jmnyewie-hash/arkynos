@@ -80,6 +80,9 @@ export default function Navbar() {
                   </>
                 )}
                 <Button variant="ghost" size="sm" asChild className="shrink-0">
+                  <Link to="/library"><BookOpen className="mr-1.5 h-4 w-4" />Library</Link>
+                </Button>
+                <Button variant="ghost" size="sm" asChild className="shrink-0">
                   <Link to="/contact"><MessageSquare className="mr-1.5 h-4 w-4" />Contact</Link>
                 </Button>
                 <Button variant="ghost" size="sm" asChild className="shrink-0">

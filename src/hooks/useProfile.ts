@@ -10,6 +10,8 @@ export interface UserProfile {
   subscription_tier: "free" | "premium" | "founder";
   downloads_today: number;
   last_download_date: string;
+  program_id: string | null;
+  study_year: number | null;
 }
 
 export function useProfile() {

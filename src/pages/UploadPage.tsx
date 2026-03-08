@@ -51,8 +51,9 @@ export default function UploadPage() {
       toast.error("Only PDF, DOCX, and PPTX files are allowed");
       return;
     }
-    if (f.size > MAX_SIZE) {
-      toast.error("File must be under 50MB");
+    const maxSize = resourceType === "recommended_books" ? MAX_SIZE_RECOMMENDED : MAX_SIZE_DEFAULT;
+    if (f.size > maxSize) {
+      toast.error(`File must be under ${resourceType === "recommended_books" ? "100" : "50"}MB`);
       return;
     }
     setFile(f);

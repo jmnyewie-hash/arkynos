@@ -15,7 +15,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Tag, ArrowRight, Plus, Loader2 } from "lucide-react";
+import { Tag, ArrowRight, Plus, Loader2, Star } from "lucide-react";
 import { toast } from "sonner";
 
 interface ClassTag {

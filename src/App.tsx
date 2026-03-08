@@ -51,6 +51,7 @@ const App = () => (
             <Route path="/class/:tagId" element={<ClassTagPage />} />
             <Route path="/library" element={<MyLibraryPage />} />
             <Route path="/view/:id" element={<ViewerPage />} />
+            <Route path="/offline" element={<OfflinePage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

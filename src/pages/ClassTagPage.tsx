@@ -416,6 +416,81 @@ export default function ClassTagPage() {
           )}
         </>
       ) : null}
+
+      {/* Upload Dialog */}
+      <Dialog open={uploadOpen} onOpenChange={setUploadOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Upload to {tag.name}</DialogTitle>
+            <DialogDescription>Add a resource directly to this class.</DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleUploadToClass} className="space-y-4 pt-2">
+            <div className="space-y-2">
+              <Label htmlFor="up-title">Title *</Label>
+              <Input id="up-title" placeholder="e.g. Calculus Final 2024" value={uploadTitle} onChange={(e) => setUploadTitle(e.target.value)} maxLength={200} required />
+            </div>
+            <div className="space-y-2">
+              <Label>Course *</Label>
+              <CourseSearchSelect
+                value={uploadCourseId}
+                onSelect={(id, course) => { setUploadCourseId(id); setUploadCourse(course); }}
+                onClear={() => { setUploadCourseId(""); setUploadCourse(null); }}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Resource Type *</Label>
+              <Select value={uploadType} onValueChange={setUploadType} required>
+                <SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
+                <SelectContent>
+                  {resourceTypes.map((t) => (
+                    <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="up-desc">Description</Label>
+              <Textarea id="up-desc" placeholder="Optional..." value={uploadDesc} onChange={(e) => setUploadDesc(e.target.value)} maxLength={1000} rows={2} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="up-file">File * (PDF, DOCX, PPTX)</Label>
+              <Input
+                id="up-file"
+                type="file"
+                accept=".pdf,.docx,.pptx"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f && !ALLOWED_TYPES.includes(f.type)) {
+                    sonnerToast.error("Only PDF, DOCX, and PPTX files are allowed");
+                    return;
+                  }
+                  if (f && f.size > 100 * 1024 * 1024) {
+                    sonnerToast.error("File must be under 100MB");
+                    return;
+                  }
+                  setUploadFile(f || null);
+                }}
+                required
+              />
+              {uploadFile && <p className="text-xs text-muted-foreground">{uploadFile.name} ({(uploadFile.size / 1024 / 1024).toFixed(1)} MB)</p>}
+            </div>
+            <Button type="submit" className="w-full" disabled={uploading || !uploadTitle.trim() || !uploadCourseId || !uploadType || !uploadFile}>
+              {uploading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Uploading...
+                </>
+              ) : (
+                <>
+                  <Upload className="mr-2 h-4 w-4" />
+                  Upload Resource
+                </>
+              )}
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
+

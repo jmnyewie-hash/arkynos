@@ -17,7 +17,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Lock, Loader2, CheckCircle, Download, Upload, Plus } from "lucide-react";
+import { Lock, Loader2, CheckCircle, Download, Upload, Plus, Star } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner";
 import CourseSearchSelect from "@/components/CourseSearchSelect";
@@ -32,6 +32,7 @@ interface ClassTag {
   name: string;
   description: string | null;
   created_by: string;
+  is_preferred: boolean;
 }
 
 export default function ClassTagPage() {
@@ -300,6 +301,21 @@ export default function ClassTagPage() {
     setUploading(false);
   };
 
+  const handleTogglePreferred = async () => {
+    if (!tag || !isAdmin) return;
+    const newVal = !tag.is_preferred;
+    const { error } = await supabase
+      .from("class_tags")
+      .update({ is_preferred: newVal } as any)
+      .eq("id", tag.id);
+    if (error) {
+      sonnerToast.error("Failed to update preferred status");
+    } else {
+      setTag({ ...tag, is_preferred: newVal });
+      sonnerToast.success(newVal ? "Marked as preferred" : "Removed preferred status");
+    }
+  };
+
 
   if (loading || checkingAccess || authLoading || adminLoading) {
     return (
@@ -323,15 +339,30 @@ export default function ClassTagPage() {
     <div className="container max-w-2xl py-10 animate-fade-in">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="font-heading text-3xl font-bold">{tag.name}</h1>
+          <div className="flex items-center gap-2">
+            {tag.is_preferred && <Star className="h-5 w-5 shrink-0 fill-accent text-accent" />}
+            <h1 className="font-heading text-3xl font-bold">{tag.name}</h1>
+          </div>
           {tag.description && <p className="mt-1 text-muted-foreground">{tag.description}</p>}
         </div>
-        {canUpload && hasAccess && (
-          <Button onClick={() => setUploadOpen(true)} size="sm">
-            <Plus className="mr-1.5 h-4 w-4" />
-            Add Resource
-          </Button>
-        )}
+        <div className="flex items-center gap-2 shrink-0">
+          {isAdmin && (
+            <Button
+              variant={tag.is_preferred ? "secondary" : "outline"}
+              size="sm"
+              onClick={handleTogglePreferred}
+            >
+              <Star className={`mr-1.5 h-4 w-4 ${tag.is_preferred ? "fill-accent text-accent" : ""}`} />
+              {tag.is_preferred ? "Preferred" : "Mark Preferred"}
+            </Button>
+          )}
+          {canUpload && hasAccess && (
+            <Button onClick={() => setUploadOpen(true)} size="sm">
+              <Plus className="mr-1.5 h-4 w-4" />
+              Add Resource
+            </Button>
+          )}
+        </div>
       </div>
 
       {verifying && (

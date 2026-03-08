@@ -51,6 +51,7 @@ const sortOptions: { value: SortMode; label: string; icon: typeof Star }[] = [
 
 export default function CoursePage() {
   const { courseCode } = useParams<{ courseCode: string }>();
+  const { isSaved, toggleSave } = useLibrary();
   const [course, setCourse] = useState<Tables<"courses"> | null>(null);
   const [resources, setResources] = useState<ResourceWithRelations[]>([]);
   const [loading, setLoading] = useState(true);

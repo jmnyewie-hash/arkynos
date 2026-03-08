@@ -16,7 +16,7 @@ type ResourceWithRelations = Tables<"resources"> & {
 export default function MyLibraryPage() {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
-  const { savedIds, loading: libLoading } = useLibrary();
+  const { savedIds, isSaved, toggleSave, loading: libLoading } = useLibrary();
   const [resources, setResources] = useState<ResourceWithRelations[]>([]);
   const [fetching, setFetching] = useState(true);
 

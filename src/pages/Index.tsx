@@ -16,6 +16,7 @@ type ResourceWithRelations = Tables<"resources"> & {
 
 export default function Index() {
   const [recentResources, setRecentResources] = useState<ResourceWithRelations[]>([]);
+  const { isSaved, toggleSave } = useLibrary();
   const [loading, setLoading] = useState(true);
   const [userCount, setUserCount] = useState<number>(0);
   const [totalFiles, setTotalFiles] = useState<number>(0);

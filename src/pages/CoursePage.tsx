@@ -46,7 +46,7 @@ export default function CoursePage() {
   const [course, setCourse] = useState<Tables<"courses"> | null>(null);
   const [resources, setResources] = useState<ResourceWithRelations[]>([]);
   const [loading, setLoading] = useState(true);
-  const [sortMode, setSortMode] = useState<SortMode>("recent");
+  const [sortMode, setSortMode] = useState<SortMode>("preferred");
 
   useEffect(() => {
     if (!courseCode) return;

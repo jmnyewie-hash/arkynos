@@ -1,8 +1,9 @@
+import { useEffect, useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import Navbar from "@/components/Navbar";
 import Index from "./pages/Index";
@@ -26,6 +27,35 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+// Routes that work offline — don't redirect these
+const OFFLINE_ALLOWED = ["/offline", "/library", "/view"];
+
+function OfflineRedirect() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [online, setOnline] = useState(navigator.onLine);
+
+  useEffect(() => {
+    const goOffline = () => setOnline(false);
+    const goOnline = () => setOnline(true);
+    window.addEventListener("offline", goOffline);
+    window.addEventListener("online", goOnline);
+    return () => {
+      window.removeEventListener("offline", goOffline);
+      window.removeEventListener("online", goOnline);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!online) {
+      const isAllowed = OFFLINE_ALLOWED.some((p) => location.pathname.startsWith(p));
+      if (!isAllowed) navigate("/offline", { replace: true });
+    }
+  }, [online, location.pathname, navigate]);
+
+  return null;
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -33,6 +63,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
+          <OfflineRedirect />
           <Navbar />
           <Routes>
             <Route path="/" element={<Index />} />

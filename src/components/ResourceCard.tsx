@@ -1,7 +1,13 @@
 import { Link } from "react-router-dom";
-import { FileText, Download, BookOpen, FlaskConical, HelpCircle, Star, BookMarked } from "lucide-react";
+import { Download, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tables } from "@/integrations/supabase/types";
+
+import pastQuestionThumb from "@/assets/thumbnails/past-question.png";
+import lectureNotesThumb from "@/assets/thumbnails/lecture-notes.png";
+import textbookThumb from "@/assets/thumbnails/textbook.png";
+import labManualThumb from "@/assets/thumbnails/lab-manual.png";
+import recommendedBooksThumb from "@/assets/thumbnails/recommended-books.png";
 
 const typeLabels: Record<string, string> = {
   past_question: "Past Question",
@@ -11,12 +17,12 @@ const typeLabels: Record<string, string> = {
   recommended_books: "Recommended Book",
 };
 
-const typeIcons: Record<string, React.ReactNode> = {
-  past_question: <HelpCircle className="h-4 w-4" />,
-  lecture_notes: <FileText className="h-4 w-4" />,
-  textbook: <BookOpen className="h-4 w-4" />,
-  lab_manual: <FlaskConical className="h-4 w-4" />,
-  recommended_books: <BookMarked className="h-4 w-4" />,
+const typeThumbnails: Record<string, string> = {
+  past_question: pastQuestionThumb,
+  lecture_notes: lectureNotesThumb,
+  textbook: textbookThumb,
+  lab_manual: labManualThumb,
+  recommended_books: recommendedBooksThumb,
 };
 
 interface ResourceCardProps {
@@ -31,7 +37,12 @@ export default function ResourceCard({ resource }: ResourceCardProps) {
         resource.is_preferred ? "ring-2 ring-accent/50 border-accent/30" : ""
       }`}
     >
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex items-start gap-3">
+        <img
+          src={typeThumbnails[resource.resource_type]}
+          alt={typeLabels[resource.resource_type]}
+          className="h-10 w-10 shrink-0 rounded-lg object-contain"
+        />
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             {resource.is_preferred && (
@@ -49,15 +60,14 @@ export default function ResourceCard({ resource }: ResourceCardProps) {
               {resource.courses.course_code} · {resource.courses.course_name}
             </p>
           )}
+          <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
+            <Badge variant="secondary" className="text-xs">
+              {typeLabels[resource.resource_type]}
+            </Badge>
+            <span className="flex items-center gap-1"><Download className="h-3 w-3" />{resource.downloads}</span>
+            {resource.profiles && <span>by {resource.profiles.name}</span>}
+          </div>
         </div>
-        <Badge variant="secondary" className="shrink-0 flex items-center gap-1.5">
-          {typeIcons[resource.resource_type]}
-          {typeLabels[resource.resource_type]}
-        </Badge>
-      </div>
-      <div className="mt-3 flex items-center gap-3 text-xs text-muted-foreground">
-        <span className="flex items-center gap-1"><Download className="h-3 w-3" />{resource.downloads}</span>
-        {resource.profiles && <span>by {resource.profiles.name}</span>}
       </div>
     </Link>
   );

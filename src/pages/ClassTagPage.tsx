@@ -25,6 +25,7 @@ export default function ClassTagPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
+  const { isAdmin, loading: adminLoading } = useIsAdmin();
   const { toast } = useToast();
 
   const [tag, setTag] = useState<ClassTag | null>(null);

@@ -44,7 +44,9 @@ export default function Index() {
   }, []);
 
   return (
-    <div className="container max-w-2xl py-16">
+    <>
+      <FoundingBanner />
+      <div className="container max-w-2xl py-16">
       <div className="text-center animate-fade-in">
         <img src={arkynosLogo} alt="Arkynos" className="mx-auto mb-4 h-72" />
         <p className="mt-3 text-lg text-muted-foreground">

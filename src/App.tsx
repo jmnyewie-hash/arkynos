@@ -14,6 +14,8 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AdminFlagsPage from "./pages/AdminFlagsPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
+import AdminMessagesPage from "./pages/AdminMessagesPage";
+import ContactAdminPage from "./pages/ContactAdminPage";
 import BrowseTagsPage from "./pages/BrowseTagsPage";
 import ClassTagPage from "./pages/ClassTagPage";
 import UpgradePage from "./pages/UpgradePage";

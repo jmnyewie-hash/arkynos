@@ -107,9 +107,6 @@ export default function Index() {
           </div>
         </div>
 
-        <div className="mt-10 animate-fade-in" style={{ animationDelay: "0.1s" }}>
-          <CourseSearchBar />
-        </div>
 
         <section className="mt-14 animate-fade-in" style={{ animationDelay: "0.2s" }}>
           <h2 className="font-heading text-lg font-semibold text-foreground">Recent Resources</h2>

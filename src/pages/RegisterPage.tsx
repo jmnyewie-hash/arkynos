@@ -1,11 +1,29 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+
+interface Program {
+  id: string;
+  program_name: string;
+  department: string;
+  university: string;
+}
+
+const YEAR_OPTIONS = [
+  { value: "1", label: "Year 1" },
+  { value: "2", label: "Year 2" },
+  { value: "3", label: "Year 3" },
+  { value: "4", label: "Year 4" },
+  { value: "5", label: "Year 5" },
+  { value: "6", label: "Year 6" },
+];
 
 export default function RegisterPage() {
   const { signUp } = useAuth();
@@ -13,8 +31,21 @@ export default function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [programId, setProgramId] = useState("");
+  const [studyYear, setStudyYear] = useState("");
+  const [programs, setPrograms] = useState<Program[]>([]);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    supabase
+      .from("programs")
+      .select("id, program_name, department, university")
+      .order("program_name")
+      .then(({ data }) => {
+        if (data) setPrograms(data);
+      });
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,7 +54,10 @@ export default function RegisterPage() {
       return;
     }
     setLoading(true);
-    const { error } = await signUp(email, password, name);
+    const { error } = await signUp(email, password, name, {
+      program_id: programId || undefined,
+      study_year: studyYear || undefined,
+    });
     if (error) {
       toast.error(error.message);
     } else {
@@ -47,6 +81,36 @@ export default function RegisterPage() {
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="program">Programme / Degree</Label>
+            <Select value={programId} onValueChange={setProgramId}>
+              <SelectTrigger id="program">
+                <SelectValue placeholder="Select your programme" />
+              </SelectTrigger>
+              <SelectContent>
+                {programs.map((p) => (
+                  <SelectItem key={p.id} value={p.id}>
+                    {p.program_name} — {p.department}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="year">Year of Study</Label>
+            <Select value={studyYear} onValueChange={setStudyYear}>
+              <SelectTrigger id="year">
+                <SelectValue placeholder="Select your year" />
+              </SelectTrigger>
+              <SelectContent>
+                {YEAR_OPTIONS.map((y) => (
+                  <SelectItem key={y.value} value={y.value}>
+                    {y.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>

@@ -64,9 +64,7 @@ export default function Navbar() {
           )}
         </nav>
       </div>
-      <div className="container flex justify-end py-1">
-        <ThemeToggle />
-      </div>
+    </header>
     </header>
   );
 }

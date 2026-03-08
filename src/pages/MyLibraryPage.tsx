@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useLibrary } from "@/hooks/useLibrary";
-import ResourceCard from "@/components/ResourceCard";
-import { BookOpen, Download, Smartphone, WifiOff, FileText } from "lucide-react";
+import { BookOpen, Download, Smartphone, WifiOff, FileText, Star, Bookmark, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tables } from "@/integrations/supabase/types";
-import { getCachedMeta, getCachedFileUrl, type CachedResourceMeta } from "@/lib/offlineCache";
+import { getCachedMeta, getCachedFileUrl, isResourceCached, type CachedResourceMeta } from "@/lib/offlineCache";
+import { toast } from "sonner";
 
 type ResourceWithRelations = Tables<"resources"> & {
   courses?: Tables<"courses"> | null;

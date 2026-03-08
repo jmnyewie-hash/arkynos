@@ -5,7 +5,7 @@ import CourseSearchBar from "@/components/CourseSearchBar";
 import ResourceCard from "@/components/ResourceCard";
 import FoundingBanner from "@/components/FoundingBanner";
 import arkynosLogo from "@/assets/arkynos-logo-full.png";
-import { Users, BookOpen, FolderOpen, Shield } from "lucide-react";
+import { Users, BookOpen, FolderOpen, Shield, Upload, Share2 } from "lucide-react";
 
 type ResourceWithRelations = Tables<"resources"> & {
   courses: Tables<"courses"> | null;
@@ -81,8 +81,8 @@ export default function Index() {
         </div>
         <div className="text-center animate-fade-in">
           <p className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground/50 italic">A total of <span className="text-sm font-bold text-primary not-italic">{totalFiles.toLocaleString()}</span> files available today</p>
-          <a href="/upload" className="mt-2 inline-flex items-center rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90">
-            Upload New Files To Help The Library Grow
+          <a href="/upload" className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90">
+            <Upload className="h-3.5 w-3.5" /> Upload New Files To Help The Library Grow
           </a>
           <button
             onClick={() => {
@@ -95,9 +95,9 @@ export default function Index() {
                 alert("Link copied to clipboard!");
               }
             }}
-            className="mt-2 inline-flex items-center rounded-full border border-primary/30 bg-background px-4 py-1.5 text-xs font-semibold text-primary shadow-sm transition-colors hover:bg-primary/10"
+            className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-background px-4 py-1.5 text-xs font-semibold text-primary shadow-sm transition-colors hover:bg-primary/10"
           >
-            Share The App Link To Help Community Grow
+            <Share2 className="h-3.5 w-3.5" /> Share The App Link To Help Community Grow
           </button>
           <img src={arkynosLogo} alt="Arkynos" className="mx-auto mb-2 w-[50rem] max-w-full h-[22rem] object-contain" />
           <p className="text-base font-medium tracking-[0.25em] uppercase text-muted-foreground/50 italic">The Labyrinth Of Knowledge</p>

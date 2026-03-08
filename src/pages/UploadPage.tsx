@@ -17,13 +17,15 @@ const ALLOWED_TYPES = [
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   "application/vnd.openxmlformats-officedocument.presentationml.presentation",
 ];
-const MAX_SIZE = 50 * 1024 * 1024; // 50MB
+const MAX_SIZE_DEFAULT = 50 * 1024 * 1024; // 50MB
+const MAX_SIZE_RECOMMENDED = 100 * 1024 * 1024; // 100MB
 
 const resourceTypes = [
   { value: "past_question", label: "Past Question" },
   { value: "lecture_notes", label: "Lecture Notes" },
   { value: "textbook", label: "Textbook" },
   { value: "lab_manual", label: "Lab Manual" },
+  { value: "recommended_books", label: "Recommended Book" },
 ];
 
 export default function UploadPage() {
@@ -49,8 +51,9 @@ export default function UploadPage() {
       toast.error("Only PDF, DOCX, and PPTX files are allowed");
       return;
     }
-    if (f.size > MAX_SIZE) {
-      toast.error("File must be under 50MB");
+    const maxSize = resourceType === "recommended_books" ? MAX_SIZE_RECOMMENDED : MAX_SIZE_DEFAULT;
+    if (f.size > maxSize) {
+      toast.error(`File must be under ${resourceType === "recommended_books" ? "100" : "50"}MB`);
       return;
     }
     setFile(f);
@@ -138,7 +141,7 @@ export default function UploadPage() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="file">File * (PDF, DOCX, PPTX — max 50MB)</Label>
+          <Label htmlFor="file">File * (PDF, DOCX, PPTX — max {resourceType === "recommended_books" ? "100" : "50"}MB)</Label>
           <Input id="file" type="file" accept=".pdf,.docx,.pptx" onChange={handleFileChange} required />
           {file && <p className="text-xs text-muted-foreground">{file.name} ({(file.size / 1024 / 1024).toFixed(1)} MB)</p>}
         </div>

@@ -109,6 +109,7 @@ export type Database = {
           file_path: string
           file_url: string
           id: string
+          is_preferred: boolean
           resource_type: Database["public"]["Enums"]["resource_type"]
           title: string
           uploaded_by: string
@@ -121,6 +122,7 @@ export type Database = {
           file_path: string
           file_url: string
           id?: string
+          is_preferred?: boolean
           resource_type: Database["public"]["Enums"]["resource_type"]
           title: string
           uploaded_by: string
@@ -133,6 +135,7 @@ export type Database = {
           file_path?: string
           file_url?: string
           id?: string
+          is_preferred?: boolean
           resource_type?: Database["public"]["Enums"]["resource_type"]
           title?: string
           uploaded_by?: string
@@ -147,19 +150,46 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       increment_downloads: { Args: { resource_id: string }; Returns: undefined }
     }
     Enums: {
+      app_role: "admin" | "user"
       resource_type:
         | "past_question"
         | "lecture_notes"
         | "textbook"
         | "lab_manual"
+        | "recommended_books"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -287,11 +317,13 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "user"],
       resource_type: [
         "past_question",
         "lecture_notes",
         "textbook",
         "lab_manual",
+        "recommended_books",
       ],
     },
   },

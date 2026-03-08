@@ -6,8 +6,9 @@ import ResourceCard from "@/components/ResourceCard";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Button } from "@/components/ui/button";
-import { Lock, Loader2, CheckCircle } from "lucide-react";
+import { Lock, Loader2, CheckCircle, Download, Wifi, WifiOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { toast as sonnerToast } from "sonner";
 
 type ResourceWithRelations = Tables<"resources"> & {
   courses: Tables<"courses"> | null;

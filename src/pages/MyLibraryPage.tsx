@@ -82,7 +82,7 @@ function LibraryItemCard({
 }) {
   return (
     <div
-      className={`group relative rounded-xl border bg-card p-4 shadow-card transition-all hover:shadow-card-hover hover:-translate-y-0.5 ${
+      className={`group relative rounded-xl border bg-card p-3 sm:p-4 shadow-card transition-all hover:shadow-card-hover hover:-translate-y-0.5 ${
         isPreferred ? "ring-2 ring-accent/50 border-accent/30" : ""
       }`}
     >
@@ -93,7 +93,7 @@ function LibraryItemCard({
             e.stopPropagation();
             onToggleSave(resourceId);
           }}
-          className="absolute top-3 right-3 p-1.5 rounded-lg hover:bg-muted transition-colors z-10"
+          className="absolute top-2.5 right-2.5 p-1.5 rounded-lg hover:bg-muted transition-colors z-10"
           title={isSaved ? "Remove from library" : "Save to library"}
         >
           <Bookmark
@@ -103,51 +103,61 @@ function LibraryItemCard({
           />
         </button>
       )}
-      <button onClick={onOpen} className="block w-full text-left pr-20">
-        <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-            <FileText className="h-5 w-5 text-primary" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2">
-              {isPreferred && (
-                <Star className="h-4 w-4 shrink-0 fill-accent text-accent" />
-              )}
-              <h3 className="font-heading font-semibold text-card-foreground truncate group-hover:text-primary transition-colors">
-                {title}
-              </h3>
-            </div>
-            {courseCode && (
-              <p className="mt-1 text-sm text-muted-foreground">
-                {courseCode} · {courseName}
-              </p>
+      <div className="flex items-start gap-2.5 sm:gap-3 pr-8">
+        <div className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+          <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-1.5">
+            {isPreferred && (
+              <Star className="h-3.5 w-3.5 shrink-0 fill-accent text-accent" />
             )}
-            <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-              <Badge variant="secondary" className="text-xs">
-                {typeLabels[resourceType] || resourceType}
-              </Badge>
-              {isCached && (
-                <span className="flex items-center gap-1 text-emerald-600">
-                  <Download className="h-3 w-3" /> Offline ready
-                </span>
-              )}
-              {downloads !== undefined && (
-                <span className="flex items-center gap-1 shrink-0">
-                  <Download className="h-3 w-3" />{downloads}
-                </span>
-              )}
-              {uploaderName && (
-                <span className="truncate">by {uploaderName}</span>
-              )}
-            </div>
+            <h3 className="font-heading font-semibold text-sm sm:text-base text-card-foreground truncate group-hover:text-primary transition-colors">
+              {title}
+            </h3>
+          </div>
+          {courseCode && (
+            <p className="mt-0.5 text-xs sm:text-sm text-muted-foreground truncate">
+              {courseCode} · {courseName}
+            </p>
+          )}
+          <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
+            <Badge variant="secondary" className="text-[10px] sm:text-xs px-1.5 py-0">
+              {typeLabels[resourceType] || resourceType}
+            </Badge>
+            {isCached && (
+              <span className="flex items-center gap-1 text-emerald-600">
+                <Download className="h-3 w-3" /> <span className="hidden sm:inline">Offline ready</span><span className="sm:hidden">Cached</span>
+              </span>
+            )}
+            {downloads !== undefined && (
+              <span className="flex items-center gap-1 shrink-0">
+                <Download className="h-3 w-3" />{downloads}
+              </span>
+            )}
+            {uploaderName && (
+              <span className="truncate hidden sm:inline">by {uploaderName}</span>
+            )}
           </div>
         </div>
-      </button>
-      <div className="absolute top-1/2 -translate-y-1/2 right-3 flex flex-col items-center gap-1.5 z-10">
+      </div>
+      {/* Action row */}
+      <div className="mt-2.5 flex items-center justify-end gap-2 border-t border-border/50 pt-2.5">
+        {detailUrl && (
+          <Link
+            to={detailUrl}
+            className="flex items-center gap-1 px-2 py-1 rounded-md text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            title="View details"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ExternalLink className="h-3 w-3" />
+            <span>Details</span>
+          </Link>
+        )}
         <Button
           size="sm"
           variant="default"
-          className="h-8 px-3 text-xs font-medium"
+          className="h-7 px-3 text-xs font-medium"
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -156,16 +166,6 @@ function LibraryItemCard({
         >
           Open
         </Button>
-        {detailUrl && (
-          <Link
-            to={detailUrl}
-            className="p-1 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
-            title="View details"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <ExternalLink className="h-3.5 w-3.5" />
-          </Link>
-        )}
       </div>
     </div>
   );

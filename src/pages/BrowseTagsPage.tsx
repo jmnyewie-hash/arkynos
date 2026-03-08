@@ -198,10 +198,16 @@ export default function BrowseTagsPage() {
             <Link
               key={tag.id}
               to={`/class/${tag.id}`}
-              className="group flex items-center justify-between rounded-xl border bg-card p-4 shadow-card transition-all hover:shadow-card-hover hover:-translate-y-0.5"
+              className={`group flex items-center justify-between rounded-xl border bg-card p-4 shadow-card transition-all hover:shadow-card-hover hover:-translate-y-0.5 ${
+                tag.is_preferred ? "ring-2 ring-accent/50 border-accent/30" : ""
+              }`}
             >
               <div className="flex items-center gap-3 min-w-0">
-                <Tag className="h-5 w-5 text-primary shrink-0" />
+                {tag.is_preferred ? (
+                  <Star className="h-5 w-5 fill-accent text-accent shrink-0" />
+                ) : (
+                  <Tag className="h-5 w-5 text-primary shrink-0" />
+                )}
                 <div className="min-w-0">
                   <p className="font-heading font-semibold text-card-foreground group-hover:text-primary transition-colors">
                     {tag.name}

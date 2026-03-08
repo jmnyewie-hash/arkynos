@@ -18,6 +18,19 @@ export default function Index() {
   const [loading, setLoading] = useState(true);
   const [userCount, setUserCount] = useState<number>(0);
   const [totalFiles, setTotalFiles] = useState<number>(0);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const logoRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    const el = logoRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowScrollTop(!entry.isIntersecting),
+      { threshold: 0 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const fetchResources = useCallback(async () => {
     const { data: resourcesData } = await supabase

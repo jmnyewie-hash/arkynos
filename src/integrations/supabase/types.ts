@@ -123,6 +123,8 @@ export type Database = {
           id: string
           last_download_date: string
           name: string
+          program_id: string | null
+          study_year: number | null
           subscription_tier: Database["public"]["Enums"]["subscription_tier"]
           user_id: string
         }
@@ -134,6 +136,8 @@ export type Database = {
           id?: string
           last_download_date?: string
           name: string
+          program_id?: string | null
+          study_year?: number | null
           subscription_tier?: Database["public"]["Enums"]["subscription_tier"]
           user_id: string
         }
@@ -145,10 +149,20 @@ export type Database = {
           id?: string
           last_download_date?: string
           name?: string
+          program_id?: string | null
+          study_year?: number | null
           subscription_tier?: Database["public"]["Enums"]["subscription_tier"]
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "programs"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       programs: {
         Row: {

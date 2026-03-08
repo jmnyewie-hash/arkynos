@@ -154,44 +154,48 @@ export default function ClassTagPage() {
   }, [searchParams, tagId, user, hasAccess]);
 
   // Fetch tag + resources
-  useEffect(() => {
+  const fetchData = useCallback(async () => {
     if (!tagId) return;
-    const fetchData = async () => {
-      const { data: tagData } = await supabase
-        .from("class_tags")
+    const { data: tagData } = await supabase
+      .from("class_tags")
+      .select("*")
+      .eq("id", tagId)
+      .single();
+
+    setTag(tagData as ClassTag | null);
+    if (!tagData) { setLoading(false); return; }
+
+    const { data: resourcesData } = await supabase
+      .from("resources")
+      .select("*, courses(*)")
+      .eq("class_tag_id", tagId)
+      .eq("is_hidden", false)
+      .order("created_at", { ascending: false });
+
+    if (resourcesData) {
+      const userIds = [...new Set(resourcesData.map((r) => r.uploaded_by))];
+      const { data: profilesData } = await supabase
+        .from("profiles")
         .select("*")
-        .eq("id", tagId)
-        .single();
+        .in("user_id", userIds);
 
-      setTag(tagData as ClassTag | null);
-      if (!tagData) { setLoading(false); return; }
-
-      const { data: resourcesData } = await supabase
-        .from("resources")
-        .select("*, courses(*)")
-        .eq("class_tag_id", tagId)
-        .eq("is_hidden", false)
-        .order("created_at", { ascending: false });
-
-      if (resourcesData) {
-        const userIds = [...new Set(resourcesData.map((r) => r.uploaded_by))];
-        const { data: profilesData } = await supabase
-          .from("profiles")
-          .select("*")
-          .in("user_id", userIds);
-
-        const profilesMap = new Map((profilesData ?? []).map((p) => [p.user_id, p]));
-        setResources(
-          resourcesData.map((r) => ({
-            ...r,
-            profiles: profilesMap.get(r.uploaded_by) ?? null,
-          })) as ResourceWithRelations[]
-        );
-      }
-      setLoading(false);
-    };
-    fetchData();
+      const profilesMap = new Map((profilesData ?? []).map((p) => [p.user_id, p]));
+      setResources(
+        resourcesData.map((r) => ({
+          ...r,
+          profiles: profilesMap.get(r.uploaded_by) ?? null,
+        })) as ResourceWithRelations[]
+      );
+    }
+    setLoading(false);
   }, [tagId]);
+
+  // Realtime subscription
+  useRealtimeResources(fetchData, tagId ? { column: "class_tag_id", value: tagId } : undefined);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handlePay = async () => {
     if (!user) {

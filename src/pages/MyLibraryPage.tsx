@@ -359,9 +359,16 @@ export default function MyLibraryPage() {
         ) : (
           <div className="space-y-3">
             {cachedItems.map((item) => (
-              <OfflineCachedCard
+              <LibraryItemCard
                 key={item.id}
-                meta={item}
+                title={item.title}
+                courseCode={item.course_code}
+                courseName={item.course_name}
+                resourceType={item.resource_type}
+                isPreferred={item.is_preferred}
+                isCached={true}
+                resourceId={item.id}
+                downloads={item.downloads}
                 onOpen={() => handleOpenCached(item.id)}
               />
             ))}

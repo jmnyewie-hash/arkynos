@@ -39,9 +39,6 @@ export default function Index() {
       setLoading(false);
     };
     fetchResources();
-        setRecentResources((data as ResourceWithRelations[]) ?? []);
-        setLoading(false);
-      });
   }, []);
 
   return (

@@ -81,24 +81,26 @@ export default function Index() {
         </div>
         <div className="text-center animate-fade-in">
           <p className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground/50 italic">A total of <span className="text-sm font-bold text-primary not-italic">{totalFiles.toLocaleString()}</span> files available today</p>
-          <a href="/upload" className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90">
-            <Upload className="h-3.5 w-3.5" /> Upload New Files To Help The Library Grow
-          </a>
-          <button
-            onClick={() => {
-              const url = "https://arkynos.lovable.app";
-              const text = "Check out Arkynos — a free library of university study resources!";
-              if (navigator.share) {
-                navigator.share({ title: "Arkynos", text, url }).catch(() => {});
-              } else {
-                navigator.clipboard.writeText(`${text} ${url}`);
-                alert("Link copied to clipboard!");
-              }
-            }}
-            className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-background px-4 py-1.5 text-xs font-semibold text-primary shadow-sm transition-colors hover:bg-primary/10"
-          >
-            <Share2 className="h-3.5 w-3.5" /> Share The App Link To Help Community Grow
-          </button>
+          <div className="mt-3 flex flex-col items-center gap-2 px-2">
+            <a href="/upload" className="inline-flex w-full max-w-xs items-center justify-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90">
+              <Upload className="h-3.5 w-3.5 shrink-0" /> Upload New Files To Help The Library Grow
+            </a>
+            <button
+              onClick={() => {
+                const url = "https://arkynos.lovable.app";
+                const text = "Check out Arkynos — a free library of university study resources!";
+                if (navigator.share) {
+                  navigator.share({ title: "Arkynos", text, url }).catch(() => {});
+                } else {
+                  navigator.clipboard.writeText(`${text} ${url}`);
+                  alert("Link copied to clipboard!");
+                }
+              }}
+              className="inline-flex w-full max-w-xs items-center justify-center gap-1.5 rounded-full border border-primary/30 bg-background px-4 py-2 text-xs font-semibold text-primary shadow-sm transition-colors hover:bg-primary/10"
+            >
+              <Share2 className="h-3.5 w-3.5 shrink-0" /> Share The App Link To Help Community Grow
+            </button>
+          </div>
           <img src={arkynosLogo} alt="Arkynos" className="mx-auto mb-2 w-[50rem] max-w-full h-[22rem] object-contain" />
           <p className="text-base font-medium tracking-[0.25em] uppercase text-muted-foreground/50 italic">The Labyrinth Of Knowledge</p>
           <p className="mt-3 text-lg text-muted-foreground">

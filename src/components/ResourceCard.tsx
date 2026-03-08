@@ -63,13 +63,13 @@ export default function ResourceCard({ resource }: ResourceCardProps) {
               {resource.courses.course_code} · {resource.courses.course_name}
             </p>
           )}
-          <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
-            <Badge variant="secondary" className="text-xs">
+          <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+            <Badge variant="secondary" className="text-xs shrink-0">
               {typeLabels[resource.resource_type]}
             </Badge>
-            <span className="flex items-center gap-1"><Download className="h-3 w-3" />{resource.downloads}</span>
+            <span className="flex items-center gap-1 shrink-0"><Download className="h-3 w-3" />{resource.downloads}</span>
             {resource.profiles && (
-              <span className="flex items-center gap-1">
+              <span className="flex items-center gap-1 truncate">
                 by {resource.profiles.name}
                 {(resource.profiles as any).subscription_tier === "founder" && (
                   <span className="ml-1 text-amber-500 font-semibold">👑</span>

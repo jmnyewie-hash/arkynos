@@ -49,6 +49,7 @@ export default function ResourcePage() {
   const { isAdmin } = useIsAdmin();
   const { user } = useAuth();
   const { profile } = useProfile();
+  const { isSaved, toggleSave } = useLibrary();
 
   useEffect(() => {
     if (!id) return;

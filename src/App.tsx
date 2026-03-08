@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import Navbar from "@/components/Navbar";
+import UpdateBanner from "@/components/UpdateBanner";
 import Index from "./pages/Index";
 import SearchPage from "./pages/SearchPage";
 import CoursePage from "./pages/CoursePage";
@@ -85,6 +86,7 @@ const App = () => (
             <Route path="/offline" element={<OfflinePage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <UpdateBanner />
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

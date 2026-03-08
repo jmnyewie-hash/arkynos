@@ -166,10 +166,10 @@ export default function CourseSearchBar({ className = "", initialQuery = "" }: {
             <li
               onMouseDown={(e) => { e.preventDefault(); goToSearch(query.trim()); }}
               onMouseEnter={() => setSelectedIndex(-1)}
-              className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-primary hover:bg-muted transition-colors border-t mt-1 pt-3"
+              className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-primary hover:bg-muted transition-colors border-t mt-1 pt-3 select-none"
             >
-              <Search className="h-3.5 w-3.5 shrink-0" />
-              <span>Search all for "<strong>{query.trim()}</strong>"</span>
+              <Search className="h-3.5 w-3.5 shrink-0 pointer-events-none" />
+              <span className="pointer-events-none">Search all for "<strong>{query.trim()}</strong>"</span>
             </li>
           )}
         </ul>

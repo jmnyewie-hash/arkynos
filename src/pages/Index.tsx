@@ -65,7 +65,7 @@ export default function Index() {
       <FoundingBanner />
       <div className="container max-w-2xl py-16">
         <div className="text-center animate-fade-in">
-          <svg viewBox="0 0 400 60" className="mx-auto w-80 mb-1">
+          <svg viewBox="0 0 400 60" className="mx-auto w-[40rem] mb-1">
             <defs>
               <path id="curve" d="M 30,50 Q 200,0 370,50" fill="transparent" />
             </defs>

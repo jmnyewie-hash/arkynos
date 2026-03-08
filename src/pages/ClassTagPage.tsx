@@ -321,9 +321,17 @@ export default function ClassTagPage() {
 
   return (
     <div className="container max-w-2xl py-10 animate-fade-in">
-      <div>
-        <h1 className="font-heading text-3xl font-bold">{tag.name}</h1>
-        {tag.description && <p className="mt-1 text-muted-foreground">{tag.description}</p>}
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="font-heading text-3xl font-bold">{tag.name}</h1>
+          {tag.description && <p className="mt-1 text-muted-foreground">{tag.description}</p>}
+        </div>
+        {canUpload && hasAccess && (
+          <Button onClick={() => setUploadOpen(true)} size="sm">
+            <Plus className="mr-1.5 h-4 w-4" />
+            Add Resource
+          </Button>
+        )}
       </div>
 
       {verifying && (

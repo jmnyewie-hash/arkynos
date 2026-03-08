@@ -41,6 +41,8 @@ const App = () => (
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/admin/flags" element={<AdminFlagsPage />} />
             <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+            <Route path="/admin/messages" element={<AdminMessagesPage />} />
+            <Route path="/contact" element={<ContactAdminPage />} />
             <Route path="/upgrade" element={<UpgradePage />} />
             <Route path="/classes" element={<BrowseTagsPage />} />
             <Route path="/class/:tagId" element={<ClassTagPage />} />

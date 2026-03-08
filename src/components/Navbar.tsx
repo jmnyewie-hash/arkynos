@@ -38,8 +38,14 @@ export default function Navbar() {
                   <Button variant="ghost" size="sm" asChild>
                     <Link to="/admin/dashboard"><BarChart3 className="mr-1.5 h-4 w-4" />Stats</Link>
                   </Button>
+                  <Button variant="ghost" size="sm" asChild>
+                    <Link to="/admin/messages"><MessageSquare className="mr-1.5 h-4 w-4" />Messages</Link>
+                  </Button>
                 </>
               )}
+              <Button variant="ghost" size="sm" asChild>
+                <Link to="/contact"><MessageSquare className="mr-1.5 h-4 w-4" />Contact</Link>
+              </Button>
               <Button variant="ghost" size="sm" asChild>
                 <Link to="/upload"><Upload className="mr-1.5 h-4 w-4" />Upload</Link>
               </Button>

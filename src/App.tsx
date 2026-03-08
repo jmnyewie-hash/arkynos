@@ -12,6 +12,7 @@ import ResourcePage from "./pages/ResourcePage";
 import UploadPage from "./pages/UploadPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import AdminFlagsPage from "./pages/AdminFlagsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/upload" element={<UploadPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/admin/flags" element={<AdminFlagsPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

@@ -1,11 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Button } from "@/components/ui/button";
-import { Upload, LogOut } from "lucide-react";
+import { Upload, LogOut, Flag } from "lucide-react";
 import arkynosLogo from "@/assets/arkynos-logo-full.png";
 
 export default function Navbar() {
   const { user, signOut } = useAuth();
+  const { isAdmin } = useIsAdmin();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -22,6 +24,11 @@ export default function Navbar() {
         <nav className="flex items-center gap-2">
           {user ? (
             <>
+              {isAdmin && (
+                <Button variant="ghost" size="sm" asChild>
+                  <Link to="/admin/flags"><Flag className="mr-1.5 h-4 w-4" />Flags</Link>
+                </Button>
+              )}
               <Button variant="ghost" size="sm" asChild>
                 <Link to="/upload"><Upload className="mr-1.5 h-4 w-4" />Upload</Link>
               </Button>

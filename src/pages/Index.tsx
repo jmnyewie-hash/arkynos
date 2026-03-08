@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 import CourseSearchBar from "@/components/CourseSearchBar";
 import ResourceCard from "@/components/ResourceCard";
-import { BookOpen } from "lucide-react";
+import arkynosLogo from "@/assets/arkynos-logo.png";
 
 type ResourceWithRelations = Tables<"resources"> & {
   courses: Tables<"courses"> | null;
@@ -44,11 +44,9 @@ export default function Index() {
   return (
     <div className="container max-w-2xl py-16">
       <div className="text-center animate-fade-in">
-        <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
-          <BookOpen className="h-8 w-8 text-primary" />
-        </div>
+        <img src={arkynosLogo} alt="Arkynos logo" className="mx-auto mb-6 h-20 w-20" />
         <h1 className="font-heading text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-          Course Resource Hub
+          Arkynos
         </h1>
         <p className="mt-3 text-lg text-muted-foreground">
           Find and share study resources for your courses

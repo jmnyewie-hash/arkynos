@@ -365,14 +365,27 @@ export default function ClassTagPage() {
         </div>
         <div className="flex items-center gap-2 shrink-0">
           {isAdmin && (
-            <Button
-              variant={tag.is_preferred ? "secondary" : "outline"}
-              size="sm"
-              onClick={handleTogglePreferred}
-            >
-              <Star className={`mr-1.5 h-4 w-4 ${tag.is_preferred ? "fill-accent text-accent" : ""}`} />
-              {tag.is_preferred ? "Preferred" : "Mark Preferred"}
-            </Button>
+            <>
+              <Button
+                variant={tag.is_free ? "secondary" : "outline"}
+                size="sm"
+                onClick={handleToggleFree}
+              >
+                {tag.is_free ? (
+                  <><ShieldOff className="mr-1.5 h-4 w-4" />Free</>
+                ) : (
+                  <><Shield className="mr-1.5 h-4 w-4" />Remove Paywall</>
+                )}
+              </Button>
+              <Button
+                variant={tag.is_preferred ? "secondary" : "outline"}
+                size="sm"
+                onClick={handleTogglePreferred}
+              >
+                <Star className={`mr-1.5 h-4 w-4 ${tag.is_preferred ? "fill-accent text-accent" : ""}`} />
+                {tag.is_preferred ? "Preferred" : "Mark Preferred"}
+              </Button>
+            </>
           )}
           {canUpload && hasAccess && (
             <Button onClick={() => setUploadOpen(true)} size="sm">

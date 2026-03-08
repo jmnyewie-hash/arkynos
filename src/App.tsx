@@ -12,6 +12,7 @@ import ResourcePage from "./pages/ResourcePage";
 import UploadPage from "./pages/UploadPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import AdminFlagsPage from "./pages/AdminFlagsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();

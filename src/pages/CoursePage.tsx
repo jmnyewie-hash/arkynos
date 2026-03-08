@@ -28,12 +28,16 @@ function sortResources(items: ResourceWithRelations[], mode: SortMode): Resource
   const copy = [...items];
   switch (mode) {
     case "downloads":
-      return copy.sort((a, b) => b.downloads - a.downloads);
-    case "preferred":
-      return copy.sort((a, b) => (b.is_preferred ? 1 : 0) - (a.is_preferred ? 1 : 0) || new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      return copy.sort((a, b) => b.downloads - a.downloads || new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
     case "recent":
-    default:
       return copy.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    case "preferred":
+    default:
+      return copy.sort((a, b) =>
+        (b.is_preferred ? 1 : 0) - (a.is_preferred ? 1 : 0) ||
+        b.downloads - a.downloads ||
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
   }
 }
 
@@ -42,7 +46,7 @@ export default function CoursePage() {
   const [course, setCourse] = useState<Tables<"courses"> | null>(null);
   const [resources, setResources] = useState<ResourceWithRelations[]>([]);
   const [loading, setLoading] = useState(true);
-  const [sortMode, setSortMode] = useState<SortMode>("recent");
+  const [sortMode, setSortMode] = useState<SortMode>("preferred");
 
   useEffect(() => {
     if (!courseCode) return;

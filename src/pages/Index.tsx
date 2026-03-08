@@ -24,6 +24,8 @@ export default function Index() {
         .from("resources")
         .select("*, courses(*)")
         .eq("is_hidden", false)
+        .order("is_preferred", { ascending: false })
+        .order("downloads", { ascending: false })
         .order("created_at", { ascending: false })
         .limit(6);
 

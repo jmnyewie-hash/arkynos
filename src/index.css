@@ -172,4 +172,15 @@
   .shadow-card-hover {
     box-shadow: var(--shadow-lg);
   }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+html, body {
+  overflow-x: hidden;
 }

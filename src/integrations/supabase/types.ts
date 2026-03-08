@@ -21,6 +21,7 @@ export type Database = {
           created_at: string
           department: string
           id: string
+          program_id: string | null
           university: string
         }
         Insert: {
@@ -29,6 +30,7 @@ export type Database = {
           created_at?: string
           department: string
           id?: string
+          program_id?: string | null
           university: string
         }
         Update: {
@@ -37,9 +39,18 @@ export type Database = {
           created_at?: string
           department?: string
           id?: string
+          program_id?: string | null
           university?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "courses_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "programs"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -62,6 +73,30 @@ export type Database = {
           id?: string
           name?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      programs: {
+        Row: {
+          created_at: string
+          department: string
+          id: string
+          program_name: string
+          university: string
+        }
+        Insert: {
+          created_at?: string
+          department: string
+          id?: string
+          program_name: string
+          university: string
+        }
+        Update: {
+          created_at?: string
+          department?: string
+          id?: string
+          program_name?: string
+          university?: string
         }
         Relationships: []
       }

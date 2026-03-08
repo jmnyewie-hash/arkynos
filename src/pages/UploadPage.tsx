@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Upload } from "lucide-react";
+import CourseSearchSelect from "@/components/CourseSearchSelect";
 
 const ALLOWED_TYPES = [
   "application/pdf",
@@ -28,22 +29,18 @@ const resourceTypes = [
 export default function UploadPage() {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
-  const [courses, setCourses] = useState<Tables<"courses">[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [courseId, setCourseId] = useState("");
+  const [selectedCourse, setSelectedCourse] = useState<Tables<"courses"> | null>(null);
   const [resourceType, setResourceType] = useState("");
   const [file, setFile] = useState<File | null>(null);
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/login");
   }, [user, authLoading, navigate]);
-
-  useEffect(() => {
-    supabase.from("courses").select("*").order("course_code").then(({ data }) => setCourses(data ?? []));
-  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
@@ -61,7 +58,7 @@ export default function UploadPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user || !file || !courseId || !resourceType || !title.trim()) {
+    if (!user || !file || !courseId || !selectedCourse || !resourceType || !title.trim()) {
       toast.error("Please fill all required fields");
       return;
     }
@@ -88,8 +85,7 @@ export default function UploadPage() {
       if (insertError) throw insertError;
 
       toast.success("Resource uploaded!");
-      const course = courses.find((c) => c.id === courseId);
-      navigate(course ? `/course/${course.course_code}` : "/");
+      navigate(`/course/${selectedCourse.course_code}`);
     } catch (err: any) {
       toast.error(err.message || "Upload failed");
     }
@@ -110,15 +106,18 @@ export default function UploadPage() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="course">Course *</Label>
-          <Select value={courseId} onValueChange={setCourseId} required>
-            <SelectTrigger><SelectValue placeholder="Select a course" /></SelectTrigger>
-            <SelectContent>
-              {courses.map((c) => (
-                <SelectItem key={c.id} value={c.id}>{c.course_code} — {c.course_name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Label>Course *</Label>
+          <CourseSearchSelect
+            value={courseId}
+            onSelect={(id, course) => {
+              setCourseId(id);
+              setSelectedCourse(course);
+            }}
+            onClear={() => {
+              setCourseId("");
+              setSelectedCourse(null);
+            }}
+          />
         </div>
 
         <div className="space-y-2">

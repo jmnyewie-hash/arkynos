@@ -85,6 +85,7 @@ export default function UploadPage() {
       const { error: insertError } = await supabase.from("resources").insert({
         title: title.trim(),
         description: description.trim() || null,
+        author: author.trim() || null,
         course_id: courseId,
         resource_type: resourceType as any,
         file_url: urlData.publicUrl,

@@ -150,12 +150,12 @@ export default function CourseSearchBar({ className = "", initialQuery = "" }: {
               key={s.course_code}
               onMouseDown={(e) => { e.preventDefault(); goToCourse(s.course_code); }}
               onMouseEnter={() => setSelectedIndex(i)}
-              className={`flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
+              className={`flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors select-none ${
                 i === selectedIndex ? "bg-accent text-accent-foreground" : "text-foreground hover:bg-muted"
               }`}
             >
-              <Search className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-              <div className="min-w-0">
+              <Search className="h-3.5 w-3.5 text-muted-foreground shrink-0 pointer-events-none" />
+              <div className="min-w-0 pointer-events-none">
                 <span className="font-semibold text-primary">{highlight(s.course_code)}</span>
                 <span className="mx-1.5 text-muted-foreground/40">·</span>
                 <span className="text-muted-foreground">{highlight(s.course_name)}</span>

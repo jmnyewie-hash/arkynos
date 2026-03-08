@@ -424,29 +424,94 @@ export default function ClassTagPage() {
           </div>
           {resources.length === 0 ? (
             <p className="mt-8 text-sm text-muted-foreground">No resources uploaded to this class yet.</p>
-          ) : (
-            <div className="mt-6 space-y-2">
-              {resources.map((r) => (
-                <div key={r.id} className="flex items-center gap-2">
-                  <div className="flex-1 min-w-0">
-                    <ResourceCard resource={r} />
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="shrink-0 h-9 w-9"
-                    title="Save for offline"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleSaveOffline(r);
-                    }}
-                  >
-                    <Download className="h-4 w-4" />
-                  </Button>
+          ) : (() => {
+            // Group resources by course
+            const courseGroups = new Map<string, { course: Tables<"courses"> | null; items: ResourceWithRelations[] }>();
+            for (const r of resources) {
+              const key = r.course_id;
+              if (!courseGroups.has(key)) {
+                courseGroups.set(key, { course: r.courses, items: [] });
+              }
+              courseGroups.get(key)!.items.push(r);
+            }
+            const groups = Array.from(courseGroups.entries());
+
+            if (groups.length <= 1) {
+              // Single course or no course — no tabs needed
+              return (
+                <div className="mt-6 space-y-2">
+                  {resources.map((r) => (
+                    <div key={r.id} className="flex items-center gap-2">
+                      <div className="flex-1 min-w-0">
+                        <ResourceCard resource={r} />
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="shrink-0 h-9 w-9"
+                        title="Save for offline"
+                        onClick={(e) => { e.preventDefault(); handleSaveOffline(r); }}
+                      >
+                        <Download className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          )}
+              );
+            }
+
+            return (
+              <Tabs defaultValue={groups[0][0]} className="mt-6">
+                <TabsList className="flex flex-wrap h-auto gap-1 bg-muted/50 p-1">
+                  <TabsTrigger value="__all__" className="text-xs">
+                    <LayoutGrid className="mr-1 h-3 w-3" /> All
+                  </TabsTrigger>
+                  {groups.map(([courseId, { course }]) => (
+                    <TabsTrigger key={courseId} value={courseId} className="text-xs">
+                      {course?.course_code || "Unknown"}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+
+                <TabsContent value="__all__">
+                  <div className="mt-2 space-y-2">
+                    {resources.map((r) => (
+                      <div key={r.id} className="flex items-center gap-2">
+                        <div className="flex-1 min-w-0">
+                          <ResourceCard resource={r} />
+                        </div>
+                        <Button variant="ghost" size="icon" className="shrink-0 h-9 w-9" title="Save for offline" onClick={(e) => { e.preventDefault(); handleSaveOffline(r); }}>
+                          <Download className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </TabsContent>
+
+                {groups.map(([courseId, { course, items }]) => (
+                  <TabsContent key={courseId} value={courseId}>
+                    <div className="mt-2">
+                      <p className="text-sm text-muted-foreground mb-3">
+                        {course?.course_name || "Unknown Course"} · {items.length} resource{items.length !== 1 ? "s" : ""}
+                      </p>
+                      <div className="space-y-2">
+                        {items.map((r) => (
+                          <div key={r.id} className="flex items-center gap-2">
+                            <div className="flex-1 min-w-0">
+                              <ResourceCard resource={r} />
+                            </div>
+                            <Button variant="ghost" size="icon" className="shrink-0 h-9 w-9" title="Save for offline" onClick={(e) => { e.preventDefault(); handleSaveOffline(r); }}>
+                              <Download className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </TabsContent>
+                ))}
+              </Tabs>
+            );
+          })()}
         </>
       ) : null}
 

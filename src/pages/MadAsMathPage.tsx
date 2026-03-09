@@ -175,7 +175,22 @@ export default function MadAsMathPage() {
               <div className="space-y-3">
                 {grouped[topic].map((r) => (
                   <div key={r.id}>
-                    <ResourceCard resource={r} isSaved={isSaved(r.id)} onToggleSave={toggleSave} />
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 min-w-0">
+                        <ResourceCard resource={r} isSaved={isSaved(r.id)} onToggleSave={toggleSave} />
+                      </div>
+                      {(r as any).mad_math_difficulty && (
+                        <span
+                          className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${
+                            (r as any).mad_math_difficulty === "advanced"
+                              ? "bg-destructive/15 text-destructive"
+                              : "bg-primary/15 text-primary"
+                          }`}
+                        >
+                          {(r as any).mad_math_difficulty}
+                        </span>
+                      )}
+                    </div>
                     {isAdmin && (
                       <div className="mt-1.5 ml-12 flex flex-wrap items-center gap-3 text-xs">
                         <button

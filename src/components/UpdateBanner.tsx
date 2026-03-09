@@ -31,19 +31,25 @@ export default function UpdateBanner() {
   if (!needRefresh) return null;
 
   return (
-    <div className="fixed bottom-14 left-0 right-0 z-50 flex items-center justify-between gap-3 bg-primary text-primary-foreground px-4 py-3 shadow-lg animate-in slide-in-from-bottom-2 duration-300">
-      <div className="flex items-center gap-2 text-sm font-medium">
-        <RefreshCw className="h-4 w-4 shrink-0 animate-spin" />
-        <span>A new version of Arkynos is ready.</span>
+    <>
+      {/* Backdrop overlay */}
+      <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm animate-fade-in" />
+      
+      {/* Update banner */}
+      <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between gap-3 bg-primary text-primary-foreground px-4 py-4 shadow-lg animate-in slide-in-from-top-2 duration-500 border-b-2 border-primary-foreground/20">
+        <div className="flex items-center gap-2 text-sm font-medium">
+          <RefreshCw className="h-4 w-4 shrink-0 animate-spin" />
+          <span>A new version of Arkynos is ready.</span>
+        </div>
+        <Button
+          size="sm"
+          variant="secondary"
+          className="shrink-0 font-semibold"
+          onClick={() => updateServiceWorker(true)}
+        >
+          Update & Reload
+        </Button>
       </div>
-      <Button
-        size="sm"
-        variant="secondary"
-        className="shrink-0 font-semibold"
-        onClick={() => updateServiceWorker(true)}
-      >
-        Update & Reload
-      </Button>
-    </div>
+    </>
   );
 }

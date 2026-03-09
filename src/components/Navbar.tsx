@@ -189,7 +189,7 @@ export default function Navbar() {
                 <Button variant="ghost" size="sm" asChild className="shrink-0">
                   <Link to="/contact"><MessageSquare className="mr-1.5 h-4 w-4" />Contact</Link>
                 </Button>
-                <Button variant="ghost" size="sm" asChild className="shrink-0">
+                <Button variant="ghost" size="sm" asChild className="shrink-0 ring-1 ring-primary/30 bg-primary/5 text-primary font-medium">
                   <Link to="/upload"><Upload className="mr-1.5 h-4 w-4" />Upload</Link>
                 </Button>
                 <Button variant="ghost" size="sm" asChild className="shrink-0">

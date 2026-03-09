@@ -120,12 +120,18 @@ export default function BottomToolbar() {
       {/* Scroll Gear - always visible when user is logged in */}
       <div className="fixed bottom-16 left-4 z-40">
         <Cog 
-          className="h-8 w-8 text-muted-foreground/70"
+          className="h-12 w-12"
           style={{
+            color: '#f97316',
             transform: `rotate(${gearRotation}deg)`,
             transition: 'none',
-            filter: "drop-shadow(0 0 6px hsl(var(--primary) / 0.35))"
+            filter: "drop-shadow(0 0 8px rgba(249,115,22,0.5))",
+            WebkitTextStroke: '1px black',
+            paintOrder: 'stroke fill',
           }}
+          strokeWidth={1.5}
+          stroke="black"
+          fill="none"
         />
       </div>
 

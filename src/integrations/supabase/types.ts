@@ -244,8 +244,10 @@ export type Database = {
           file_url: string
           id: string
           is_hidden: boolean
+          is_mad_math: boolean
           is_preferred: boolean
           resource_type: Database["public"]["Enums"]["resource_type"]
+          show_in_general: boolean
           title: string
           uploaded_by: string
         }
@@ -260,8 +262,10 @@ export type Database = {
           file_url: string
           id?: string
           is_hidden?: boolean
+          is_mad_math?: boolean
           is_preferred?: boolean
           resource_type: Database["public"]["Enums"]["resource_type"]
+          show_in_general?: boolean
           title: string
           uploaded_by: string
         }
@@ -276,8 +280,10 @@ export type Database = {
           file_url?: string
           id?: string
           is_hidden?: boolean
+          is_mad_math?: boolean
           is_preferred?: boolean
           resource_type?: Database["public"]["Enums"]["resource_type"]
+          show_in_general?: boolean
           title?: string
           uploaded_by?: string
         }

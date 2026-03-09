@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useAuth } from "@/hooks/useAuth";
 import { Tables } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
@@ -33,7 +34,10 @@ const resourceTypes = [
 
 export default function UploadPage() {
   const { user, loading: authLoading } = useAuth();
+  const { isAdmin } = useIsAdmin();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const isMadMath = searchParams.get("mad_math") === "true";
   const [submitting, setSubmitting] = useState(false);
 
   const [title, setTitle] = useState("");
@@ -82,7 +86,7 @@ export default function UploadPage() {
 
       const { data: urlData } = supabase.storage.from("resources").getPublicUrl(filePath);
 
-      const { error: insertError } = await supabase.from("resources").insert({
+      const insertData: any = {
         title: title.trim(),
         description: description.trim() || null,
         author: author.trim() || null,
@@ -92,11 +96,18 @@ export default function UploadPage() {
         file_path: filePath,
         uploaded_by: user.id,
         ...(classTagId ? { class_tag_id: classTagId } : {}),
-      } as any);
+        ...(isMadMath && isAdmin ? { is_mad_math: true, is_hidden: true, show_in_general: false } : {}),
+      };
+
+      const { error: insertError } = await supabase.from("resources").insert(insertData);
       if (insertError) throw insertError;
 
-      toast.success("Resource uploaded!");
-      navigate(`/course/${selectedCourse.course_code}`);
+      toast.success(isMadMath ? "Mad As Math resource uploaded!" : "Resource uploaded!");
+      if (isMadMath) {
+        navigate("/mad-as-math");
+      } else {
+        navigate(`/course/${selectedCourse.course_code}`);
+      }
     } catch (err: any) {
       toast.error(err.message || "Upload failed");
     }
@@ -107,8 +118,13 @@ export default function UploadPage() {
 
   return (
     <div className="container max-w-lg py-10 animate-fade-in">
-      <h1 className="font-heading text-2xl font-bold">Upload Resource</h1>
-      <p className="mt-1 text-sm text-muted-foreground">Share study materials with your peers</p>
+      <h1 className="font-heading text-2xl font-bold">{isMadMath ? "Upload to Mad As Math" : "Upload Resource"}</h1>
+      <p className="mt-1 text-sm text-muted-foreground">
+        {isMadMath ? "This resource will be added to the Mad As Math section (hidden by default)" : "Share study materials with your peers"}
+      </p>
+      {isMadMath && !isAdmin && (
+        <p className="mt-2 text-sm text-destructive">Only administrators can upload to Mad As Math.</p>
+      )}
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-5">
         <div className="space-y-2">

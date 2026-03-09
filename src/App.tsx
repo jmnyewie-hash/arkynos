@@ -28,6 +28,7 @@ import MyLibraryPage from "./pages/MyLibraryPage";
 import ViewerPage from "./pages/ViewerPage";
 import OfflinePage from "./pages/OfflinePage";
 import RecentResourcesPage from "./pages/RecentResourcesPage";
+import MadAsMathPage from "./pages/MadAsMathPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -91,6 +92,7 @@ const App = () => (
               <Route path="/view/:id" element={<ViewerPage />} />
               <Route path="/offline" element={<OfflinePage />} />
               <Route path="/recent" element={<RecentResourcesPage />} />
+              <Route path="/mad-as-math" element={<MadAsMathPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <UpdateBanner />

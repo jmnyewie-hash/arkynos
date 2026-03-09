@@ -12,6 +12,7 @@ import arkynosLogo from "@/assets/arkynos-logo-full.png";
 import arkynosLogoWhite from "@/assets/arkynos-logo-full-white.png";
 import arkynosLogoGlow from "@/assets/arkynos-logo-full-glow.png";
 import { Users, BookOpen, FolderOpen, Shield, Upload, Share2, Download } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 
 type ResourceWithRelations = Tables<"resources"> & {
   courses: Tables<"courses"> | null;
@@ -120,6 +121,9 @@ export default function Index() {
     <>
       <FoundingBanner />
       <div className="container max-w-2xl py-16">
+        <div className="mb-1 flex justify-end animate-fade-in">
+          <ThemeToggle />
+        </div>
         <div className="mb-6 animate-fade-in relative z-[60]">
           <CourseSearchBar />
         </div>

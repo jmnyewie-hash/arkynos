@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-type Theme = 'teal' | 'amber' | 'blue' | 'forest' | 'mono';
+type Theme = 'teal' | 'amber' | 'blue' | 'forest' | 'mono' | 'blaze';
 
 interface ThemeContextType {
   theme: Theme;
@@ -70,6 +70,16 @@ const themes: ThemeOption[] = [
       accent: 'hsl(0, 0%, 98%)',
     },
   },
+  {
+    id: 'blaze',
+    name: 'Blaze',
+    description: 'Vibrant orange with dark black shades',
+    colors: {
+      primary: 'hsl(24, 95%, 53%)',
+      secondary: 'hsl(0, 0%, 15%)',
+      accent: 'hsl(33, 100%, 96%)',
+    },
+  },
 ];
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -109,7 +119,7 @@ function applyTheme(theme: Theme) {
   const root = document.documentElement;
   
   // Remove existing theme classes
-  root.classList.remove('theme-teal', 'theme-amber', 'theme-blue', 'theme-forest', 'theme-mono');
+  root.classList.remove('theme-teal', 'theme-amber', 'theme-blue', 'theme-forest', 'theme-mono', 'theme-blaze');
   
   // Add new theme class
   root.classList.add(`theme-${theme}`);
@@ -151,6 +161,25 @@ function applyTheme(theme: Theme) {
       root.style.setProperty('--accent', '269 100% 98%');
       root.style.setProperty('--accent-foreground', '270 91% 65%');
       root.style.setProperty('--ring', '258 89% 66%');
+      break;
+    case 'blaze':
+      root.style.setProperty('--primary', '24 95% 53%');
+      root.style.setProperty('--primary-foreground', '0 0% 100%');
+      root.style.setProperty('--secondary', '0 0% 15%');
+      root.style.setProperty('--secondary-foreground', '0 0% 95%');
+      root.style.setProperty('--accent', '33 100% 96%');
+      root.style.setProperty('--accent-foreground', '24 95% 45%');
+      root.style.setProperty('--ring', '24 95% 53%');
+      root.style.setProperty('--muted', '0 0% 20%');
+      root.style.setProperty('--muted-foreground', '0 0% 60%');
+      root.style.setProperty('--card', '0 0% 8%');
+      root.style.setProperty('--card-foreground', '0 0% 93%');
+      root.style.setProperty('--background', '0 0% 5%');
+      root.style.setProperty('--foreground', '0 0% 93%');
+      root.style.setProperty('--border', '0 0% 18%');
+      root.style.setProperty('--input', '0 0% 18%');
+      root.style.setProperty('--popover', '0 0% 10%');
+      root.style.setProperty('--popover-foreground', '0 0% 93%');
       break;
     default: // mono
       root.style.setProperty('--primary', '0 0% 9%');

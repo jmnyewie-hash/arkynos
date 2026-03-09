@@ -52,7 +52,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-md">
-      {canScroll && (
+      {canScroll && showScrollTip && (
         <Alert className="rounded-none border-l-0 border-r-0 border-t-0 bg-muted/30 py-2">
           <Info className="h-4 w-4" />
           <AlertDescription className="text-xs">

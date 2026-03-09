@@ -75,7 +75,7 @@ export default function Index() {
       setRecentResources(merged as ResourceWithRelations[]);
     }
     setLoading(false);
-  }, []);
+  }, [showAllResources]);
 
   const fetchFileCount = useCallback(async () => {
     const { count } = await supabase

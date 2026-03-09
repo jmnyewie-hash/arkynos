@@ -9,6 +9,7 @@ import { ThemeProvider } from "@/hooks/useTheme";
 import Navbar from "@/components/Navbar";
 import UpdateBanner from "@/components/UpdateBanner";
 import BottomToolbar from "@/components/BottomToolbar";
+import ThemeToggle from "@/components/ThemeToggle";
 import Index from "./pages/Index";
 import SearchPage from "./pages/SearchPage";
 import CoursePage from "./pages/CoursePage";

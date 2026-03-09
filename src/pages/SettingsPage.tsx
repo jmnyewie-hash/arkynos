@@ -112,7 +112,7 @@ export default function SettingsPage() {
                 <Button 
                   variant="outline" 
                   onClick={resetToDefault} 
-                  disabled={currentTheme === 'teal'}
+                  disabled={currentTheme === 'mono'}
                   size="sm"
                   className="flex-1 min-w-fit"
                 >

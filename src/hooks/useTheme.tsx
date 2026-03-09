@@ -143,16 +143,7 @@ function applyTheme(theme: Theme) {
       root.style.setProperty('--accent-foreground', '142 76% 36%');
       root.style.setProperty('--ring', '142 76% 36%');
       break;
-    case 'mono':
-      root.style.setProperty('--primary', '0 0% 9%');
-      root.style.setProperty('--primary-foreground', '0 0% 98%');
-      root.style.setProperty('--secondary', '0 0% 45%');
-      root.style.setProperty('--secondary-foreground', '0 0% 98%');
-      root.style.setProperty('--accent', '0 0% 98%');
-      root.style.setProperty('--accent-foreground', '0 0% 9%');
-      root.style.setProperty('--ring', '0 0% 9%');
-      break;
-    default: // teal
+    case 'teal':
       root.style.setProperty('--primary', '258 89% 66%');
       root.style.setProperty('--primary-foreground', '250 100% 97%');
       root.style.setProperty('--secondary', '240 5% 33%');
@@ -160,6 +151,15 @@ function applyTheme(theme: Theme) {
       root.style.setProperty('--accent', '269 100% 98%');
       root.style.setProperty('--accent-foreground', '270 91% 65%');
       root.style.setProperty('--ring', '258 89% 66%');
+      break;
+    default: // mono
+      root.style.setProperty('--primary', '0 0% 9%');
+      root.style.setProperty('--primary-foreground', '0 0% 98%');
+      root.style.setProperty('--secondary', '0 0% 45%');
+      root.style.setProperty('--secondary-foreground', '0 0% 98%');
+      root.style.setProperty('--accent', '0 0% 98%');
+      root.style.setProperty('--accent-foreground', '0 0% 9%');
+      root.style.setProperty('--ring', '0 0% 9%');
       break;
   }
 }

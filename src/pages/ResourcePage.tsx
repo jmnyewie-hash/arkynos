@@ -166,7 +166,13 @@ export default function ResourcePage() {
           This resource is hidden from users.
         </div>
       )}
-      <div className={`rounded-xl border bg-card p-6 shadow-card ${resource.is_preferred ? "ring-2 ring-accent/50 border-accent/30" : ""} ${isHidden ? "opacity-60" : ""}`}>
+      <div className={`relative rounded-xl border bg-card p-6 shadow-card ${resource.is_preferred ? "ring-2 ring-accent/50 border-accent/30" : ""} ${isHidden ? "opacity-60" : ""}`}>
+        {(() => {
+          const uploadYear = new Date(resource.created_at).getFullYear();
+          return uploadYear >= 2026 ? (
+            <span className="absolute top-4 right-4 text-sm font-bold text-primary/70">{uploadYear}</span>
+          ) : null;
+        })()}
         <div className="flex items-start gap-4">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
             <FileText className="h-6 w-6 text-primary" />

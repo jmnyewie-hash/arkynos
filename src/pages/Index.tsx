@@ -5,6 +5,7 @@ import { Tables } from "@/integrations/supabase/types";
 import CourseSearchBar from "@/components/CourseSearchBar";
 import ResourceCard from "@/components/ResourceCard";
 import FoundingBanner from "@/components/FoundingBanner";
+import ThemeToggle from "@/components/ThemeToggle";
 import { useRealtimeResources } from "@/hooks/useRealtimeResources";
 import { useLibrary } from "@/hooks/useLibrary";
 import { useTheme } from "@/hooks/useTheme";

@@ -40,15 +40,15 @@ export default function MadAsMathPage() {
 
     const { data: resourcesData } = await filtered;
 
-    if (resourcesData) {
-      const userIds = [...new Set(resourcesData.map((r: any) => r.uploaded_by))];
+    if (resourcesData && resourcesData.length > 0) {
+      const userIds = [...new Set((resourcesData as any[]).map((r) => r.uploaded_by))] as string[];
       const { data: profilesData } = await supabase
         .from("profiles")
         .select("*")
         .in("user_id", userIds);
 
       const profilesMap = new Map((profilesData ?? []).map((p) => [p.user_id, p]));
-      const merged = resourcesData.map((r: any) => ({
+      const merged = (resourcesData as any[]).map((r) => ({
         ...r,
         profiles: profilesMap.get(r.uploaded_by) ?? null,
       }));

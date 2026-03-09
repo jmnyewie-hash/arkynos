@@ -23,7 +23,7 @@ const themes: ThemeOption[] = [
   {
     id: 'teal',
     name: 'Teal Mint',
-    description: 'Soft teal with purple accents (default)',
+    description: 'Soft teal with purple accents',
     colors: {
       primary: 'hsl(258, 89%, 66%)',
       secondary: 'hsl(240, 5%, 33%)',
@@ -63,7 +63,7 @@ const themes: ThemeOption[] = [
   {
     id: 'mono',
     name: 'Monochrome',
-    description: 'Classic black and white',
+    description: 'Classic black and white (default)',
     colors: {
       primary: 'hsl(0, 0%, 9%)',
       secondary: 'hsl(0, 0%, 45%)',
@@ -77,7 +77,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>(() => {
     const stored = localStorage.getItem('arkynos-theme');
-    return (stored as Theme) || 'teal';
+    return (stored as Theme) || 'mono';
   });
 
   const setTheme = (newTheme: Theme) => {
@@ -143,16 +143,7 @@ function applyTheme(theme: Theme) {
       root.style.setProperty('--accent-foreground', '142 76% 36%');
       root.style.setProperty('--ring', '142 76% 36%');
       break;
-    case 'mono':
-      root.style.setProperty('--primary', '0 0% 9%');
-      root.style.setProperty('--primary-foreground', '0 0% 98%');
-      root.style.setProperty('--secondary', '0 0% 45%');
-      root.style.setProperty('--secondary-foreground', '0 0% 98%');
-      root.style.setProperty('--accent', '0 0% 98%');
-      root.style.setProperty('--accent-foreground', '0 0% 9%');
-      root.style.setProperty('--ring', '0 0% 9%');
-      break;
-    default: // teal
+    case 'teal':
       root.style.setProperty('--primary', '258 89% 66%');
       root.style.setProperty('--primary-foreground', '250 100% 97%');
       root.style.setProperty('--secondary', '240 5% 33%');
@@ -160,6 +151,15 @@ function applyTheme(theme: Theme) {
       root.style.setProperty('--accent', '269 100% 98%');
       root.style.setProperty('--accent-foreground', '270 91% 65%');
       root.style.setProperty('--ring', '258 89% 66%');
+      break;
+    default: // mono
+      root.style.setProperty('--primary', '0 0% 9%');
+      root.style.setProperty('--primary-foreground', '0 0% 98%');
+      root.style.setProperty('--secondary', '0 0% 45%');
+      root.style.setProperty('--secondary-foreground', '0 0% 98%');
+      root.style.setProperty('--accent', '0 0% 98%');
+      root.style.setProperty('--accent-foreground', '0 0% 9%');
+      root.style.setProperty('--ring', '0 0% 9%');
       break;
   }
 }

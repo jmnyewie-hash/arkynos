@@ -30,8 +30,8 @@ export default function SettingsPage() {
   };
 
   const resetToDefault = () => {
-    setSelectedTheme('teal');
-    setTheme('teal');
+    setSelectedTheme('mono');
+    setTheme('mono');
   };
 
   return (
@@ -112,7 +112,7 @@ export default function SettingsPage() {
                 <Button 
                   variant="outline" 
                   onClick={resetToDefault} 
-                  disabled={currentTheme === 'teal'}
+                  disabled={currentTheme === 'mono'}
                   size="sm"
                   className="flex-1 min-w-fit"
                 >

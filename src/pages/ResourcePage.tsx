@@ -200,6 +200,18 @@ export default function ResourcePage() {
           <p className="mt-5 text-sm text-muted-foreground leading-relaxed">{resource.description}</p>
         )}
 
+        {/* File Preview */}
+        {(() => {
+          const { data } = supabase.storage.from("resources").getPublicUrl(resource.file_path);
+          return (
+            <FilePreview
+              fileUrl={data.publicUrl}
+              filePath={resource.file_path}
+              resourceId={resource.id}
+            />
+          );
+        })()}
+
         <div className="mt-6 border-t pt-4 space-y-4">
           <div className="text-xs text-muted-foreground space-y-1">
             {resource.profiles && (

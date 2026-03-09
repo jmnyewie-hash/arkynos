@@ -70,6 +70,16 @@ const themes: ThemeOption[] = [
       accent: 'hsl(0, 0%, 98%)',
     },
   },
+  {
+    id: 'blaze',
+    name: 'Blaze',
+    description: 'Vibrant orange with dark black shades',
+    colors: {
+      primary: 'hsl(24, 95%, 53%)',
+      secondary: 'hsl(0, 0%, 15%)',
+      accent: 'hsl(33, 100%, 96%)',
+    },
+  },
 ];
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);

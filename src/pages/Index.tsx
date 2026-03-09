@@ -208,16 +208,6 @@ export default function Index() {
         )}
       </div>
 
-      {/* Scroll to top button */}
-      {showScrollTop && (
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-6 right-6 z-50 flex items-center gap-1.5 rounded-full bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground shadow-lg transition-all hover:bg-primary/90 animate-fade-in"
-        >
-          <ArrowUp className="h-4 w-4" />
-          Move to Top
-        </button>
-      )}
     </>
   );
 }

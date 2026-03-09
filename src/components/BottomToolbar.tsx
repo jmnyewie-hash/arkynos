@@ -1,13 +1,27 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { RefreshCw, Settings, LogOut, ChevronUp } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
 export default function BottomToolbar() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [isCheckingForUpdates, setIsCheckingForUpdates] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  // Watch for logo visibility to show/hide scroll to top button
+  useEffect(() => {
+    const logoImg = document.querySelector('img[alt="Arkynos"]');
+    if (!logoImg) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowScrollTop(!entry.isIntersecting),
+      { threshold: 0 }
+    );
+    observer.observe(logoImg);
+    return () => observer.disconnect();
+  }, []);
 
   if (!user) return null;
 
@@ -35,15 +49,17 @@ export default function BottomToolbar() {
 
   return (
     <>
-      {/* Go to Top Button */}
-      <Button
-        variant="secondary"
-        size="icon"
-        onClick={scrollToTop}
-        className="fixed bottom-16 right-4 z-50 h-10 w-10 rounded-full shadow-lg"
-      >
-        <ChevronUp className="h-4 w-4" />
-      </Button>
+      {/* Go to Top Button - only when logo is not visible */}
+      {showScrollTop && (
+        <Button
+          variant="secondary"
+          size="icon"
+          onClick={scrollToTop}
+          className="fixed bottom-16 right-4 z-50 h-10 w-10 rounded-full shadow-lg"
+        >
+          <ChevronUp className="h-4 w-4" />
+        </Button>
+      )}
 
       {/* Bottom Toolbar */}
       <div className="fixed bottom-0 left-0 right-0 z-50 border-t bg-card/90 backdrop-blur-md">

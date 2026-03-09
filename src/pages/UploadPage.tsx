@@ -51,6 +51,11 @@ export default function UploadPage() {
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/login");
+    // Block unverified email users
+    if (user && !user.email_confirmed_at) {
+      toast.error("Please verify your email before uploading");
+      navigate("/");
+    }
   }, [user, authLoading, navigate]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

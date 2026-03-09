@@ -64,7 +64,7 @@ export default function ResourcePage() {
       if (data) {
         const { data: profile } = await supabase
           .from("profiles")
-          .select("*")
+          .select("*, programs(program_name, department)")
           .eq("user_id", data.uploaded_by)
           .single();
         setResource({ ...data, profiles: profile } as ResourceWithRelations);

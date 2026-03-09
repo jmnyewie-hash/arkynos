@@ -86,7 +86,7 @@ export default function UploadPage() {
 
       const { data: urlData } = supabase.storage.from("resources").getPublicUrl(filePath);
 
-      const { error: insertError } = await supabase.from("resources").insert({
+      const insertData: any = {
         title: title.trim(),
         description: description.trim() || null,
         author: author.trim() || null,
@@ -96,11 +96,18 @@ export default function UploadPage() {
         file_path: filePath,
         uploaded_by: user.id,
         ...(classTagId ? { class_tag_id: classTagId } : {}),
-      } as any);
+        ...(isMadMath && isAdmin ? { is_mad_math: true, is_hidden: true, show_in_general: false } : {}),
+      };
+
+      const { error: insertError } = await supabase.from("resources").insert(insertData);
       if (insertError) throw insertError;
 
-      toast.success("Resource uploaded!");
-      navigate(`/course/${selectedCourse.course_code}`);
+      toast.success(isMadMath ? "Mad As Math resource uploaded!" : "Resource uploaded!");
+      if (isMadMath) {
+        navigate("/mad-as-math");
+      } else {
+        navigate(`/course/${selectedCourse.course_code}`);
+      }
     } catch (err: any) {
       toast.error(err.message || "Upload failed");
     }

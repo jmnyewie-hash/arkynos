@@ -34,12 +34,27 @@ export default function Navbar() {
       behavior: 'auto'
     });
 
-    // After a longer pause, very slowly scroll back to start
+    // After a pause, custom smooth scroll back to start over 2 seconds
     setTimeout(() => {
-      el.scrollTo({
-        left: 0,
-        behavior: 'smooth'
-      });
+      const start = el.scrollLeft;
+      const startTime = Date.now();
+      const duration = 2000; // 2 seconds
+
+      const smoothScroll = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Ease-out function for smooth deceleration
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        
+        el.scrollLeft = start - (start * easeOut);
+        
+        if (progress < 1) {
+          requestAnimationFrame(smoothScroll);
+        }
+      };
+      
+      smoothScroll();
     }, 500);
   };
 

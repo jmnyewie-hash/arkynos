@@ -4,7 +4,7 @@ import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Upload, Flag, Home, Tag, Crown, BarChart3, MessageSquare, ArrowLeft, ChevronRight, BookOpen, Info } from "lucide-react";
-import { useRef, useState, useEffect, useCallback } from "react";
+import { useRef, useState, useEffect } from "react";
 
 export default function Navbar() {
   const { user } = useAuth();
@@ -14,6 +14,7 @@ export default function Navbar() {
   const navRef = useRef<HTMLElement>(null);
   const [canScroll, setCanScroll] = useState(false);
   const [showScrollTip, setShowScrollTip] = useState(false);
+  const hasAnimated = useRef(false);
 
   const checkScroll = () => {
     const el = navRef.current;
@@ -23,24 +24,24 @@ export default function Navbar() {
     }
   };
 
-  const animateNavScroll = useCallback(() => {
+  const animateNavScroll = () => {
     const el = navRef.current;
-    if (!el || !canScroll) return;
+    if (!el) return;
 
     // Quick scroll to end
     el.scrollTo({
       left: el.scrollWidth,
-      behavior: 'auto' // Instant scroll
+      behavior: 'auto'
     });
 
-    // After a brief pause, slowly scroll back to start
+    // After a longer pause, very slowly scroll back to start
     setTimeout(() => {
       el.scrollTo({
         left: 0,
         behavior: 'smooth'
       });
-    }, 300);
-  }, [canScroll]);
+    }, 500);
+  };
 
   // Re-show tip when user scrolls page to top
   useEffect(() => {
@@ -66,14 +67,15 @@ export default function Navbar() {
     }
   }, [user, isAdmin]);
 
-  // Show tip initially when canScroll becomes true and trigger animation
+  // Show tip initially when canScroll becomes true and trigger animation ONCE
   useEffect(() => {
-    if (canScroll) {
+    if (canScroll && !hasAnimated.current) {
       setShowScrollTip(true);
+      hasAnimated.current = true;
       // Trigger scroll animation after a short delay
       setTimeout(animateNavScroll, 1000);
     }
-  }, [canScroll, animateNavScroll]);
+  }, [canScroll]);
 
   useEffect(() => {
     if (showScrollTip) {

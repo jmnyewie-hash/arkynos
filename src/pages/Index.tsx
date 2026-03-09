@@ -46,14 +46,19 @@ export default function Index() {
 
 
   const fetchResources = useCallback(async () => {
-    const { data: resourcesData } = await supabase
+    let query = supabase
       .from("resources")
       .select("*, courses(*)")
       .eq("is_hidden", false)
       .order("is_preferred", { ascending: false })
       .order("downloads", { ascending: false })
-      .order("created_at", { ascending: false })
-      .limit(6);
+      .order("created_at", { ascending: false });
+    
+    if (!showAllResources) {
+      query = query.limit(6);
+    }
+
+    const { data: resourcesData } = await query;
 
     if (resourcesData) {
       const userIds = [...new Set(resourcesData.map(r => r.uploaded_by))];

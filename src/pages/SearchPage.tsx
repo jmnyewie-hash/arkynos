@@ -3,7 +3,15 @@ import { useSearchParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 import CourseSearchBar from "@/components/CourseSearchBar";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Lightbulb } from "lucide-react";
+
+const searchTips = [
+  "Search by course code (e.g. \"MAT101\") for the most direct results",
+  "Try searching by department name like \"Physics\" or \"Engineering\"",
+  "Use partial words — \"bio\" will match Biology, Biochemistry, etc.",
+  "Each course page has filters for resource type: past questions, lecture notes, textbooks & more",
+  "Look for the ★ badge — preferred resources are pinned to the top by admins",
+];
 
 export default function SearchPage() {
   const [searchParams] = useSearchParams();
@@ -57,6 +65,22 @@ export default function SearchPage() {
             ))}
           </div>
         )}
+      </div>
+
+      {/* Search Tips */}
+      <div className="mt-10 rounded-xl border border-primary/10 bg-accent/30 p-4">
+        <div className="flex items-center gap-2 mb-3">
+          <Lightbulb className="h-4 w-4 text-primary" />
+          <p className="text-sm font-semibold text-foreground">Search Tips</p>
+        </div>
+        <ul className="space-y-2">
+          {searchTips.map((tip, i) => (
+            <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground leading-relaxed">
+              <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/50" />
+              {tip}
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );

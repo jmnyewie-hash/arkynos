@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
+import { Tables } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,17 +11,23 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Upload, Brain } from "lucide-react";
+import CourseSearchSelect from "@/components/CourseSearchSelect";
 
 const ALLOWED_TYPES = [
   "application/pdf",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   "application/vnd.openxmlformats-officedocument.presentationml.presentation",
 ];
-const MAX_SIZE = 100 * 1024 * 1024; // 100MB
+const MAX_SIZE = 100 * 1024 * 1024;
 
 const subjects = [
   { value: "maths", label: "Mathematics" },
   { value: "physics", label: "Physics" },
+];
+
+const difficultyLevels = [
+  { value: "ordinary", label: "Ordinary" },
+  { value: "advanced", label: "Advanced" },
 ];
 
 export default function MadMathUploadPage() {
@@ -33,6 +40,9 @@ export default function MadMathUploadPage() {
   const [description, setDescription] = useState("");
   const [subject, setSubject] = useState("");
   const [topic, setTopic] = useState("");
+  const [difficulty, setDifficulty] = useState("");
+  const [courseId, setCourseId] = useState("");
+  const [selectedCourse, setSelectedCourse] = useState<Tables<"courses"> | null>(null);
   const [file, setFile] = useState<File | null>(null);
 
   useEffect(() => {
@@ -62,7 +72,7 @@ export default function MadMathUploadPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user || !file || !subject || !topic.trim() || !title.trim()) {
+    if (!user || !file || !subject || !topic.trim() || !title.trim() || !difficulty) {
       toast.error("Please fill all required fields");
       return;
     }
@@ -89,6 +99,8 @@ export default function MadMathUploadPage() {
         show_in_general: false,
         mad_math_subject: subject,
         mad_math_topic: topic.trim(),
+        mad_math_difficulty: difficulty,
+        ...(courseId ? { course_id: courseId } : {}),
       };
 
       const { error: insertError } = await supabase.from("resources").insert(insertData);
@@ -152,6 +164,43 @@ export default function MadMathUploadPage() {
             required
           />
           <p className="text-xs text-muted-foreground">The topic this Q&A covers</p>
+        </div>
+
+        <div className="space-y-2">
+          <Label>Difficulty *</Label>
+          <div className="flex gap-2">
+            {difficultyLevels.map((d) => (
+              <button
+                key={d.value}
+                type="button"
+                onClick={() => setDifficulty(d.value)}
+                className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-medium transition-colors border ${
+                  difficulty === d.value
+                    ? d.value === "advanced"
+                      ? "bg-destructive text-destructive-foreground border-destructive shadow-sm"
+                      : "bg-primary text-primary-foreground border-primary shadow-sm"
+                    : "bg-card text-muted-foreground border-border hover:bg-muted"
+                }`}
+              >
+                {d.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label>Course <span className="text-muted-foreground font-normal">(optional — link to a specific course)</span></Label>
+          <CourseSearchSelect
+            value={courseId}
+            onSelect={(id, course) => {
+              setCourseId(id);
+              setSelectedCourse(course);
+            }}
+            onClear={() => {
+              setCourseId("");
+              setSelectedCourse(null);
+            }}
+          />
         </div>
 
         <div className="space-y-2">

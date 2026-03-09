@@ -23,7 +23,7 @@ const themes: ThemeOption[] = [
   {
     id: 'teal',
     name: 'Teal Mint',
-    description: 'Soft teal with purple accents (default)',
+    description: 'Soft teal with purple accents',
     colors: {
       primary: 'hsl(258, 89%, 66%)',
       secondary: 'hsl(240, 5%, 33%)',

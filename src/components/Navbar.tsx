@@ -39,6 +39,15 @@ export default function Navbar() {
     }
   }, [user, isAdmin]);
 
+  useEffect(() => {
+    if (showScrollTip) {
+      const timer = setTimeout(() => {
+        setShowScrollTip(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showScrollTip]);
+
   const isHome = location.pathname === "/";
 
   return (

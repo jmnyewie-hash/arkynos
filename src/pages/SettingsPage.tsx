@@ -100,12 +100,23 @@ export default function SettingsPage() {
                 ))}
               </div>
 
-              <div className="flex items-center gap-3 mt-6 pt-4 border-t">
-                <Button onClick={handleApplyTheme} disabled={selectedTheme === currentTheme}>
+              <div className="flex flex-wrap items-center gap-2 mt-6 pt-4 border-t">
+                <Button 
+                  onClick={handleApplyTheme} 
+                  disabled={selectedTheme === currentTheme}
+                  size="sm"
+                  className="flex-1 min-w-fit"
+                >
                   Apply Theme
                 </Button>
-                <Button variant="outline" onClick={resetToDefault} disabled={currentTheme === 'teal'}>
-                  <RotateCcw className="h-4 w-4 mr-2" />
+                <Button 
+                  variant="outline" 
+                  onClick={resetToDefault} 
+                  disabled={currentTheme === 'teal'}
+                  size="sm"
+                  className="flex-1 min-w-fit"
+                >
+                  <RotateCcw className="h-3 w-3 mr-1.5" />
                   Reset to Default
                 </Button>
               </div>

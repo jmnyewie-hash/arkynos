@@ -131,7 +131,7 @@ export default function MadAsMathPage() {
 
       {/* Admin upload button */}
       {isAdmin && (
-        <Button size="sm" className="mt-5" onClick={() => navigate("/mad-as-math/upload")}>
+        <Button className="mt-5 w-full sm:w-auto" onClick={() => navigate("/mad-as-math/upload")}>
           <Upload className="mr-1.5 h-4 w-4" /> Upload Q&A
         </Button>
       )}

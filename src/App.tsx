@@ -27,6 +27,7 @@ import SettingsPage from "./pages/SettingsPage";
 import MyLibraryPage from "./pages/MyLibraryPage";
 import ViewerPage from "./pages/ViewerPage";
 import OfflinePage from "./pages/OfflinePage";
+import RecentResourcesPage from "./pages/RecentResourcesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();

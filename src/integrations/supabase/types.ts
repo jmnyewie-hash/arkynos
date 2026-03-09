@@ -236,7 +236,7 @@ export type Database = {
         Row: {
           author: string | null
           class_tag_id: string | null
-          course_id: string
+          course_id: string | null
           created_at: string
           description: string | null
           downloads: number
@@ -246,6 +246,8 @@ export type Database = {
           is_hidden: boolean
           is_mad_math: boolean
           is_preferred: boolean
+          mad_math_subject: string | null
+          mad_math_topic: string | null
           resource_type: Database["public"]["Enums"]["resource_type"]
           show_in_general: boolean
           title: string
@@ -254,7 +256,7 @@ export type Database = {
         Insert: {
           author?: string | null
           class_tag_id?: string | null
-          course_id: string
+          course_id?: string | null
           created_at?: string
           description?: string | null
           downloads?: number
@@ -264,6 +266,8 @@ export type Database = {
           is_hidden?: boolean
           is_mad_math?: boolean
           is_preferred?: boolean
+          mad_math_subject?: string | null
+          mad_math_topic?: string | null
           resource_type: Database["public"]["Enums"]["resource_type"]
           show_in_general?: boolean
           title: string
@@ -272,7 +276,7 @@ export type Database = {
         Update: {
           author?: string | null
           class_tag_id?: string | null
-          course_id?: string
+          course_id?: string | null
           created_at?: string
           description?: string | null
           downloads?: number
@@ -282,6 +286,8 @@ export type Database = {
           is_hidden?: boolean
           is_mad_math?: boolean
           is_preferred?: boolean
+          mad_math_subject?: string | null
+          mad_math_topic?: string | null
           resource_type?: Database["public"]["Enums"]["resource_type"]
           show_in_general?: boolean
           title?: string

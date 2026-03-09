@@ -8,8 +8,6 @@ import { useLibrary } from "@/hooks/useLibrary";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Brain, Upload, Eye, EyeOff, Globe, Lock } from "lucide-react";
 
@@ -25,9 +23,9 @@ export default function MadAsMathPage() {
   const navigate = useNavigate();
   const [resources, setResources] = useState<ResourceWithRelations[]>([]);
   const [loading, setLoading] = useState(true);
+  const [subjectFilter, setSubjectFilter] = useState<string>("all");
 
   const fetchResources = useCallback(async () => {
-    // Admin sees all mad_math resources; non-admin sees only non-hidden ones
     const query = supabase
       .from("resources")
       .select("*, courses(*)") as any;
@@ -53,6 +51,8 @@ export default function MadAsMathPage() {
         profiles: profilesMap.get(r.uploaded_by) ?? null,
       }));
       setResources(merged as ResourceWithRelations[]);
+    } else {
+      setResources([]);
     }
     setLoading(false);
   }, [isAdmin]);
@@ -89,6 +89,21 @@ export default function MadAsMathPage() {
     }
   };
 
+  // Filter by subject
+  const filteredResources = subjectFilter === "all"
+    ? resources
+    : resources.filter((r) => (r as any).mad_math_subject === subjectFilter);
+
+  // Group by topic
+  const grouped = filteredResources.reduce((acc, r) => {
+    const topic = (r as any).mad_math_topic || "Uncategorized";
+    if (!acc[topic]) acc[topic] = [];
+    acc[topic].push(r);
+    return acc;
+  }, {} as Record<string, ResourceWithRelations[]>);
+
+  const sortedTopics = Object.keys(grouped).sort();
+
   return (
     <div className="container max-w-2xl py-10 animate-fade-in">
       <div className="flex items-center gap-3 mb-2">
@@ -97,10 +112,11 @@ export default function MadAsMathPage() {
         </div>
         <div>
           <h1 className="font-heading text-2xl font-bold">Mad As Math</h1>
-          <p className="text-sm text-muted-foreground">Admin-curated math resources</p>
+          <p className="text-sm text-muted-foreground">Admin-curated Q&As in Mathematics & Physics</p>
         </div>
       </div>
 
+      {/* Welcome */}
       <div className="mt-6 rounded-2xl border border-primary/20 bg-gradient-to-br from-card to-primary/5 p-5 sm:p-6">
         <p className="text-sm sm:text-base leading-relaxed text-foreground/90">
           Welcome to <span className="font-bold text-primary">Mad As Math</span> — a sophisticated space reserved for those with a genuine interest in the mathematical and physical disciplines. Here, the questions hit different. Expect a difficulty on par with some of the most challenging courses you've ever encountered — and sometimes, well beyond them.
@@ -113,52 +129,83 @@ export default function MadAsMathPage() {
         </p>
       </div>
 
+      {/* Admin upload button */}
       {isAdmin && (
-        <Button size="sm" className="mt-4" onClick={() => navigate("/upload?mad_math=true")}>
-          <Upload className="mr-1.5 h-4 w-4" /> Upload to Mad As Math
+        <Button size="sm" className="mt-5" onClick={() => navigate("/mad-as-math/upload")}>
+          <Upload className="mr-1.5 h-4 w-4" /> Upload Q&A
         </Button>
       )}
 
+      {/* Subject filter pills */}
+      <div className="mt-6 flex items-center gap-2 flex-wrap">
+        {["all", "maths", "physics"].map((s) => (
+          <button
+            key={s}
+            onClick={() => setSubjectFilter(s)}
+            className={`inline-flex items-center rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors ${
+              subjectFilter === s
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+            }`}
+          >
+            {s === "all" ? "All" : s === "maths" ? "Mathematics" : "Physics"}
+          </button>
+        ))}
+      </div>
+
+      {/* Content */}
       {loading ? (
         <div className="mt-8 space-y-3">
           {[1, 2, 3].map((i) => (
             <div key={i} className="h-20 animate-pulse rounded-xl bg-muted" />
           ))}
         </div>
-      ) : resources.length === 0 ? (
-        <p className="mt-8 text-sm text-muted-foreground">No resources here yet. Check back soon!</p>
+      ) : filteredResources.length === 0 ? (
+        <p className="mt-8 text-sm text-muted-foreground">
+          {resources.length === 0 ? "No Q&As here yet. Check back soon!" : "No Q&As for this subject yet."}
+        </p>
       ) : (
-        <div className="mt-6 space-y-4">
-          {resources.map((r) => (
-            <div key={r.id}>
-              <ResourceCard resource={r} isSaved={isSaved(r.id)} onToggleSave={toggleSave} />
-              {isAdmin && (
-                <div className="mt-1.5 ml-12 flex flex-wrap items-center gap-4 text-xs">
-                  <button
-                    onClick={() => handleToggleVisibility(r.id, (r as any).is_hidden)}
-                    className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-medium transition-colors ${
-                      (r as any).is_hidden
-                        ? "bg-destructive/10 text-destructive"
-                        : "bg-emerald-500/10 text-emerald-600"
-                    }`}
-                  >
-                    {(r as any).is_hidden ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
-                    {(r as any).is_hidden ? "Hidden" : "Visible"}
-                  </button>
-                  <button
-                    onClick={() => handleToggleGeneral(r.id, (r as any).show_in_general)}
-                    className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-medium transition-colors ${
-                      (r as any).show_in_general
-                        ? "bg-primary/10 text-primary"
-                        : "bg-muted text-muted-foreground"
-                    }`}
-                  >
-                    {(r as any).show_in_general ? <Globe className="h-3 w-3" /> : <Lock className="h-3 w-3" />}
-                    {(r as any).show_in_general ? "In General Feeds" : "Mad Math Only"}
-                  </button>
-                </div>
-              )}
-            </div>
+        <div className="mt-6 space-y-8">
+          {sortedTopics.map((topic) => (
+            <section key={topic}>
+              <h2 className="font-heading text-base font-semibold text-foreground mb-3 flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+                {topic}
+              </h2>
+              <div className="space-y-3">
+                {grouped[topic].map((r) => (
+                  <div key={r.id}>
+                    <ResourceCard resource={r} isSaved={isSaved(r.id)} onToggleSave={toggleSave} />
+                    {isAdmin && (
+                      <div className="mt-1.5 ml-12 flex flex-wrap items-center gap-3 text-xs">
+                        <button
+                          onClick={() => handleToggleVisibility(r.id, (r as any).is_hidden)}
+                          className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-medium transition-colors ${
+                            (r as any).is_hidden
+                              ? "bg-destructive/10 text-destructive"
+                              : "bg-emerald-500/10 text-emerald-600"
+                          }`}
+                        >
+                          {(r as any).is_hidden ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                          {(r as any).is_hidden ? "Hidden" : "Visible"}
+                        </button>
+                        <button
+                          onClick={() => handleToggleGeneral(r.id, (r as any).show_in_general)}
+                          className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-medium transition-colors ${
+                            (r as any).show_in_general
+                              ? "bg-primary/10 text-primary"
+                              : "bg-muted text-muted-foreground"
+                          }`}
+                        >
+                          {(r as any).show_in_general ? <Globe className="h-3 w-3" /> : <Lock className="h-3 w-3" />}
+                          {(r as any).show_in_general ? "In General" : "Mad Math Only"}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </section>
           ))}
         </div>
       )}

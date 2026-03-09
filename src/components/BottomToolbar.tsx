@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { RefreshCw, Settings, LogOut, ChevronUp, Cog } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 export default function BottomToolbar() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isHome = location.pathname === "/";
   const [isCheckingForUpdates, setIsCheckingForUpdates] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [gearRotation, setGearRotation] = useState(0);
@@ -79,7 +81,7 @@ export default function BottomToolbar() {
     };
   }, []);
 
-  if (!user) return null;
+  if (!user || !isHome) return null;
 
   const handleManualUpdateCheck = async () => {
     setIsCheckingForUpdates(true);

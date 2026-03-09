@@ -63,7 +63,10 @@ export default function Navbar() {
           animFrameRef.current = requestAnimationFrame(smoothScroll);
         } else {
           setIsAnimating(false);
-          setTimeout(() => setShowGear(false), 500);
+          setTimeout(() => {
+            setShowGear(false);
+            setShowScrollTip(true);
+          }, 500);
         }
       };
 
@@ -97,7 +100,6 @@ export default function Navbar() {
 
   useEffect(() => {
     if (canScroll && !hasAnimated.current) {
-      setShowScrollTip(true);
       hasAnimated.current = true;
       setTimeout(animateNavScroll, 1000);
     }

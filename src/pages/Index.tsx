@@ -51,6 +51,7 @@ export default function Index() {
       .from("resources")
       .select("*, courses(*)")
       .eq("is_hidden", false)
+      .or("is_mad_math.eq.false,show_in_general.eq.true")
       .order("is_preferred", { ascending: false })
       .order("downloads", { ascending: false })
       .order("created_at", { ascending: false })

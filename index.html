@@ -26,6 +26,13 @@
   </head>
 
   <body>
+    <script>
+      // Force light mode before anything renders — blocks Samsung Internet night mode
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
+      document.documentElement.style.colorScheme = 'light only';
+      document.documentElement.setAttribute('data-theme', 'light');
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

@@ -183,6 +183,17 @@
   }
 }
 
+/* Dark mode: thin orange outline on accent surfaces */
+.dark .dark-accent-outline {
+  box-shadow: inset 0 0 0 1px hsl(24 95% 53% / 0.35);
+}
+
+/* Auto-apply to common dark accent elements */
+.dark [class*="bg-accent"],
+.dark [class*="bg-muted\/"] {
+  box-shadow: inset 0 0 0 1px hsl(24 95% 53% / 0.2);
+}
+
 html, body {
   overflow-x: hidden;
 }

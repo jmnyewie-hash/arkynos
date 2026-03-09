@@ -18,7 +18,11 @@ export default function Navbar() {
   const checkScroll = () => {
     const el = navRef.current;
     if (el) {
-      setCanScroll(el.scrollWidth > el.clientWidth && el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+      const needsScroll = el.scrollWidth > el.clientWidth && el.scrollLeft + el.clientWidth < el.scrollWidth - 4;
+      setCanScroll(needsScroll);
+      if (needsScroll && !showScrollTip) {
+        setShowScrollTip(true);
+      }
     }
   };
 

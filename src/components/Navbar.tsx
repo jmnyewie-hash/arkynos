@@ -128,15 +128,17 @@ export default function Navbar() {
                     : 'opacity 0.5s ease, transform 0.5s ease',
                 }}
               />
-              <img
-                src="/favicon.png"
-                alt="Arkynos"
-                className="h-8 w-8 absolute inset-0"
-                style={{
-                  opacity: showGear ? 0 : 1,
-                  transition: 'opacity 0.5s ease',
-                }}
-              />
+              {mode !== 'dark' && (
+                <img
+                  src="/favicon.png"
+                  alt="Arkynos"
+                  className="h-8 w-8 absolute inset-0"
+                  style={{
+                    opacity: showGear ? 0 : 1,
+                    transition: 'opacity 0.5s ease',
+                  }}
+                />
+              )}
             </Link>
           ) : (
             <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => navigate(-1)}>

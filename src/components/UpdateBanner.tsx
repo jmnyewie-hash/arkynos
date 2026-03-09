@@ -31,7 +31,7 @@ export default function UpdateBanner() {
   if (!needRefresh) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-between gap-3 bg-primary text-primary-foreground px-4 py-3 shadow-lg animate-in slide-in-from-bottom-2 duration-300">
+    <div className="fixed bottom-14 left-0 right-0 z-50 flex items-center justify-between gap-3 bg-primary text-primary-foreground px-4 py-3 shadow-lg animate-in slide-in-from-bottom-2 duration-300">
       <div className="flex items-center gap-2 text-sm font-medium">
         <RefreshCw className="h-4 w-4 shrink-0 animate-spin" />
         <span>A new version of Arkynos is ready.</span>

@@ -66,16 +66,16 @@ export default function ResourceCard({ resource, isSaved, onToggleSave }: Resour
             className="h-9 w-9 sm:h-10 sm:w-10 shrink-0 rounded-lg object-contain"
           />
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-1.5">
+            <h3 className="font-heading font-semibold text-sm sm:text-base text-card-foreground truncate group-hover:text-primary transition-colors flex items-center gap-1.5">
+              {resource.title}
               {resource.is_preferred && (
                 <Star className="h-3.5 w-3.5 shrink-0 fill-accent text-accent" />
               )}
-              <h3 className="font-heading font-semibold text-sm sm:text-base text-card-foreground truncate group-hover:text-primary transition-colors">
-                {resource.title}
-              </h3>
-            </div>
-            {resource.is_preferred && (
+            </h3>
+            {resource.is_preferred ? (
               <span className="text-[10px] sm:text-xs font-medium text-accent">Preferred</span>
+            ) : (
+              <span className="h-4" />
             )}
             {resource.courses && (
               <p className="mt-0.5 text-xs sm:text-sm text-muted-foreground truncate">

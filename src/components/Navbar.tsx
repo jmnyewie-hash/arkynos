@@ -2,9 +2,8 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Upload, Flag, Home, Tag, Crown, BarChart3, MessageSquare, ArrowLeft, ChevronRight, BookOpen, Info } from "lucide-react";
-import { useRef, useState, useEffect } from "react";
+import { Upload, Flag, Home, Tag, Crown, BarChart3, MessageSquare, ArrowLeft, ChevronRight, BookOpen, Info, Settings } from "lucide-react";
+import { useRef, useState, useEffect, useCallback } from "react";
 
 export default function Navbar() {
   const { user } = useAuth();
@@ -15,6 +14,10 @@ export default function Navbar() {
   const [canScroll, setCanScroll] = useState(false);
   const [showScrollTip, setShowScrollTip] = useState(false);
   const hasAnimated = useRef(false);
+  const [gearRotation, setGearRotation] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [showGear, setShowGear] = useState(false);
+  const animFrameRef = useRef<number>(0);
 
   const checkScroll = () => {
     const el = navRef.current;
@@ -24,39 +27,49 @@ export default function Navbar() {
     }
   };
 
-  const animateNavScroll = () => {
+  const animateNavScroll = useCallback(() => {
     const el = navRef.current;
     if (!el) return;
 
-    // Quick scroll to end
-    el.scrollTo({
-      left: el.scrollWidth,
-      behavior: 'auto'
-    });
+    setShowGear(true);
+    setIsAnimating(true);
 
-    // After a pause, custom smooth scroll back to start over 2 seconds
+    // Quick scroll to end
+    el.scrollTo({ left: el.scrollWidth, behavior: 'auto' });
+
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    const initialRotation = 360;
+    setGearRotation(initialRotation);
+
+    // After a pause, smooth scroll back over 3 seconds
     setTimeout(() => {
       const start = el.scrollLeft;
       const startTime = Date.now();
-      const duration = 3000; // 3 seconds
+      const duration = 3000;
 
       const smoothScroll = () => {
         const elapsed = Date.now() - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        
-        // Ease-out function for smooth deceleration
         const easeOut = 1 - Math.pow(1 - progress, 3);
-        
-        el.scrollLeft = start - (start * easeOut);
-        
+
+        const newScrollLeft = start - (start * easeOut);
+        el.scrollLeft = newScrollLeft;
+
+        // Gear spins counter-clockwise as tabs slide back
+        const scrollFraction = newScrollLeft / maxScroll;
+        setGearRotation(scrollFraction * 360);
+
         if (progress < 1) {
-          requestAnimationFrame(smoothScroll);
+          animFrameRef.current = requestAnimationFrame(smoothScroll);
+        } else {
+          setIsAnimating(false);
+          setTimeout(() => setShowGear(false), 500);
         }
       };
-      
+
       smoothScroll();
     }, 500);
-  };
+  }, []);
 
   // Re-show tip when user scrolls page to top
   useEffect(() => {
@@ -82,15 +95,13 @@ export default function Navbar() {
     }
   }, [user, isAdmin]);
 
-  // Show tip initially when canScroll becomes true and trigger animation ONCE
   useEffect(() => {
     if (canScroll && !hasAnimated.current) {
       setShowScrollTip(true);
       hasAnimated.current = true;
-      // Trigger scroll animation after a short delay
       setTimeout(animateNavScroll, 1000);
     }
-  }, [canScroll]);
+  }, [canScroll, animateNavScroll]);
 
   useEffect(() => {
     if (showScrollTip) {
@@ -98,6 +109,12 @@ export default function Navbar() {
       return () => clearTimeout(timer);
     }
   }, [showScrollTip]);
+
+  useEffect(() => {
+    return () => {
+      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+    };
+  }, []);
 
   const isHome = location.pathname === "/";
 
@@ -112,8 +129,26 @@ export default function Navbar() {
       <div className="container flex h-14 items-center justify-between">
         <div className="flex items-center shrink-0 min-w-fit">
           {isHome ? (
-            <Link to="/" className="shrink-0 block">
-              <img src="/favicon.png" alt="Arkynos" className="h-8 w-8" />
+            <Link to="/" className="shrink-0 block relative h-8 w-8">
+              <Settings
+                className="h-8 w-8 text-primary absolute inset-0"
+                style={{
+                  opacity: showGear ? 1 : 0,
+                  transform: `rotate(${gearRotation}deg)`,
+                  transition: isAnimating
+                    ? 'opacity 0.3s ease'
+                    : 'opacity 0.5s ease, transform 0.5s ease',
+                }}
+              />
+              <img
+                src="/favicon.png"
+                alt="Arkynos"
+                className="h-8 w-8 absolute inset-0"
+                style={{
+                  opacity: showGear ? 0 : 1,
+                  transition: 'opacity 0.5s ease',
+                }}
+              />
             </Link>
           ) : (
             <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => navigate(-1)}>

@@ -23,6 +23,7 @@ import ContactAdminPage from "./pages/ContactAdminPage";
 import BrowseTagsPage from "./pages/BrowseTagsPage";
 import ClassTagPage from "./pages/ClassTagPage";
 import UpgradePage from "./pages/UpgradePage";
+import SettingsPage from "./pages/SettingsPage";
 import MyLibraryPage from "./pages/MyLibraryPage";
 import ViewerPage from "./pages/ViewerPage";
 import OfflinePage from "./pages/OfflinePage";

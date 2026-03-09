@@ -4,7 +4,7 @@ import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Upload, Flag, Home, Tag, Crown, BarChart3, MessageSquare, ArrowLeft, ChevronRight, BookOpen, Info } from "lucide-react";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 
 export default function Navbar() {
   const { user } = useAuth();
@@ -22,6 +22,25 @@ export default function Navbar() {
       setCanScroll(needsScroll);
     }
   };
+
+  const animateNavScroll = useCallback(() => {
+    const el = navRef.current;
+    if (!el || !canScroll) return;
+
+    // Quick scroll to end
+    el.scrollTo({
+      left: el.scrollWidth,
+      behavior: 'auto' // Instant scroll
+    });
+
+    // After a brief pause, slowly scroll back to start
+    setTimeout(() => {
+      el.scrollTo({
+        left: 0,
+        behavior: 'smooth'
+      });
+    }, 300);
+  }, [canScroll]);
 
   // Re-show tip when user scrolls page to top
   useEffect(() => {
@@ -47,10 +66,14 @@ export default function Navbar() {
     }
   }, [user, isAdmin]);
 
-  // Show tip initially when canScroll becomes true
+  // Show tip initially when canScroll becomes true and trigger animation
   useEffect(() => {
-    if (canScroll) setShowScrollTip(true);
-  }, [canScroll]);
+    if (canScroll) {
+      setShowScrollTip(true);
+      // Trigger scroll animation after a short delay
+      setTimeout(animateNavScroll, 1000);
+    }
+  }, [canScroll, animateNavScroll]);
 
   useEffect(() => {
     if (showScrollTip) {
@@ -64,7 +87,7 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-md">
       {canScroll && showScrollTip && (
-        <div className="flex items-center gap-2 bg-muted/30 px-4 py-1.5 border-b text-xs text-muted-foreground">
+        <div className="flex items-center gap-2 bg-muted/30 px-4 py-1.5 border-b text-xs text-muted-foreground animate-fade-in">
           <Info className="h-3.5 w-3.5 shrink-0" />
           <span>Scroll horizontally to see more navigation options</span>
         </div>

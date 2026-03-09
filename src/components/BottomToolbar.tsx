@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { RefreshCw, Settings, LogOut, ChevronUp } from "lucide-react";
-import { useState, useEffect } from "react";
+import { RefreshCw, Settings, LogOut, ChevronUp, Cog } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 
 export default function BottomToolbar() {
@@ -9,6 +9,9 @@ export default function BottomToolbar() {
   const navigate = useNavigate();
   const [isCheckingForUpdates, setIsCheckingForUpdates] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [gearRotation, setGearRotation] = useState(0);
+  const lastScrollY = useRef(0);
+  const scrollRaf = useRef<number>();
 
   // Watch for centerpiece logo visibility to show/hide scroll to top button
   useEffect(() => {
@@ -43,6 +46,36 @@ export default function BottomToolbar() {
     return () => {
       observer?.disconnect();
       mutationObserver?.disconnect();
+    };
+  }, []);
+
+  // Scroll-based gear rotation
+  useEffect(() => {
+    const handleScroll = () => {
+      if (scrollRaf.current) {
+        cancelAnimationFrame(scrollRaf.current);
+      }
+      
+      scrollRaf.current = requestAnimationFrame(() => {
+        const currentScrollY = window.scrollY;
+        const scrollDelta = currentScrollY - lastScrollY.current;
+        
+        // Gear rotates based on scroll direction and distance
+        // Positive scrollDelta (scrolling down) = clockwise rotation
+        // Negative scrollDelta (scrolling up) = counter-clockwise rotation
+        setGearRotation(prev => prev + scrollDelta * 0.5);
+        
+        lastScrollY.current = currentScrollY;
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollRaf.current) {
+        cancelAnimationFrame(scrollRaf.current);
+      }
     };
   }, []);
 
@@ -83,6 +116,17 @@ export default function BottomToolbar() {
           <ChevronUp className="h-4 w-4" />
         </Button>
       )}
+
+      {/* Scroll Gear - always visible when user is logged in */}
+      <div className="fixed bottom-16 left-4 z-40">
+        <Cog 
+          className="h-8 w-8 text-muted-foreground/60"
+          style={{
+            transform: `rotate(${gearRotation}deg)`,
+            transition: 'none' // Disable transitions for smooth real-time rotation
+          }}
+        />
+      </div>
 
       {/* Bottom Toolbar */}
       <div className="fixed bottom-0 left-0 right-0 z-50 border-t bg-card/90 backdrop-blur-md">

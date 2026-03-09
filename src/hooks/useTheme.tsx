@@ -125,16 +125,23 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const root = document.documentElement;
     root.classList.remove('light', 'dark');
     
-    if (m === 'dark') {
+    const willBeDark = m === 'dark' || (m === 'system' && getSystemDark());
+    
+    if (willBeDark) {
       root.classList.add('dark');
-    } else if (m === 'light') {
-      root.classList.add('light');
+      // Auto-switch to teal theme for dark mode if currently on mono
+      if (theme === 'mono') {
+        setThemeState('teal');
+        localStorage.setItem('arkynos-theme', 'teal');
+        applyTheme('teal');
+      }
     } else {
-      // System preference
-      if (getSystemDark()) {
-        root.classList.add('dark');
-      } else {
-        root.classList.add('light');
+      root.classList.add('light');
+      // Auto-switch to mono theme for light mode if currently on teal
+      if (theme === 'teal') {
+        setThemeState('mono');
+        localStorage.setItem('arkynos-theme', 'mono');
+        applyTheme('mono');
       }
     }
   };

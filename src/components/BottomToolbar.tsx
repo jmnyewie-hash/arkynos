@@ -49,15 +49,17 @@ export default function BottomToolbar() {
 
   return (
     <>
-      {/* Go to Top Button */}
-      <Button
-        variant="secondary"
-        size="icon"
-        onClick={scrollToTop}
-        className="fixed bottom-16 right-4 z-50 h-10 w-10 rounded-full shadow-lg"
-      >
-        <ChevronUp className="h-4 w-4" />
-      </Button>
+      {/* Go to Top Button - only when logo is not visible */}
+      {showScrollTop && (
+        <Button
+          variant="secondary"
+          size="icon"
+          onClick={scrollToTop}
+          className="fixed bottom-16 right-4 z-50 h-10 w-10 rounded-full shadow-lg"
+        >
+          <ChevronUp className="h-4 w-4" />
+        </Button>
+      )}
 
       {/* Bottom Toolbar */}
       <div className="fixed bottom-0 left-0 right-0 z-50 border-t bg-card/90 backdrop-blur-md">

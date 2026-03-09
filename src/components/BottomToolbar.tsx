@@ -9,6 +9,9 @@ export default function BottomToolbar() {
   const navigate = useNavigate();
   const [isCheckingForUpdates, setIsCheckingForUpdates] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [gearRotation, setGearRotation] = useState(0);
+  const lastScrollY = useRef(0);
+  const scrollRaf = useRef<number>();
 
   // Watch for centerpiece logo visibility to show/hide scroll to top button
   useEffect(() => {

@@ -9,7 +9,14 @@ export default function UpdateBanner() {
   } = useRegisterSW({
     onRegisteredSW(swUrl, r) {
       console.log("Service Worker registered:", swUrl, r);
-      // Poll every 60s for updates
+      
+      // Check for updates immediately on registration
+      if (r) {
+        console.log("Checking for updates immediately...");
+        r.update().catch(console.error);
+      }
+      
+      // Poll every 10s for updates
       if (r) {
         setInterval(async () => {
           console.log("Checking for updates...");

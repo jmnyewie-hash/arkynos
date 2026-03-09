@@ -38,7 +38,7 @@ export default function Navbar() {
     setTimeout(() => {
       const start = el.scrollLeft;
       const startTime = Date.now();
-      const duration = 2000; // 2 seconds
+      const duration = 3000; // 3 seconds
 
       const smoothScroll = () => {
         const elapsed = Date.now() - startTime;

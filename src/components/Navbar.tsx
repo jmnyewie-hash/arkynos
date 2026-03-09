@@ -100,7 +100,6 @@ export default function Navbar() {
 
   useEffect(() => {
     if (canScroll && !hasAnimated.current) {
-      setShowScrollTip(true);
       hasAnimated.current = true;
       setTimeout(animateNavScroll, 1000);
     }

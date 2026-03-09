@@ -38,6 +38,14 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-md">
+      {canScroll && (
+        <Alert className="rounded-none border-l-0 border-r-0 border-t-0 bg-muted/30 py-2">
+          <Info className="h-4 w-4" />
+          <AlertDescription className="text-xs">
+            Scroll horizontally to see more navigation options
+          </AlertDescription>
+        </Alert>
+      )}
       <div className="container flex h-14 items-center justify-between">
         <div className="flex items-center shrink-0 min-w-fit">
           {isHome ? (

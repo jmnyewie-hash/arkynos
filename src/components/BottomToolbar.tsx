@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { RefreshCw, Settings, LogOut, ChevronUp, Cog } from "lucide-react";
+import { RefreshCw, Settings, LogOut, ChevronUp } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 

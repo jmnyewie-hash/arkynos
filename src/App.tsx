@@ -27,6 +27,7 @@ import SettingsPage from "./pages/SettingsPage";
 import MyLibraryPage from "./pages/MyLibraryPage";
 import ViewerPage from "./pages/ViewerPage";
 import OfflinePage from "./pages/OfflinePage";
+import RecentResourcesPage from "./pages/RecentResourcesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -89,6 +90,7 @@ const App = () => (
               <Route path="/library" element={<MyLibraryPage />} />
               <Route path="/view/:id" element={<ViewerPage />} />
               <Route path="/offline" element={<OfflinePage />} />
+              <Route path="/recent" element={<RecentResourcesPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <UpdateBanner />

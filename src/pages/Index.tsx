@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 import CourseSearchBar from "@/components/CourseSearchBar";
@@ -22,8 +23,8 @@ export default function Index() {
   const [totalFiles, setTotalFiles] = useState<number>(0);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isInstalled, setIsInstalled] = useState(false);
-  const [showAllResources, setShowAllResources] = useState(false);
   const logoRef = useRef<HTMLImageElement>(null);
+  const navigate = useNavigate();
 
   // Detect if app is already installed (standalone mode)
   useEffect(() => {
@@ -46,19 +47,14 @@ export default function Index() {
 
 
   const fetchResources = useCallback(async () => {
-    let query = supabase
+    const { data: resourcesData } = await supabase
       .from("resources")
       .select("*, courses(*)")
       .eq("is_hidden", false)
       .order("is_preferred", { ascending: false })
       .order("downloads", { ascending: false })
-      .order("created_at", { ascending: false });
-    
-    if (!showAllResources) {
-      query = query.limit(6);
-    }
-
-    const { data: resourcesData } = await query;
+      .order("created_at", { ascending: false })
+      .limit(6);
 
     if (resourcesData) {
       const userIds = [...new Set(resourcesData.map(r => r.uploaded_by))];
@@ -75,7 +71,7 @@ export default function Index() {
       setRecentResources(merged as ResourceWithRelations[]);
     }
     setLoading(false);
-  }, [showAllResources]);
+  }, []);
 
   const fetchFileCount = useCallback(async () => {
     const { count } = await supabase
@@ -104,12 +100,6 @@ export default function Index() {
     fetchUserCount();
   }, [fetchResources, fetchFileCount]);
 
-  // Refetch resources when showAllResources changes
-  useEffect(() => {
-    if (!loading) {
-      fetchResources();
-    }
-  }, [showAllResources, fetchResources]);
 
   const features = [
     { icon: BookOpen, label: "Curated Resources", desc: "Past questions, lecture notes, textbooks & more — organized by course" },
@@ -178,20 +168,12 @@ export default function Index() {
         <section className="mt-14 animate-fade-in" style={{ animationDelay: "0.2s" }}>
           <div className="flex items-center justify-between">
             <h2 className="font-heading text-lg font-semibold text-foreground">Recent Resources</h2>
-            {!showAllResources && recentResources.length === 6 && (
+            {recentResources.length === 6 && (
               <button
-                onClick={() => setShowAllResources(true)}
+                onClick={() => navigate("/recent")}
                 className="text-sm text-primary hover:text-primary/80 transition-colors"
               >
                 See All
-              </button>
-            )}
-            {showAllResources && (
-              <button
-                onClick={() => setShowAllResources(false)}
-                className="text-sm text-primary hover:text-primary/80 transition-colors"
-              >
-                Show Less
               </button>
             )}
           </div>

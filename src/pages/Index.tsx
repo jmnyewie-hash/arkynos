@@ -219,8 +219,11 @@ export default function Index() {
             )}
           </div>
         )}
-      </div>
 
+        <p className="mt-10 text-center text-xs text-muted-foreground/50">
+          Support us ~ 0241176760
+        </p>
+      </div>
     </>
   );
 }

@@ -172,7 +172,7 @@ export default function Navbar() {
                       <Link to="/admin/messages"><MessageSquare className="mr-1.5 h-4 w-4" />Messages</Link>
                     </Button>
                   </>
-                )
+                )}
                 <Button variant="ghost" size="sm" asChild className="shrink-0">
                   <Link to="/contact"><MessageSquare className="mr-1.5 h-4 w-4" />Contact</Link>
                 </Button>

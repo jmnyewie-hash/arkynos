@@ -100,6 +100,9 @@ const App = () => (
               <Route path="/recent" element={<RecentResourcesPage />} />
               <Route path="/mad-as-math" element={<MadAsMathPage />} />
               <Route path="/mad-as-math/upload" element={<MadMathUploadPage />} />
+              <Route path="/department/:department" element={<DepartmentPage />} />
+              <Route path="/programme/:programId" element={<ProgrammePage />} />
+              <Route path="/admin/courses" element={<AdminCoursesPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <UpdateBanner />

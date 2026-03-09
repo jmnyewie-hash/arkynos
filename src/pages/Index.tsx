@@ -7,7 +7,7 @@ import ResourceCard from "@/components/ResourceCard";
 import FoundingBanner from "@/components/FoundingBanner";
 import { useRealtimeResources } from "@/hooks/useRealtimeResources";
 import { useLibrary } from "@/hooks/useLibrary";
-import arkynosLogo from "@/assets/arkynos-logo-full.png";
+import arkynosCenterpiece from "@/assets/arkynos-centerpiece.png";
 import { Users, BookOpen, FolderOpen, Shield, Upload, Share2, Download } from "lucide-react";
 
 type ResourceWithRelations = Tables<"resources"> & {

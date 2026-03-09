@@ -28,17 +28,17 @@ export default function MadAsMathPage() {
 
   const fetchResources = useCallback(async () => {
     // Admin sees all mad_math resources; non-admin sees only non-hidden ones
-    let query = supabase
+    const query = supabase
       .from("resources")
-      .select("*, courses(*)")
-      .eq("is_mad_math" as any, true)
-      .order("created_at", { ascending: false });
+      .select("*, courses(*)") as any;
+
+    let filtered = query.eq("is_mad_math", true).order("created_at", { ascending: false });
 
     if (!isAdmin) {
-      query = query.eq("is_hidden", false);
+      filtered = filtered.eq("is_hidden", false);
     }
 
-    const { data: resourcesData } = await query;
+    const { data: resourcesData } = await filtered;
 
     if (resourcesData) {
       const userIds = [...new Set(resourcesData.map((r: any) => r.uploaded_by))];

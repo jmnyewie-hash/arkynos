@@ -1,11 +1,15 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 type Theme = 'teal' | 'amber' | 'blue' | 'forest' | 'mono';
+type Mode = 'light' | 'dark' | 'system';
 
 interface ThemeContextType {
   theme: Theme;
   setTheme: (theme: Theme) => void;
   themes: ThemeOption[];
+  mode: Mode;
+  setMode: (mode: Mode) => void;
+  isDark: boolean;
 }
 
 interface ThemeOption {
@@ -74,10 +78,26 @@ const themes: ThemeOption[] = [
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+function getSystemDark(): boolean {
+  return window.matchMedia('(prefers-color-scheme: dark)').matches;
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>(() => {
     const stored = localStorage.getItem('arkynos-theme');
     return (stored as Theme) || 'mono';
+  });
+
+  const [mode, setModeState] = useState<Mode>(() => {
+    const stored = localStorage.getItem('arkynos-mode');
+    return (stored as Mode) || 'system';
+  });
+
+  const [isDark, setIsDark] = useState<boolean>(() => {
+    const stored = localStorage.getItem('arkynos-mode');
+    if (stored === 'dark') return true;
+    if (stored === 'light') return false;
+    return getSystemDark();
   });
 
   const setTheme = (newTheme: Theme) => {
@@ -86,12 +106,57 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     applyTheme(newTheme);
   };
 
+  const setMode = (newMode: Mode) => {
+    setModeState(newMode);
+    localStorage.setItem('arkynos-mode', newMode);
+    applyMode(newMode);
+    
+    // Update isDark state
+    if (newMode === 'dark') {
+      setIsDark(true);
+    } else if (newMode === 'light') {
+      setIsDark(false);
+    } else {
+      setIsDark(getSystemDark());
+    }
+  };
+
+  const applyMode = (m: Mode) => {
+    const root = document.documentElement;
+    root.classList.remove('light', 'dark');
+    
+    if (m === 'dark') {
+      root.classList.add('dark');
+    } else if (m === 'light') {
+      root.classList.add('light');
+    } else {
+      // System preference
+      if (getSystemDark()) {
+        root.classList.add('dark');
+      } else {
+        root.classList.add('light');
+      }
+    }
+  };
+
   useEffect(() => {
     applyTheme(theme);
-  }, []);
+    applyMode(mode);
+
+    // Listen for system preference changes when in system mode
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e: MediaQueryListEvent) => {
+      if (mode === 'system') {
+        setIsDark(e.matches);
+        applyMode('system');
+      }
+    };
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, [mode]);
 
   return (
-    <ThemeContext.Provider value={{ theme, setTheme, themes }}>
+    <ThemeContext.Provider value={{ theme, setTheme, themes, mode, setMode, isDark }}>
       {children}
     </ThemeContext.Provider>
   );

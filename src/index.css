@@ -77,6 +77,53 @@
     --spacing: 0.25rem;
   }
 
+  /* Dark mode variables */
+  .dark {
+    color-scheme: dark;
+    --background: 240 10% 8%;
+    --foreground: 0 0% 95%;
+
+    --card: 240 10% 12%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 240 10% 10%;
+    --popover-foreground: 0 0% 95%;
+
+    --primary: 258 89% 66%;
+    --primary-foreground: 250 100% 97%;
+
+    --secondary: 240 5% 70%;
+    --secondary-foreground: 240 10% 8%;
+
+    --muted: 240 5% 20%;
+    --muted-foreground: 240 5% 65%;
+
+    --accent: 270 50% 20%;
+    --accent-foreground: 270 91% 75%;
+
+    --destructive: 0 72% 50%;
+    --destructive-foreground: 0 85% 97%;
+
+    --border: 240 5% 20%;
+    --input: 240 5% 20%;
+    --ring: 258 89% 66%;
+
+    --sidebar-background: 240 10% 10%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 258 89% 66%;
+    --sidebar-primary-foreground: 250 100% 97%;
+    --sidebar-accent: 240 5% 25%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 240 5% 20%;
+    --sidebar-ring: 258 89% 66%;
+    --sidebar: 240 10% 12%;
+
+    --chart-1: 255 91% 76%;
+    --chart-2: 270 95% 75%;
+    --chart-3: 234 89% 73%;
+    --chart-4: 258 89% 66%;
+    --chart-5: 240 3% 60%;
+  }
 }
 
 @layer base {
@@ -102,6 +149,9 @@
     pointer-events: none;
   }
 
+  .dark body::before {
+    opacity: 0.04;
+  }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
@@ -124,66 +174,17 @@
   }
 }
 
-/* Force light theme on ALL devices including Samsung Internet, 
-   One UI browser, and any browser respecting prefers-color-scheme */
 html, body {
   overflow-x: hidden;
-  color-scheme: light only;
-  background-color: hsl(240 4% 95%) !important;
-  color: hsl(240 5% 10%) !important;
 }
 
-/* Neutralize dark mode media query — prevent ANY dark override */
+/* Respect system preference when no explicit preference is set */
 @media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: light only;
-    --background: 240 4% 95%;
-    --foreground: 240 5% 10%;
-    --card: 0 0% 98%;
-    --card-foreground: 240 5% 10%;
-    --popover: 240 5% 90%;
-    --popover-foreground: 240 5% 10%;
-    --primary: 258 89% 66%;
-    --primary-foreground: 250 100% 97%;
-    --secondary: 240 5% 33%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 4% 83%;
-    --muted-foreground: 240 5% 10%;
-    --accent: 269 100% 98%;
-    --accent-foreground: 270 91% 65%;
-    --destructive: 0 72% 50%;
-    --destructive-foreground: 0 85% 97%;
-    --border: 240 4% 83%;
-    --input: 240 4% 83%;
-    --ring: 258 89% 66%;
+  html:not(.light) {
+    color-scheme: dark;
   }
-
-  html, body {
-    background-color: hsl(240 4% 95%) !important;
-    color: hsl(240 5% 10%) !important;
+  html:not(.light) body {
+    background-color: hsl(240 10% 8%);
+    color: hsl(0 0% 95%);
   }
-}
-
-/* Override .dark class if accidentally applied by any library */
-.dark, [data-theme="dark"], [color-scheme="dark"] {
-  color-scheme: light only;
-  --background: 240 4% 95%;
-  --foreground: 240 5% 10%;
-  --card: 0 0% 98%;
-  --card-foreground: 240 5% 10%;
-  --popover: 240 5% 90%;
-  --popover-foreground: 240 5% 10%;
-  --primary: 258 89% 66%;
-  --primary-foreground: 250 100% 97%;
-  --secondary: 240 5% 33%;
-  --secondary-foreground: 0 0% 98%;
-  --muted: 240 4% 83%;
-  --muted-foreground: 240 5% 10%;
-  --accent: 269 100% 98%;
-  --accent-foreground: 270 91% 65%;
-  --destructive: 0 72% 50%;
-  --destructive-foreground: 0 85% 97%;
-  --border: 240 4% 83%;
-  --input: 240 4% 83%;
-  --ring: 258 89% 66%;
 }

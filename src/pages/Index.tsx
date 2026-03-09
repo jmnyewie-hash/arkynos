@@ -7,7 +7,10 @@ import ResourceCard from "@/components/ResourceCard";
 import FoundingBanner from "@/components/FoundingBanner";
 import { useRealtimeResources } from "@/hooks/useRealtimeResources";
 import { useLibrary } from "@/hooks/useLibrary";
+import { useTheme } from "@/hooks/useTheme";
 import arkynosLogo from "@/assets/arkynos-logo-full.png";
+import arkynosLogoWhite from "@/assets/arkynos-logo-full-white.png";
+import arkynosLogoGlow from "@/assets/arkynos-logo-full-glow.png";
 import { Users, BookOpen, FolderOpen, Shield, Upload, Share2, Download } from "lucide-react";
 
 type ResourceWithRelations = Tables<"resources"> & {
@@ -25,6 +28,11 @@ export default function Index() {
   const [isInstalled, setIsInstalled] = useState(false);
   const logoRef = useRef<HTMLImageElement>(null);
   const navigate = useNavigate();
+  const { isDark } = useTheme();
+
+  // Select logo variant based on dark mode
+  // You can switch between arkynosLogoWhite (white fill) and arkynosLogoGlow (white outline)
+  const currentLogo = isDark ? arkynosLogoWhite : arkynosLogo;
 
   // Detect if app is already installed (standalone mode)
   useEffect(() => {
@@ -137,7 +145,7 @@ export default function Index() {
               <Share2 className="h-3.5 w-3.5 shrink-0" /> Share The App Link To Help Community Grow
             </button>
           </div>
-          <img id="home-centerpiece-logo" ref={logoRef} src={arkynosLogo} alt="Arkynos" className="mx-auto mb-2 w-[50rem] max-w-full h-[22rem] object-contain" />
+          <img id="home-centerpiece-logo" ref={logoRef} src={currentLogo} alt="Arkynos" className="mx-auto mb-2 w-[50rem] max-w-full h-[22rem] object-contain" />
           <p className="text-base font-medium tracking-[0.25em] uppercase text-muted-foreground/50 italic">The Labyrinth Of Knowledge</p>
           <p className="mt-3 text-lg text-muted-foreground">
             Find and share study resources for your courses

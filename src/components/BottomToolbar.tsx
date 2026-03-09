@@ -10,6 +10,19 @@ export default function BottomToolbar() {
   const [isCheckingForUpdates, setIsCheckingForUpdates] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
+  // Watch for logo visibility to show/hide scroll to top button
+  useEffect(() => {
+    const logoImg = document.querySelector('img[alt="Arkynos"]');
+    if (!logoImg) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowScrollTop(!entry.isIntersecting),
+      { threshold: 0 }
+    );
+    observer.observe(logoImg);
+    return () => observer.disconnect();
+  }, []);
+
   if (!user) return null;
 
   const handleManualUpdateCheck = async () => {

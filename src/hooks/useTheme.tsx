@@ -63,7 +63,7 @@ const themes: ThemeOption[] = [
   {
     id: 'mono',
     name: 'Monochrome',
-    description: 'Classic black and white',
+    description: 'Classic black and white (default)',
     colors: {
       primary: 'hsl(0, 0%, 9%)',
       secondary: 'hsl(0, 0%, 45%)',

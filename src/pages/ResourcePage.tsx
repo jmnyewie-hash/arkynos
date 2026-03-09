@@ -12,6 +12,7 @@ import { useAuth } from "@/hooks/useAuth";
 import FounderBadge from "@/components/FounderBadge";
 import FlagResourceDialog from "@/components/FlagResourceDialog";
 import { useLibrary } from "@/hooks/useLibrary";
+import FilePreview from "@/components/FilePreview";
 import {
   AlertDialog,
   AlertDialogAction,

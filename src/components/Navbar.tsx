@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useTheme } from "@/hooks/useTheme";
 import { Button } from "@/components/ui/button";
-import { Upload, Flag, Home, Tag, Crown, BarChart3, MessageSquare, ArrowLeft, ChevronRight, BookOpen, Info, Settings, Brain, Moon, Sun } from "lucide-react";
+import { Upload, Flag, Home, Tag, Crown, BarChart3, MessageSquare, ArrowLeft, ChevronRight, BookOpen, Info, Settings, Brain } from "lucide-react";
 import { useRef, useState, useEffect, useCallback } from "react";
 
 export default function Navbar() {

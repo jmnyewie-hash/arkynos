@@ -178,12 +178,20 @@ export default function Index() {
         <section className="mt-14 animate-fade-in" style={{ animationDelay: "0.2s" }}>
           <div className="flex items-center justify-between">
             <h2 className="font-heading text-lg font-semibold text-foreground">Recent Resources</h2>
-            {recentResources.length >= 6 && (
+            {!showAllResources && recentResources.length === 6 && (
               <button
-                onClick={() => setShowAllResources(!showAllResources)}
+                onClick={() => setShowAllResources(true)}
                 className="text-sm text-primary hover:text-primary/80 transition-colors"
               >
-                {showAllResources ? "Show Less" : "See All"}
+                See All
+              </button>
+            )}
+            {showAllResources && (
+              <button
+                onClick={() => setShowAllResources(false)}
+                className="text-sm text-primary hover:text-primary/80 transition-colors"
+              >
+                Show Less
               </button>
             )}
           </div>

@@ -6,6 +6,7 @@ interface ThemeContextType {
   theme: Theme;
   setTheme: (theme: Theme) => void;
   themes: ThemeOption[];
+  isDark: boolean;
 }
 
 interface ThemeOption {

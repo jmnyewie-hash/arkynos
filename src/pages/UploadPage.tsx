@@ -118,8 +118,13 @@ export default function UploadPage() {
 
   return (
     <div className="container max-w-lg py-10 animate-fade-in">
-      <h1 className="font-heading text-2xl font-bold">Upload Resource</h1>
-      <p className="mt-1 text-sm text-muted-foreground">Share study materials with your peers</p>
+      <h1 className="font-heading text-2xl font-bold">{isMadMath ? "Upload to Mad As Math" : "Upload Resource"}</h1>
+      <p className="mt-1 text-sm text-muted-foreground">
+        {isMadMath ? "This resource will be added to the Mad As Math section (hidden by default)" : "Share study materials with your peers"}
+      </p>
+      {isMadMath && !isAdmin && (
+        <p className="mt-2 text-sm text-destructive">Only administrators can upload to Mad As Math.</p>
+      )}
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-5">
         <div className="space-y-2">

@@ -152,6 +152,9 @@ export default function Navbar() {
             <Button variant="ghost" size="sm" asChild className="shrink-0">
               <Link to="/classes"><Tag className="mr-1.5 h-4 w-4" />Classes</Link>
             </Button>
+            <Button variant="ghost" size="sm" asChild className="shrink-0">
+              <Link to="/mad-as-math"><Brain className="mr-1.5 h-4 w-4" />Mad As Math</Link>
+            </Button>
             {user ? (
               <>
                 {isAdmin && (

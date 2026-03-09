@@ -92,6 +92,7 @@ const App = () => (
               <Route path="/view/:id" element={<ViewerPage />} />
               <Route path="/offline" element={<OfflinePage />} />
               <Route path="/recent" element={<RecentResourcesPage />} />
+              <Route path="/mad-as-math" element={<MadAsMathPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <UpdateBanner />

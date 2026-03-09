@@ -120,6 +120,9 @@ export default function Index() {
     <>
       <FoundingBanner />
       <div className="container max-w-2xl py-16">
+        <div className="mb-1 flex justify-end animate-fade-in">
+          <ThemeToggle />
+        </div>
         <div className="mb-6 animate-fade-in relative z-[60]">
           <CourseSearchBar />
         </div>

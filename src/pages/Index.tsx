@@ -43,16 +43,6 @@ export default function Index() {
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
 
-  useEffect(() => {
-    const el = logoRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setShowScrollTop(!entry.isIntersecting),
-      { threshold: 0 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
 
   const fetchResources = useCallback(async () => {
     const { data: resourcesData } = await supabase

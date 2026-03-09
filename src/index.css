@@ -124,7 +124,66 @@
   }
 }
 
+/* Force light theme on ALL devices including Samsung Internet, 
+   One UI browser, and any browser respecting prefers-color-scheme */
 html, body {
   overflow-x: hidden;
-  color-scheme: light;
+  color-scheme: light only;
+  background-color: hsl(240 4% 95%) !important;
+  color: hsl(240 5% 10%) !important;
+}
+
+/* Neutralize dark mode media query — prevent ANY dark override */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: light only;
+    --background: 240 4% 95%;
+    --foreground: 240 5% 10%;
+    --card: 0 0% 98%;
+    --card-foreground: 240 5% 10%;
+    --popover: 240 5% 90%;
+    --popover-foreground: 240 5% 10%;
+    --primary: 258 89% 66%;
+    --primary-foreground: 250 100% 97%;
+    --secondary: 240 5% 33%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 4% 83%;
+    --muted-foreground: 240 5% 10%;
+    --accent: 269 100% 98%;
+    --accent-foreground: 270 91% 65%;
+    --destructive: 0 72% 50%;
+    --destructive-foreground: 0 85% 97%;
+    --border: 240 4% 83%;
+    --input: 240 4% 83%;
+    --ring: 258 89% 66%;
+  }
+
+  html, body {
+    background-color: hsl(240 4% 95%) !important;
+    color: hsl(240 5% 10%) !important;
+  }
+}
+
+/* Override .dark class if accidentally applied by any library */
+.dark, [data-theme="dark"], [color-scheme="dark"] {
+  color-scheme: light only;
+  --background: 240 4% 95%;
+  --foreground: 240 5% 10%;
+  --card: 0 0% 98%;
+  --card-foreground: 240 5% 10%;
+  --popover: 240 5% 90%;
+  --popover-foreground: 240 5% 10%;
+  --primary: 258 89% 66%;
+  --primary-foreground: 250 100% 97%;
+  --secondary: 240 5% 33%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 240 4% 83%;
+  --muted-foreground: 240 5% 10%;
+  --accent: 269 100% 98%;
+  --accent-foreground: 270 91% 65%;
+  --destructive: 0 72% 50%;
+  --destructive-foreground: 0 85% 97%;
+  --border: 240 4% 83%;
+  --input: 240 4% 83%;
+  --ring: 258 89% 66%;
 }

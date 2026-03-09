@@ -49,6 +49,36 @@ export default function BottomToolbar() {
     };
   }, []);
 
+  // Scroll-based gear rotation
+  useEffect(() => {
+    const handleScroll = () => {
+      if (scrollRaf.current) {
+        cancelAnimationFrame(scrollRaf.current);
+      }
+      
+      scrollRaf.current = requestAnimationFrame(() => {
+        const currentScrollY = window.scrollY;
+        const scrollDelta = currentScrollY - lastScrollY.current;
+        
+        // Gear rotates based on scroll direction and distance
+        // Positive scrollDelta (scrolling down) = clockwise rotation
+        // Negative scrollDelta (scrolling up) = counter-clockwise rotation
+        setGearRotation(prev => prev + scrollDelta * 0.5);
+        
+        lastScrollY.current = currentScrollY;
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollRaf.current) {
+        cancelAnimationFrame(scrollRaf.current);
+      }
+    };
+  }, []);
+
   if (!user) return null;
 
   const handleManualUpdateCheck = async () => {

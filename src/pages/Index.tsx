@@ -12,6 +12,7 @@ import arkynosLogo from "@/assets/arkynos-logo-full.png";
 import arkynosLogoWhite from "@/assets/arkynos-logo-full-white.png";
 import arkynosLogoGlow from "@/assets/arkynos-logo-full-glow.png";
 import { Users, BookOpen, FolderOpen, Shield, Upload, Share2, Download } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 
 type ResourceWithRelations = Tables<"resources"> & {
   courses: Tables<"courses"> | null;

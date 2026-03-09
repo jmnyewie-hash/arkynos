@@ -246,6 +246,7 @@ export type Database = {
           is_hidden: boolean
           is_mad_math: boolean
           is_preferred: boolean
+          mad_math_difficulty: string | null
           mad_math_subject: string | null
           mad_math_topic: string | null
           resource_type: Database["public"]["Enums"]["resource_type"]
@@ -266,6 +267,7 @@ export type Database = {
           is_hidden?: boolean
           is_mad_math?: boolean
           is_preferred?: boolean
+          mad_math_difficulty?: string | null
           mad_math_subject?: string | null
           mad_math_topic?: string | null
           resource_type: Database["public"]["Enums"]["resource_type"]
@@ -286,6 +288,7 @@ export type Database = {
           is_hidden?: boolean
           is_mad_math?: boolean
           is_preferred?: boolean
+          mad_math_difficulty?: string | null
           mad_math_subject?: string | null
           mad_math_topic?: string | null
           resource_type?: Database["public"]["Enums"]["resource_type"]

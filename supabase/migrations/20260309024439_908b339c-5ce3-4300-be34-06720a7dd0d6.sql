@@ -1,0 +1,1 @@
+ALTER TABLE public.resources ADD COLUMN mad_math_difficulty text;

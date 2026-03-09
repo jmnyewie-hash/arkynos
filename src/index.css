@@ -130,6 +130,8 @@
     --shadow-lg: 0 8px 16px 0px hsl(0 0% 0% / 0.3), 0 4px 6px -1px hsl(0 0% 0% / 0.2);
     --shadow-xl: 0 14px 28px 0px hsl(0 0% 0% / 0.3), 0 8px 10px -1px hsl(0 0% 0% / 0.2);
     --shadow-2xl: 0 20px 40px 0px hsl(0 0% 0% / 0.4);
+
+    --orange-outline: 24 95% 53%;
   }
 }
 

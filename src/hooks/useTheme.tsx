@@ -106,49 +106,51 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     applyTheme(newTheme);
   };
 
-  const setMode = (newMode: Mode) => {
-    setModeState(newMode);
-    localStorage.setItem('arkynos-mode', newMode);
-    applyMode(newMode);
-    
-    // Update isDark state
-    if (newMode === 'dark') {
-      setIsDark(true);
-    } else if (newMode === 'light') {
-      setIsDark(false);
-    } else {
-      setIsDark(getSystemDark());
-    }
-  };
-
-  const applyMode = (m: Mode) => {
+  const applyMode = (m: Mode, currentTheme: Theme) => {
     const root = document.documentElement;
     root.classList.remove('light', 'dark');
     
-    if (m === 'dark') {
+    const willBeDark = m === 'dark' || (m === 'system' && getSystemDark());
+    
+    if (willBeDark) {
       root.classList.add('dark');
-    } else if (m === 'light') {
-      root.classList.add('light');
+      // Auto-switch to teal/purple for dark mode when coming from mono
+      if (currentTheme === 'mono') {
+        setThemeState('teal');
+        localStorage.setItem('arkynos-theme', 'teal');
+        applyTheme('teal');
+      }
     } else {
-      // System preference
-      if (getSystemDark()) {
-        root.classList.add('dark');
-      } else {
-        root.classList.add('light');
+      root.classList.add('light');
+      // Auto-switch to mono for light mode when coming from teal
+      if (currentTheme === 'teal') {
+        setThemeState('mono');
+        localStorage.setItem('arkynos-theme', 'mono');
+        applyTheme('mono');
       }
     }
   };
 
+  const setMode = (newMode: Mode) => {
+    setModeState(newMode);
+    localStorage.setItem('arkynos-mode', newMode);
+    applyMode(newMode, theme);
+    
+    // Update isDark state
+    const willBeDark = newMode === 'dark' || (newMode === 'system' && getSystemDark());
+    setIsDark(willBeDark);
+  };
+
   useEffect(() => {
     applyTheme(theme);
-    applyMode(mode);
+    applyMode(mode, theme);
 
     // Listen for system preference changes when in system mode
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = (e: MediaQueryListEvent) => {
       if (mode === 'system') {
         setIsDark(e.matches);
-        applyMode('system');
+        applyMode('system', theme);
       }
     };
     mediaQuery.addEventListener('change', handleChange);

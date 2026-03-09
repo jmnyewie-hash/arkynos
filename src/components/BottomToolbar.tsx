@@ -117,6 +117,17 @@ export default function BottomToolbar() {
         </Button>
       )}
 
+      {/* Scroll Gear - always visible when user is logged in */}
+      <div className="fixed bottom-16 left-4 z-40">
+        <Cog 
+          className="h-8 w-8 text-muted-foreground/60"
+          style={{
+            transform: `rotate(${gearRotation}deg)`,
+            transition: 'none' // Disable transitions for smooth real-time rotation
+          }}
+        />
+      </div>
+
       {/* Bottom Toolbar */}
       <div className="fixed bottom-0 left-0 right-0 z-50 border-t bg-card/90 backdrop-blur-md">
         <div className="container px-2">

@@ -20,11 +20,19 @@ export default function Navbar() {
     if (el) {
       const needsScroll = el.scrollWidth > el.clientWidth && el.scrollLeft + el.clientWidth < el.scrollWidth - 4;
       setCanScroll(needsScroll);
-      if (needsScroll && !showScrollTip) {
-        setShowScrollTip(true);
-      }
     }
   };
+
+  // Re-show tip when user scrolls page to top
+  useEffect(() => {
+    const onPageScroll = () => {
+      if (window.scrollY === 0 && canScroll) {
+        setShowScrollTip(true);
+      }
+    };
+    window.addEventListener("scroll", onPageScroll);
+    return () => window.removeEventListener("scroll", onPageScroll);
+  }, [canScroll]);
 
   useEffect(() => {
     checkScroll();
@@ -39,11 +47,14 @@ export default function Navbar() {
     }
   }, [user, isAdmin]);
 
+  // Show tip initially when canScroll becomes true
+  useEffect(() => {
+    if (canScroll) setShowScrollTip(true);
+  }, [canScroll]);
+
   useEffect(() => {
     if (showScrollTip) {
-      const timer = setTimeout(() => {
-        setShowScrollTip(false);
-      }, 3000);
+      const timer = setTimeout(() => setShowScrollTip(false), 3000);
       return () => clearTimeout(timer);
     }
   }, [showScrollTip]);

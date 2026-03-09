@@ -35,6 +35,9 @@ interface ResourceCardProps {
 }
 
 export default function ResourceCard({ resource, isSaved, onToggleSave }: ResourceCardProps) {
+  const uploadYear = new Date(resource.created_at).getFullYear();
+  const showYear = uploadYear >= 2026;
+
   return (
     <div
       className={`group relative rounded-xl border bg-card p-3 sm:p-4 shadow-card transition-all hover:shadow-card-hover hover:-translate-y-0.5 ${
@@ -87,6 +90,9 @@ export default function ResourceCard({ resource, isSaved, onToggleSave }: Resour
                 {typeLabels[resource.resource_type]}
               </Badge>
               <span className="flex items-center gap-1 shrink-0"><Download className="h-3 w-3" />{resource.downloads}</span>
+              {showYear && (
+                <span className="shrink-0 text-[10px] font-bold text-primary/70">{uploadYear}</span>
+              )}
               {resource.profiles && (
                 <span className="flex items-center gap-1 truncate hidden sm:inline">
                   by {resource.profiles.name}

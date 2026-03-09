@@ -119,7 +119,7 @@ function applyTheme(theme: Theme) {
   const root = document.documentElement;
   
   // Remove existing theme classes
-  root.classList.remove('theme-teal', 'theme-amber', 'theme-blue', 'theme-forest', 'theme-mono');
+  root.classList.remove('theme-teal', 'theme-amber', 'theme-blue', 'theme-forest', 'theme-mono', 'theme-blaze');
   
   // Add new theme class
   root.classList.add(`theme-${theme}`);

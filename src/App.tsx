@@ -63,36 +63,39 @@ function OfflineRedirect() {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <AuthProvider>
-          <OfflineRedirect />
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/search" element={<SearchPage />} />
-            <Route path="/course/:courseCode" element={<CoursePage />} />
-            <Route path="/resource/:id" element={<ResourcePage />} />
-            <Route path="/upload" element={<UploadPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/admin/flags" element={<AdminFlagsPage />} />
-            <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
-            <Route path="/admin/messages" element={<AdminMessagesPage />} />
-            <Route path="/contact" element={<ContactAdminPage />} />
-            <Route path="/upgrade" element={<UpgradePage />} />
-            <Route path="/classes" element={<BrowseTagsPage />} />
-            <Route path="/class/:tagId" element={<ClassTagPage />} />
-            <Route path="/library" element={<MyLibraryPage />} />
-            <Route path="/view/:id" element={<ViewerPage />} />
-            <Route path="/offline" element={<OfflinePage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <UpdateBanner />
-          <BottomToolbar />
-        </AuthProvider>
-      </BrowserRouter>
+      <ThemeProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <AuthProvider>
+            <OfflineRedirect />
+            <Navbar />
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/search" element={<SearchPage />} />
+              <Route path="/course/:courseCode" element={<CoursePage />} />
+              <Route path="/resource/:id" element={<ResourcePage />} />
+              <Route path="/upload" element={<UploadPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/admin/flags" element={<AdminFlagsPage />} />
+              <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+              <Route path="/admin/messages" element={<AdminMessagesPage />} />
+              <Route path="/contact" element={<ContactAdminPage />} />
+              <Route path="/upgrade" element={<UpgradePage />} />
+              <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/classes" element={<BrowseTagsPage />} />
+              <Route path="/class/:tagId" element={<ClassTagPage />} />
+              <Route path="/library" element={<MyLibraryPage />} />
+              <Route path="/view/:id" element={<ViewerPage />} />
+              <Route path="/offline" element={<OfflinePage />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            <UpdateBanner />
+            <BottomToolbar />
+          </AuthProvider>
+        </BrowserRouter>
+      </ThemeProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

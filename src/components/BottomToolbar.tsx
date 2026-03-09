@@ -102,7 +102,7 @@ export default function BottomToolbar() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => navigate("/upgrade")}
+              onClick={() => navigate("/settings")}
               className="flex-1 min-w-0 text-muted-foreground hover:text-foreground"
             >
               <Settings className="h-4 w-4" />

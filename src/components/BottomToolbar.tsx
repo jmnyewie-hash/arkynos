@@ -81,7 +81,7 @@ export default function BottomToolbar() {
     };
   }, []);
 
-  if (!user) return null;
+  if (!user || !isHome) return null;
 
   const handleManualUpdateCheck = async () => {
     setIsCheckingForUpdates(true);

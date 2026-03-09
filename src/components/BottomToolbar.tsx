@@ -8,6 +8,7 @@ export default function BottomToolbar() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [isCheckingForUpdates, setIsCheckingForUpdates] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   if (!user) return null;
 

@@ -23,6 +23,25 @@ export default function Navbar() {
     }
   };
 
+  const animateNavScroll = useCallback(() => {
+    const el = navRef.current;
+    if (!el || !canScroll) return;
+
+    // Quick scroll to end
+    el.scrollTo({
+      left: el.scrollWidth,
+      behavior: 'auto' // Instant scroll
+    });
+
+    // After a brief pause, slowly scroll back to start
+    setTimeout(() => {
+      el.scrollTo({
+        left: 0,
+        behavior: 'smooth'
+      });
+    }, 300);
+  }, [canScroll]);
+
   // Re-show tip when user scrolls page to top
   useEffect(() => {
     const onPageScroll = () => {
@@ -47,10 +66,14 @@ export default function Navbar() {
     }
   }, [user, isAdmin]);
 
-  // Show tip initially when canScroll becomes true
+  // Show tip initially when canScroll becomes true and trigger animation
   useEffect(() => {
-    if (canScroll) setShowScrollTip(true);
-  }, [canScroll]);
+    if (canScroll) {
+      setShowScrollTip(true);
+      // Trigger scroll animation after a short delay
+      setTimeout(animateNavScroll, 1000);
+    }
+  }, [canScroll, animateNavScroll]);
 
   useEffect(() => {
     if (showScrollTip) {

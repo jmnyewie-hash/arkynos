@@ -74,16 +74,6 @@ export default function Navbar() {
     }, 500);
   }, []);
 
-  // Re-show tip when user scrolls page to top
-  useEffect(() => {
-    const onPageScroll = () => {
-      if (window.scrollY === 0 && canScroll) {
-        setShowScrollTip(true);
-      }
-    };
-    window.addEventListener("scroll", onPageScroll);
-    return () => window.removeEventListener("scroll", onPageScroll);
-  }, [canScroll]);
 
   useEffect(() => {
     checkScroll();

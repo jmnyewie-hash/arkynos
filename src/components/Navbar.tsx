@@ -63,7 +63,10 @@ export default function Navbar() {
           animFrameRef.current = requestAnimationFrame(smoothScroll);
         } else {
           setIsAnimating(false);
-          setTimeout(() => setShowGear(false), 500);
+          setTimeout(() => {
+            setShowGear(false);
+            setShowScrollTip(true);
+          }, 500);
         }
       };
 

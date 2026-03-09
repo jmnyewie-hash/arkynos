@@ -2,41 +2,16 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Button } from "@/components/ui/button";
-import { Upload, LogOut, Flag, Home, Tag, Crown, BarChart3, MessageSquare, ArrowLeft, ChevronRight, BookOpen, RefreshCw } from "lucide-react";
+import { Upload, Flag, Home, Tag, Crown, BarChart3, MessageSquare, ArrowLeft, ChevronRight, BookOpen } from "lucide-react";
 import { useRef, useState, useEffect } from "react";
-import { useRegisterSW } from "virtual:pwa-register/react";
 
 export default function Navbar() {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const { isAdmin } = useIsAdmin();
   const navigate = useNavigate();
   const location = useLocation();
   const navRef = useRef<HTMLElement>(null);
   const [canScroll, setCanScroll] = useState(false);
-  const [isCheckingForUpdates, setIsCheckingForUpdates] = useState(false);
-
-  const { updateServiceWorker } = useRegisterSW();
-
-  const handleManualUpdateCheck = async () => {
-    setIsCheckingForUpdates(true);
-    try {
-      // Force reload the page to check for updates
-      const registration = await navigator.serviceWorker.getRegistration();
-      if (registration) {
-        await registration.update();
-        console.log("Manual update check triggered");
-      }
-      // Alternative: force reload after a short delay
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
-    } catch (error) {
-      console.error("Error checking for updates:", error);
-      // Fallback: just reload the page
-      window.location.reload();
-    }
-    setIsCheckingForUpdates(false);
-  };
 
   const checkScroll = () => {
     const el = navRef.current;
@@ -59,11 +34,6 @@ export default function Navbar() {
   }, [user, isAdmin]);
 
   const isHome = location.pathname === "/";
-
-  const handleSignOut = async () => {
-    await signOut();
-    navigate("/");
-  };
 
   return (
     <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-md">
@@ -115,19 +85,6 @@ export default function Navbar() {
                 </Button>
                 <Button variant="ghost" size="sm" asChild className="shrink-0">
                   <Link to="/upgrade"><Crown className="mr-1.5 h-4 w-4" />Upgrade</Link>
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={handleManualUpdateCheck}
-                  disabled={isCheckingForUpdates}
-                  className="shrink-0"
-                >
-                  <RefreshCw className={`mr-1.5 h-4 w-4 ${isCheckingForUpdates ? 'animate-spin' : ''}`} />
-                  {isCheckingForUpdates ? 'Checking...' : 'Check Updates'}
-                </Button>
-                <Button variant="ghost" size="sm" onClick={handleSignOut} className="shrink-0">
-                  <LogOut className="mr-1.5 h-4 w-4" />Sign Out
                 </Button>
               </>
             ) : (

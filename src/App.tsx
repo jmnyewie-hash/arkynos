@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-ro
 import { AuthProvider } from "@/hooks/useAuth";
 import Navbar from "@/components/Navbar";
 import UpdateBanner from "@/components/UpdateBanner";
+import BottomToolbar from "@/components/BottomToolbar";
 import Index from "./pages/Index";
 import SearchPage from "./pages/SearchPage";
 import CoursePage from "./pages/CoursePage";
@@ -87,6 +88,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
           <UpdateBanner />
+          <BottomToolbar />
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

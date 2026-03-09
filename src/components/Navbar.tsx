@@ -13,6 +13,7 @@ export default function Navbar() {
   const location = useLocation();
   const navRef = useRef<HTMLElement>(null);
   const [canScroll, setCanScroll] = useState(false);
+  const [showScrollTip, setShowScrollTip] = useState(false);
 
   const checkScroll = () => {
     const el = navRef.current;

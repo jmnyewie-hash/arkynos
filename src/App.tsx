@@ -31,6 +31,9 @@ import OfflinePage from "./pages/OfflinePage";
 import RecentResourcesPage from "./pages/RecentResourcesPage";
 import MadAsMathPage from "./pages/MadAsMathPage";
 import MadMathUploadPage from "./pages/MadMathUploadPage";
+import DepartmentPage from "./pages/DepartmentPage";
+import ProgrammePage from "./pages/ProgrammePage";
+import AdminCoursesPage from "./pages/AdminCoursesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();

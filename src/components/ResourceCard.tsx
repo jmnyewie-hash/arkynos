@@ -35,6 +35,9 @@ interface ResourceCardProps {
 }
 
 export default function ResourceCard({ resource, isSaved, onToggleSave }: ResourceCardProps) {
+  const uploadYear = new Date(resource.created_at).getFullYear();
+  const showYear = uploadYear >= 2026;
+
   return (
     <div
       className={`group relative rounded-xl border bg-card p-3 sm:p-4 shadow-card transition-all hover:shadow-card-hover hover:-translate-y-0.5 ${

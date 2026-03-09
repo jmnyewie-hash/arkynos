@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useTheme } from "@/hooks/useTheme";
 import { Button } from "@/components/ui/button";
-import { Upload, Flag, Home, Tag, Crown, BarChart3, MessageSquare, ArrowLeft, ChevronRight, BookOpen, Info, Settings, Brain, Moon, Sun } from "lucide-react";
+import { Upload, Flag, Home, Tag, Crown, BarChart3, MessageSquare, ArrowLeft, ChevronRight, BookOpen, Info, Settings, Brain } from "lucide-react";
 import { useRef, useState, useEffect, useCallback } from "react";
 
 export default function Navbar() {
@@ -143,15 +143,6 @@ export default function Navbar() {
               <ArrowLeft className="h-4 w-4" />
             </Button>
           )}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 shrink-0"
-            onClick={() => setMode(mode === 'dark' ? 'light' : 'dark')}
-            title={mode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-          >
-            {mode === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-          </Button>
         </div>
         <div className="relative flex-1 min-w-0 ml-4">
           <nav ref={navRef} className="flex items-center gap-1 overflow-x-auto scrollbar-hide">

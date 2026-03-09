@@ -63,7 +63,7 @@ export default function BottomToolbar() {
         // Gear rotates based on scroll direction and distance
         // Positive scrollDelta (scrolling down) = clockwise rotation
         // Negative scrollDelta (scrolling up) = counter-clockwise rotation
-        setGearRotation(prev => prev + scrollDelta * 0.5);
+        setGearRotation(prev => prev + scrollDelta * 1.0);
         
         lastScrollY.current = currentScrollY;
       });

@@ -29,7 +29,10 @@ const typeThumbnails: Record<string, string> = {
 };
 
 interface ResourceCardProps {
-  resource: Tables<"resources"> & { courses?: Tables<"courses"> | null; profiles?: Tables<"profiles"> | null };
+  resource: Tables<"resources"> & {
+    courses?: Tables<"courses"> | null;
+    profiles?: (Tables<"profiles"> & { programs?: { program_name: string; department: string } | null }) | null;
+  };
   isSaved?: boolean;
   onToggleSave?: (resourceId: string) => void;
 }
@@ -37,6 +40,8 @@ interface ResourceCardProps {
 export default function ResourceCard({ resource, isSaved, onToggleSave }: ResourceCardProps) {
   const uploadYear = new Date(resource.created_at).getFullYear();
   const showYear = uploadYear >= 2026;
+  const profile = resource.profiles;
+  const program = (profile as any)?.programs ?? null;
 
   return (
     <div
@@ -68,7 +73,7 @@ export default function ResourceCard({ resource, isSaved, onToggleSave }: Resour
             alt={typeLabels[resource.resource_type]}
             className="h-9 w-9 sm:h-10 sm:w-10 shrink-0 rounded-lg object-contain"
           />
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0 flex-1 overflow-hidden">
             <h3 className="font-heading font-semibold text-sm sm:text-base text-card-foreground truncate group-hover:text-primary transition-colors flex items-center gap-1.5">
               {resource.title}
               {resource.is_preferred && (
@@ -85,19 +90,33 @@ export default function ResourceCard({ resource, isSaved, onToggleSave }: Resour
                 {resource.courses.course_code} · {resource.courses.course_name}
               </p>
             )}
-            <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
+            {/* Metadata tags - wrapping */}
+            <div className="mt-1.5 flex flex-wrap items-center gap-1 text-xs text-muted-foreground">
               <Badge variant="secondary" className="text-[10px] sm:text-xs px-1.5 py-0 shrink-0">
                 {typeLabels[resource.resource_type]}
               </Badge>
-              <span className="flex items-center gap-1 shrink-0"><Download className="h-3 w-3" />{resource.downloads}</span>
+              <span className="flex items-center gap-0.5 shrink-0"><Download className="h-3 w-3" />{resource.downloads}</span>
               {showYear && (
                 <span className="shrink-0 text-[10px] font-bold text-primary/70">{uploadYear}</span>
               )}
-              {resource.profiles && (
-                <span className="flex items-center gap-1 truncate hidden sm:inline">
-                  by {resource.profiles.name}
-                  {(resource.profiles as any).subscription_tier === "founder" && (
-                    <span className="ml-1 text-amber-500 font-semibold">👑</span>
+            </div>
+            {/* Programme & Department badges */}
+            <div className="mt-1 flex flex-wrap items-center gap-1">
+              {program && (
+                <>
+                  <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-primary/30 text-primary/80 shrink-0 whitespace-nowrap">
+                    {program.program_name.replace('BSc ', '')}
+                  </Badge>
+                  <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-muted-foreground/30 text-muted-foreground shrink-0 whitespace-nowrap">
+                    {program.department}
+                  </Badge>
+                </>
+              )}
+              {profile && (
+                <span className="text-[10px] text-muted-foreground/70 truncate max-w-[120px] sm:max-w-none">
+                  by {profile.name}
+                  {(profile as any).subscription_tier === "founder" && (
+                    <span className="ml-0.5 text-amber-500 font-semibold">👑</span>
                   )}
                 </span>
               )}

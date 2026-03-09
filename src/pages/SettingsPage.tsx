@@ -30,8 +30,8 @@ export default function SettingsPage() {
   };
 
   const resetToDefault = () => {
-    setSelectedTheme('teal');
-    setTheme('teal');
+    setSelectedTheme('mono');
+    setTheme('mono');
   };
 
   return (

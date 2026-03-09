@@ -149,7 +149,8 @@
     pointer-events: none;
   }
 
-  .dark body::before {
+  .dark body::before,
+  html.dark body::before {
     opacity: 0.04;
   }
 

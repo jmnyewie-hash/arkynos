@@ -13,11 +13,16 @@ export default function Navbar() {
   const location = useLocation();
   const navRef = useRef<HTMLElement>(null);
   const [canScroll, setCanScroll] = useState(false);
+  const [showScrollTip, setShowScrollTip] = useState(false);
 
   const checkScroll = () => {
     const el = navRef.current;
     if (el) {
-      setCanScroll(el.scrollWidth > el.clientWidth && el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+      const needsScroll = el.scrollWidth > el.clientWidth && el.scrollLeft + el.clientWidth < el.scrollWidth - 4;
+      setCanScroll(needsScroll);
+      if (needsScroll && !showScrollTip) {
+        setShowScrollTip(true);
+      }
     }
   };
 
@@ -34,11 +39,20 @@ export default function Navbar() {
     }
   }, [user, isAdmin]);
 
+  useEffect(() => {
+    if (showScrollTip) {
+      const timer = setTimeout(() => {
+        setShowScrollTip(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showScrollTip]);
+
   const isHome = location.pathname === "/";
 
   return (
     <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-md">
-      {canScroll && (
+      {canScroll && showScrollTip && (
         <Alert className="rounded-none border-l-0 border-r-0 border-t-0 bg-muted/30 py-2">
           <Info className="h-4 w-4" />
           <AlertDescription className="text-xs">

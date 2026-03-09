@@ -94,6 +94,7 @@ const App = () => (
               <Route path="/offline" element={<OfflinePage />} />
               <Route path="/recent" element={<RecentResourcesPage />} />
               <Route path="/mad-as-math" element={<MadAsMathPage />} />
+              <Route path="/mad-as-math/upload" element={<MadMathUploadPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <UpdateBanner />

@@ -34,7 +34,10 @@ const resourceTypes = [
 
 export default function UploadPage() {
   const { user, loading: authLoading } = useAuth();
+  const { isAdmin } = useIsAdmin();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const isMadMath = searchParams.get("mad_math") === "true";
   const [submitting, setSubmitting] = useState(false);
 
   const [title, setTitle] = useState("");

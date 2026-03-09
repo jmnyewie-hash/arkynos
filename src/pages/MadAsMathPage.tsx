@@ -101,6 +101,18 @@ export default function MadAsMathPage() {
         </div>
       </div>
 
+      <div className="mt-6 rounded-2xl border border-primary/20 bg-gradient-to-br from-card to-primary/5 p-5 sm:p-6">
+        <p className="text-sm sm:text-base leading-relaxed text-foreground/90">
+          Welcome to <span className="font-bold text-primary">Mad As Math</span> — a sophisticated space reserved for those with a genuine interest in the mathematical and physical disciplines. Here, the questions hit different. Expect a difficulty on par with some of the most challenging courses you've ever encountered — and sometimes, well beyond them.
+        </p>
+        <p className="mt-3 text-sm sm:text-base leading-relaxed text-foreground/90">
+          If you're the kind who finds thrill in a problem that fights back, if you actually <span className="italic">want</span> to be humbled by an integral or a mechanics question that stares you down — then stick around. This is where the fun lives.
+        </p>
+        <p className="mt-3 text-xs text-muted-foreground italic">
+          — The Mad As Math corner. Not for the faint of heart.
+        </p>
+      </div>
+
       {isAdmin && (
         <Button size="sm" className="mt-4" onClick={() => navigate("/upload?mad_math=true")}>
           <Upload className="mr-1.5 h-4 w-4" /> Upload to Mad As Math

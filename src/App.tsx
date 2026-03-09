@@ -31,6 +31,9 @@ import OfflinePage from "./pages/OfflinePage";
 import RecentResourcesPage from "./pages/RecentResourcesPage";
 import MadAsMathPage from "./pages/MadAsMathPage";
 import MadMathUploadPage from "./pages/MadMathUploadPage";
+import DepartmentPage from "./pages/DepartmentPage";
+import ProgrammePage from "./pages/ProgrammePage";
+import AdminCoursesPage from "./pages/AdminCoursesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -97,6 +100,9 @@ const App = () => (
               <Route path="/recent" element={<RecentResourcesPage />} />
               <Route path="/mad-as-math" element={<MadAsMathPage />} />
               <Route path="/mad-as-math/upload" element={<MadMathUploadPage />} />
+              <Route path="/department/:department" element={<DepartmentPage />} />
+              <Route path="/programme/:programId" element={<ProgrammePage />} />
+              <Route path="/admin/courses" element={<AdminCoursesPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <UpdateBanner />

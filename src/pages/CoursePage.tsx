@@ -83,7 +83,7 @@ export default function CoursePage() {
       const userIds = [...new Set(resourcesData.map(r => r.uploaded_by))];
       const { data: profilesData } = await supabase
         .from("profiles")
-        .select("*")
+        .select("*, programs(program_name, department)")
         .in("user_id", userIds);
 
       const profilesMap = new Map((profilesData ?? []).map(p => [p.user_id, p]));

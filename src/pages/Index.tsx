@@ -70,7 +70,7 @@ export default function Index() {
       const userIds = [...new Set(resourcesData.map(r => r.uploaded_by))];
       const { data: profilesData } = await supabase
         .from("profiles")
-        .select("*")
+        .select("*, programs(program_name, department)")
         .in("user_id", userIds);
 
       const profilesMap = new Map((profilesData ?? []).map(p => [p.user_id, p]));
@@ -131,7 +131,10 @@ export default function Index() {
           <p className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground/50 italic">A total of <span className="text-sm font-bold text-primary not-italic">{totalFiles.toLocaleString()}</span> files available today</p>
           <div className="mt-3 flex flex-col items-center gap-2 px-2">
             <a href="/upload" className="inline-flex w-full max-w-xs items-center justify-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90">
-              <Upload className="h-3.5 w-3.5 shrink-0" /> Upload New Files To Help The Library Grow
+              <Upload className="h-3.5 w-3.5 shrink-0" /> Upload New Files
+            </a>
+            <a href="/department/Mechanical%20Engineering" className="inline-flex w-full max-w-xs items-center justify-center gap-1.5 rounded-full border border-accent/40 bg-background px-4 py-2 text-xs font-semibold text-accent shadow-sm transition-colors hover:bg-accent/10">
+              <FolderOpen className="h-3.5 w-3.5 shrink-0" /> Browse Programmes
             </a>
             <button
               onClick={() => {

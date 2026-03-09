@@ -76,6 +76,48 @@ export type Database = {
         }
         Relationships: []
       }
+      course_programs: {
+        Row: {
+          course_id: string
+          created_at: string
+          id: string
+          program_id: string
+          semester: number
+          year: number
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          id?: string
+          program_id: string
+          semester?: number
+          year?: number
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          id?: string
+          program_id?: string
+          semester?: number
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_programs_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "course_programs_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "programs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       courses: {
         Row: {
           course_code: string

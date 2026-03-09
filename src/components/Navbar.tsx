@@ -9,6 +9,7 @@ import { useRef, useState, useEffect, useCallback } from "react";
 export default function Navbar() {
   const { user } = useAuth();
   const { isAdmin } = useIsAdmin();
+  const { mode, setMode } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const navRef = useRef<HTMLElement>(null);

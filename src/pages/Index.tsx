@@ -7,7 +7,7 @@ import FoundingBanner from "@/components/FoundingBanner";
 import { useRealtimeResources } from "@/hooks/useRealtimeResources";
 import { useLibrary } from "@/hooks/useLibrary";
 import arkynosLogo from "@/assets/arkynos-logo-full.png";
-import { Users, BookOpen, FolderOpen, Shield, Upload, Share2, ArrowUp, Download } from "lucide-react";
+import { Users, BookOpen, FolderOpen, Shield, Upload, Share2, Download } from "lucide-react";
 
 type ResourceWithRelations = Tables<"resources"> & {
   courses: Tables<"courses"> | null;
@@ -20,7 +20,6 @@ export default function Index() {
   const [loading, setLoading] = useState(true);
   const [userCount, setUserCount] = useState<number>(0);
   const [totalFiles, setTotalFiles] = useState<number>(0);
-  const [showScrollTop, setShowScrollTop] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isInstalled, setIsInstalled] = useState(false);
   const logoRef = useRef<HTMLImageElement>(null);
@@ -44,16 +43,6 @@ export default function Index() {
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
 
-  useEffect(() => {
-    const el = logoRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setShowScrollTop(!entry.isIntersecting),
-      { threshold: 0 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
 
   const fetchResources = useCallback(async () => {
     const { data: resourcesData } = await supabase
@@ -219,16 +208,6 @@ export default function Index() {
         )}
       </div>
 
-      {/* Scroll to top button */}
-      {showScrollTop && (
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-6 right-6 z-50 flex items-center gap-1.5 rounded-full bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground shadow-lg transition-all hover:bg-primary/90 animate-fade-in"
-        >
-          <ArrowUp className="h-4 w-4" />
-          Move to Top
-        </button>
-      )}
     </>
   );
 }

@@ -23,8 +23,8 @@ export default function Index() {
   const [totalFiles, setTotalFiles] = useState<number>(0);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isInstalled, setIsInstalled] = useState(false);
-  const [showAllResources, setShowAllResources] = useState(false);
   const logoRef = useRef<HTMLImageElement>(null);
+  const navigate = useNavigate();
 
   // Detect if app is already installed (standalone mode)
   useEffect(() => {

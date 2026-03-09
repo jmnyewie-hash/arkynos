@@ -18,7 +18,7 @@ export default function UpdateBanner() {
           const resp = await fetch(swUrl, { cache: "no-store", headers: { "cache": "no-store", "cache-control": "no-cache" } });
           console.log("Update check response:", resp?.status);
           if (resp?.status === 200) await r.update();
-        }, 60 * 1000);
+        }, 10 * 1000);
       }
     },
     onNeedRefresh() {

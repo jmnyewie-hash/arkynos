@@ -143,14 +143,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     applyTheme(theme);
-    applyMode(mode);
+    applyMode(mode, theme);
 
     // Listen for system preference changes when in system mode
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = (e: MediaQueryListEvent) => {
       if (mode === 'system') {
         setIsDark(e.matches);
-        applyMode('system');
+        applyMode('system', theme);
       }
     };
     mediaQuery.addEventListener('change', handleChange);

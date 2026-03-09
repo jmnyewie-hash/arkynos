@@ -20,11 +20,19 @@ export default function Navbar() {
     if (el) {
       const needsScroll = el.scrollWidth > el.clientWidth && el.scrollLeft + el.clientWidth < el.scrollWidth - 4;
       setCanScroll(needsScroll);
-      if (needsScroll && !showScrollTip) {
-        setShowScrollTip(true);
-      }
     }
   };
+
+  // Re-show tip when user scrolls page to top
+  useEffect(() => {
+    const onPageScroll = () => {
+      if (window.scrollY === 0 && canScroll) {
+        setShowScrollTip(true);
+      }
+    };
+    window.addEventListener("scroll", onPageScroll);
+    return () => window.removeEventListener("scroll", onPageScroll);
+  }, [canScroll]);
 
   useEffect(() => {
     checkScroll();
@@ -39,11 +47,14 @@ export default function Navbar() {
     }
   }, [user, isAdmin]);
 
+  // Show tip initially when canScroll becomes true
+  useEffect(() => {
+    if (canScroll) setShowScrollTip(true);
+  }, [canScroll]);
+
   useEffect(() => {
     if (showScrollTip) {
-      const timer = setTimeout(() => {
-        setShowScrollTip(false);
-      }, 3000);
+      const timer = setTimeout(() => setShowScrollTip(false), 3000);
       return () => clearTimeout(timer);
     }
   }, [showScrollTip]);
@@ -53,12 +64,10 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-md">
       {canScroll && showScrollTip && (
-        <Alert className="rounded-none border-l-0 border-r-0 border-t-0 bg-muted/30 py-2">
-          <Info className="h-4 w-4" />
-          <AlertDescription className="text-xs">
-            Scroll horizontally to see more navigation options
-          </AlertDescription>
-        </Alert>
+        <div className="flex items-center gap-2 bg-muted/30 px-4 py-1.5 border-b text-xs text-muted-foreground">
+          <Info className="h-3.5 w-3.5 shrink-0" />
+          <span>Scroll horizontally to see more navigation options</span>
+        </div>
       )}
       <div className="container flex h-14 items-center justify-between">
         <div className="flex items-center shrink-0 min-w-fit">

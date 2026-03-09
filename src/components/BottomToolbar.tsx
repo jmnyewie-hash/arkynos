@@ -10,17 +10,40 @@ export default function BottomToolbar() {
   const [isCheckingForUpdates, setIsCheckingForUpdates] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
-  // Watch for logo visibility to show/hide scroll to top button
+  // Watch for centerpiece logo visibility to show/hide scroll to top button
   useEffect(() => {
-    const logoImg = document.querySelector('img[alt="Arkynos"]');
-    if (!logoImg) return;
+    let observer: IntersectionObserver | null = null;
+    let mutationObserver: MutationObserver | null = null;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => setShowScrollTop(!entry.isIntersecting),
-      { threshold: 0 }
-    );
-    observer.observe(logoImg);
-    return () => observer.disconnect();
+    const attach = () => {
+      if (observer) return;
+
+      const logoEl = document.getElementById("home-centerpiece-logo");
+      if (!logoEl) return;
+
+      observer = new IntersectionObserver(
+        ([entry]) => setShowScrollTop(!entry.isIntersecting),
+        { threshold: 0 }
+      );
+
+      observer.observe(logoEl);
+    };
+
+    attach();
+
+    // If the logo hasn't mounted yet, wait for it.
+    if (!observer) {
+      mutationObserver = new MutationObserver(() => {
+        attach();
+        if (observer) mutationObserver?.disconnect();
+      });
+      mutationObserver.observe(document.body, { childList: true, subtree: true });
+    }
+
+    return () => {
+      observer?.disconnect();
+      mutationObserver?.disconnect();
+    };
   }, []);
 
   if (!user) return null;

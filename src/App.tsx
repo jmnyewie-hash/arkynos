@@ -74,7 +74,7 @@ const App = () => (
           <AuthProvider>
             <OfflineRedirect />
             <Navbar />
-            <ThemeToggle />
+            
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/search" element={<SearchPage />} />

@@ -104,6 +104,13 @@ export default function Index() {
     fetchUserCount();
   }, [fetchResources, fetchFileCount]);
 
+  // Refetch resources when showAllResources changes
+  useEffect(() => {
+    if (!loading) {
+      fetchResources();
+    }
+  }, [showAllResources, fetchResources]);
+
   const features = [
     { icon: BookOpen, label: "Curated Resources", desc: "Past questions, lecture notes, textbooks & more — organized by course" },
     { icon: FolderOpen, label: "Class Collections", desc: "Create or join class groups with all your semester materials in one place" },

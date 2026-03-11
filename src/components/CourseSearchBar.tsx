@@ -47,10 +47,8 @@ export default function CourseSearchBar({ className = "", initialQuery = "" }: {
 
     const timeout = setTimeout(async () => {
       const { data } = await supabase
-        .from("courses")
+        .rpc("search_courses", { search_term: trimmed })
         .select("course_code, course_name")
-        .or(`course_code.ilike.%${trimmed}%,course_name.ilike.%${trimmed}%`)
-        .order("course_code")
         .limit(7);
 
       if (data) setSuggestions(data);

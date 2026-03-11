@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_settings: {
+        Row: {
+          key: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
       class_access: {
         Row: {
           class_tag_id: string
@@ -165,6 +183,7 @@ export type Database = {
           id: string
           last_download_date: string
           name: string
+          paid_semester_id: string | null
           program_id: string | null
           study_year: number | null
           subscription_tier: Database["public"]["Enums"]["subscription_tier"]
@@ -178,6 +197,7 @@ export type Database = {
           id?: string
           last_download_date?: string
           name: string
+          paid_semester_id?: string | null
           program_id?: string | null
           study_year?: number | null
           subscription_tier?: Database["public"]["Enums"]["subscription_tier"]
@@ -191,12 +211,20 @@ export type Database = {
           id?: string
           last_download_date?: string
           name?: string
+          paid_semester_id?: string | null
           program_id?: string | null
           study_year?: number | null
           subscription_tier?: Database["public"]["Enums"]["subscription_tier"]
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "profiles_paid_semester_id_fkey"
+            columns: ["paid_semester_id"]
+            isOneToOne: false
+            referencedRelation: "semesters"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "profiles_program_id_fkey"
             columns: ["program_id"]
@@ -355,6 +383,33 @@ export type Database = {
           },
         ]
       }
+      semesters: {
+        Row: {
+          created_at: string
+          end_date: string
+          id: string
+          is_active: boolean
+          semester_name: string
+          start_date: string
+        }
+        Insert: {
+          created_at?: string
+          end_date: string
+          id?: string
+          is_active?: boolean
+          semester_name: string
+          start_date: string
+        }
+        Update: {
+          created_at?: string
+          end_date?: string
+          id?: string
+          is_active?: boolean
+          semester_name?: string
+          start_date?: string
+        }
+        Relationships: []
+      }
       user_library: {
         Row: {
           created_at: string
@@ -445,6 +500,26 @@ export type Database = {
         Returns: boolean
       }
       increment_downloads: { Args: { resource_id: string }; Returns: undefined }
+      search_courses: {
+        Args: { search_term: string }
+        Returns: {
+          course_code: string
+          course_name: string
+          created_at: string
+          department: string
+          id: string
+          program_id: string | null
+          university: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "courses"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
       app_role: "admin" | "user"

@@ -23,10 +23,7 @@ export default function SearchPage() {
     if (!query) { setCourses([]); setLoading(false); return; }
     setLoading(true);
     supabase
-      .from("courses")
-      .select("*")
-      .or(`course_code.ilike.%${query}%,course_name.ilike.%${query}%,department.ilike.%${query}%`)
-      .order("course_code")
+      .rpc("search_courses", { search_term: query })
       .then(({ data }) => {
         setCourses(data ?? []);
         setLoading(false);

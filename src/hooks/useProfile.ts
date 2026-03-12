@@ -12,6 +12,7 @@ export interface UserProfile {
   last_download_date: string;
   program_id: string | null;
   study_year: number | null;
+  paid_semester_id: string | null;
 }
 
 export function useProfile() {

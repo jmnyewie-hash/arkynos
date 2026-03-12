@@ -174,6 +174,71 @@ export type Database = {
           },
         ]
       }
+      download_logs: {
+        Row: {
+          created_at: string
+          id: string
+          resource_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          resource_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          resource_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "download_logs_resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: false
+            referencedRelation: "resources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_logs: {
+        Row: {
+          amount_pesewas: number
+          created_at: string
+          currency: string
+          id: string
+          metadata: Json | null
+          payment_type: string
+          reference: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount_pesewas: number
+          created_at?: string
+          currency?: string
+          id?: string
+          metadata?: Json | null
+          payment_type: string
+          reference: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount_pesewas?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          metadata?: Json | null
+          payment_type?: string
+          reference?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string

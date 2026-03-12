@@ -46,18 +46,38 @@ Deno.serve(async (req) => {
 
     const { reference, metadata } = event.data;
     const userId = metadata?.user_id;
-    const classTagId = metadata?.class_tag_id;
-
-    if (!userId || !classTagId) {
-      return new Response("Missing metadata", { status: 400, headers: corsHeaders });
-    }
 
     const adminClient = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // Grant access
+    // Handle semester premium payment
+    if (metadata?.payment_type === "semester_premium") {
+      const semesterId = metadata?.semester_id;
+      if (!userId || !semesterId) {
+        return new Response("Missing metadata", { status: 400, headers: corsHeaders });
+      }
+
+      await adminClient
+        .from("profiles")
+        .update({ subscription_tier: "premium", paid_semester_id: semesterId })
+        .eq("user_id", userId);
+
+      await adminClient
+        .from("payment_logs")
+        .update({ status: "success" })
+        .eq("reference", reference);
+
+      return new Response("OK", { status: 200, headers: corsHeaders });
+    }
+
+    // Handle class access payment
+    const classTagId = metadata?.class_tag_id;
+    if (!userId || !classTagId) {
+      return new Response("Missing metadata", { status: 400, headers: corsHeaders });
+    }
+
     const { error } = await adminClient.from("class_access").upsert(
       {
         user_id: userId,

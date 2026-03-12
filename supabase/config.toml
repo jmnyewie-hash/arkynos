@@ -14,3 +14,9 @@ verify_jwt = false
 
 [functions.admin-manage-role]
 verify_jwt = false
+
+[functions.initialize-semester-payment]
+verify_jwt = false
+
+[functions.verify-semester-payment]
+verify_jwt = false

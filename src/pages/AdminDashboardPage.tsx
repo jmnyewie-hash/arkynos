@@ -11,7 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Users, Crown, Zap, UserCheck, Search, Loader2, ShieldCheck, Calendar, Power, Plus, DollarSign } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Users, Crown, Zap, UserCheck, Search, Loader2, ShieldCheck, Calendar, Power, Plus, DollarSign, Download, Upload, FileText } from "lucide-react";
 import { toast } from "sonner";
 
 interface Stats {
@@ -20,6 +21,10 @@ interface Stats {
   premium_users: number;
   free_users: number;
   founding_spots_remaining: number;
+  total_resources: number;
+  total_downloads: number;
+  downloads_today: number;
+  uploads_today: number;
 }
 
 interface UserProfile {
@@ -30,6 +35,21 @@ interface UserProfile {
   subscription_tier: string;
   founding_user: boolean;
   is_admin?: boolean;
+}
+
+interface PaymentLog {
+  id: string;
+  user_id: string;
+  payment_type: string;
+  amount_pesewas: number;
+  currency: string;
+  reference: string;
+  status: string;
+  metadata: any;
+  created_at: string;
+  // joined
+  profile_name?: string;
+  profile_email?: string;
 }
 
 const tierColors: Record<string, string> = {
@@ -59,6 +79,10 @@ export default function AdminDashboardPage() {
   const [semEnd, setSemEnd] = useState("");
   const [semCreating, setSemCreating] = useState(false);
 
+  // Payment logs
+  const [paymentLogs, setPaymentLogs] = useState<PaymentLog[]>([]);
+  const [paymentsLoading, setPaymentsLoading] = useState(false);
+
   useEffect(() => {
     if (!adminLoading && !authLoading && !isAdmin) navigate("/");
   }, [isAdmin, adminLoading, authLoading, navigate]);
@@ -69,6 +93,34 @@ export default function AdminDashboardPage() {
       if (data) setStats(data as unknown as Stats);
     });
   }, [isAdmin]);
+
+  const fetchPaymentLogs = async () => {
+    setPaymentsLoading(true);
+    const { data } = await supabase
+      .from("payment_logs")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(50);
+
+    if (data && data.length > 0) {
+      const userIds = [...new Set(data.map((p: any) => p.user_id))];
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, name, email")
+        .in("user_id", userIds);
+      const profileMap = new Map((profiles ?? []).map((p: any) => [p.user_id, p]));
+
+      setPaymentLogs(
+        data.map((p: any) => {
+          const prof = profileMap.get(p.user_id);
+          return { ...p, profile_name: prof?.name, profile_email: prof?.email };
+        })
+      );
+    } else {
+      setPaymentLogs([]);
+    }
+    setPaymentsLoading(false);
+  };
 
   const searchUsers = async () => {
     if (!userSearch.trim()) return;
@@ -189,13 +241,17 @@ export default function AdminDashboardPage() {
     return <div className="container max-w-3xl py-10"><div className="h-8 w-48 animate-pulse rounded bg-muted" /></div>;
   }
 
-  const cards = stats
+  const statCards = stats
     ? [
         { label: "Total Users", value: stats.total_users, icon: <Users className="h-5 w-5 text-primary" /> },
         { label: "Founding Members", value: stats.founding_users, icon: <Crown className="h-5 w-5 text-amber-500" /> },
-        { label: "Founding Spots Left", value: stats.founding_spots_remaining, icon: <UserCheck className="h-5 w-5 text-green-500" /> },
+        { label: "Spots Left", value: stats.founding_spots_remaining, icon: <UserCheck className="h-5 w-5 text-green-500" /> },
         { label: "Premium Users", value: stats.premium_users, icon: <Zap className="h-5 w-5 text-purple-500" /> },
         { label: "Free Users", value: stats.free_users, icon: <Users className="h-5 w-5 text-muted-foreground" /> },
+        { label: "Total Resources", value: stats.total_resources, icon: <FileText className="h-5 w-5 text-primary" /> },
+        { label: "Total Downloads", value: stats.total_downloads, icon: <Download className="h-5 w-5 text-primary" /> },
+        { label: "Downloads Today", value: stats.downloads_today, icon: <Download className="h-5 w-5 text-green-500" /> },
+        { label: "Uploads Today", value: stats.uploads_today, icon: <Upload className="h-5 w-5 text-green-500" /> },
       ]
     : [];
 
@@ -203,185 +259,246 @@ export default function AdminDashboardPage() {
     <div className="container max-w-3xl py-10 animate-fade-in space-y-10">
       <div>
         <h1 className="font-heading text-2xl font-bold">Admin Dashboard</h1>
-        <p className="mt-1 text-sm text-muted-foreground">User statistics, paywall & semester management</p>
+        <p className="mt-1 text-sm text-muted-foreground">Platform management, analytics & controls</p>
       </div>
 
-      {/* Stats */}
-      {!stats ? (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {[1, 2, 3, 4, 5].map((i) => <div key={i} className="h-24 animate-pulse rounded-xl bg-muted" />)}
-        </div>
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {cards.map((c) => (
-            <div key={c.label} className="rounded-xl border bg-card p-5 shadow-card">
+      <Tabs defaultValue="overview">
+        <TabsList className="w-full flex-wrap h-auto">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="users">Users</TabsTrigger>
+          <TabsTrigger value="semesters">Semesters</TabsTrigger>
+          <TabsTrigger value="payments" onClick={() => { if (paymentLogs.length === 0) fetchPaymentLogs(); }}>Payments</TabsTrigger>
+        </TabsList>
+
+        {/* OVERVIEW TAB */}
+        <TabsContent value="overview" className="space-y-6">
+          {/* Stats */}
+          {!stats ? (
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {[1, 2, 3, 4, 5].map((i) => <div key={i} className="h-24 animate-pulse rounded-xl bg-muted" />)}
+            </div>
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {statCards.map((c) => (
+                <div key={c.label} className="rounded-xl border bg-card p-5 shadow-card">
+                  <div className="flex items-center gap-3">
+                    {c.icon}
+                    <span className="text-sm text-muted-foreground">{c.label}</span>
+                  </div>
+                  <p className="mt-2 font-heading text-3xl font-bold">{c.value}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Paywall Toggle */}
+          <div className="rounded-xl border bg-card p-5 shadow-card">
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                {c.icon}
-                <span className="text-sm text-muted-foreground">{c.label}</span>
+                <DollarSign className="h-5 w-5 text-primary" />
+                <div>
+                  <p className="font-semibold text-card-foreground">Paywall</p>
+                  <p className="text-xs text-muted-foreground">
+                    {isPaywallEnabled ? "Active — free users limited to 5 downloads/day" : "Disabled — all downloads are free"}
+                  </p>
+                </div>
               </div>
-              <p className="mt-2 font-heading text-3xl font-bold">{c.value}</p>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Paywall Toggle */}
-      <div className="rounded-xl border bg-card p-5 shadow-card">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <DollarSign className="h-5 w-5 text-primary" />
-            <div>
-              <p className="font-semibold text-card-foreground">Paywall</p>
-              <p className="text-xs text-muted-foreground">
-                {isPaywallEnabled ? "Active — free users limited to 5 downloads/day" : "Disabled — all downloads are free"}
-              </p>
+              <Switch checked={isPaywallEnabled} onCheckedChange={handlePaywallToggle} />
             </div>
           </div>
-          <Switch checked={isPaywallEnabled} onCheckedChange={handlePaywallToggle} />
-        </div>
-      </div>
+        </TabsContent>
 
-      {/* Semester Management */}
-      <div className="rounded-xl border bg-card p-5 shadow-card space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Calendar className="h-5 w-5 text-primary" />
-            <div>
-              <p className="font-semibold text-card-foreground">Semester Control</p>
-              <p className="text-xs text-muted-foreground">
-                {activeSemester ? `Active: ${activeSemester.semester_name}` : "No active semester"}
-              </p>
-            </div>
+        {/* USERS TAB */}
+        <TabsContent value="users" className="space-y-4">
+          <div>
+            <h2 className="font-heading text-xl font-bold">Manage Users</h2>
+            <p className="mt-1 text-sm text-muted-foreground">Search users to change tier or grant admin privileges</p>
           </div>
-          <Button size="sm" variant="outline" onClick={() => setShowSemForm(!showSemForm)}>
-            <Plus className="mr-1 h-3.5 w-3.5" /> New
-          </Button>
-        </div>
 
-        {showSemForm && (
-          <div className="space-y-3 border-t pt-4">
-            <Input placeholder="e.g. Semester 1, 2026" value={semName} onChange={(e) => setSemName(e.target.value)} />
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <Label className="text-xs">Start Date</Label>
-                <Input type="date" value={semStart} onChange={(e) => setSemStart(e.target.value)} />
-              </div>
-              <div>
-                <Label className="text-xs">End Date</Label>
-                <Input type="date" value={semEnd} onChange={(e) => setSemEnd(e.target.value)} />
-              </div>
-            </div>
-            <Button size="sm" onClick={handleCreateSemester} disabled={semCreating}>
-              {semCreating ? <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" /> : null}
-              Create Semester
+          <div className="flex gap-2">
+            <Input
+              placeholder="Search by name or email..."
+              value={userSearch}
+              onChange={(e) => setUserSearch(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && searchUsers()}
+            />
+            <Button onClick={searchUsers} disabled={searchLoading || !userSearch.trim()}>
+              {searchLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
             </Button>
           </div>
-        )}
 
-        {semesters.length > 0 && (
-          <div className="space-y-2 border-t pt-4">
-            {semesters.map((s) => (
-              <div key={s.id} className="flex items-center justify-between rounded-lg border p-3">
-                <div>
-                  <p className="text-sm font-medium text-card-foreground flex items-center gap-2">
-                    {s.semester_name}
-                    {s.is_active && <Badge className="bg-green-100 text-green-700 border-green-200">Active</Badge>}
-                  </p>
-                  <p className="text-xs text-muted-foreground">{s.start_date} → {s.end_date}</p>
+          {users.length > 0 && (
+            <div className="space-y-2">
+              {users.map((u) => (
+                <div key={u.id} className="rounded-xl border bg-card p-4 space-y-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <p className="font-medium text-card-foreground truncate">{u.name}</p>
+                        {u.is_admin && (
+                          <Badge variant="outline" className="text-primary border-primary/30 bg-primary/5 text-xs">
+                            <ShieldCheck className="mr-1 h-3 w-3" />Admin
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="text-sm text-muted-foreground truncate">{u.email}</p>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <Badge variant="outline" className={tierColors[u.subscription_tier] ?? ""}>
+                        {u.subscription_tier}
+                      </Badge>
+                      <Select
+                        value={u.subscription_tier}
+                        onValueChange={(val) => updateTier(u.user_id, val)}
+                        disabled={updatingId === u.user_id}
+                      >
+                        <SelectTrigger className="w-[120px] h-8 text-xs">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="free">Free</SelectItem>
+                          <SelectItem value="premium">Premium</SelectItem>
+                          <SelectItem value="founder">Founder</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {updatingId === u.user_id && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between border-t pt-3">
+                    <div className="flex items-center gap-2 text-sm">
+                      <ShieldCheck className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-muted-foreground">Admin privileges</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {togglingRoleId === u.user_id && <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />}
+                      <Switch
+                        checked={u.is_admin ?? false}
+                        onCheckedChange={(checked) => toggleAdminRole(u.user_id, checked)}
+                        disabled={togglingRoleId === u.user_id || u.user_id === user?.id}
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div className="flex gap-1.5">
-                  {!s.is_active ? (
-                    <Button size="sm" variant="outline" onClick={() => handleActivate(s.id)}>
-                      <Power className="mr-1 h-3.5 w-3.5" /> Start
-                    </Button>
-                  ) : (
-                    <Button size="sm" variant="destructive" onClick={() => handleEnd(s.id)}>
-                      End
-                    </Button>
-                  )}
+              ))}
+            </div>
+          )}
+        </TabsContent>
+
+        {/* SEMESTERS TAB */}
+        <TabsContent value="semesters" className="space-y-4">
+          <div className="rounded-xl border bg-card p-5 shadow-card space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Calendar className="h-5 w-5 text-primary" />
+                <div>
+                  <p className="font-semibold text-card-foreground">Semester Control</p>
+                  <p className="text-xs text-muted-foreground">
+                    {activeSemester ? `Active: ${activeSemester.semester_name}` : "No active semester"}
+                  </p>
                 </div>
               </div>
-            ))}
-          </div>
-        )}
-      </div>
+              <Button size="sm" variant="outline" onClick={() => setShowSemForm(!showSemForm)}>
+                <Plus className="mr-1 h-3.5 w-3.5" /> New
+              </Button>
+            </div>
 
-      {/* User Management */}
-      <div>
-        <h2 className="font-heading text-xl font-bold">Manage Users</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Search users to change tier or grant admin privileges
-        </p>
+            {showSemForm && (
+              <div className="space-y-3 border-t pt-4">
+                <Input placeholder="e.g. Semester 1, 2026" value={semName} onChange={(e) => setSemName(e.target.value)} />
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <Label className="text-xs">Start Date</Label>
+                    <Input type="date" value={semStart} onChange={(e) => setSemStart(e.target.value)} />
+                  </div>
+                  <div>
+                    <Label className="text-xs">End Date</Label>
+                    <Input type="date" value={semEnd} onChange={(e) => setSemEnd(e.target.value)} />
+                  </div>
+                </div>
+                <Button size="sm" onClick={handleCreateSemester} disabled={semCreating}>
+                  {semCreating ? <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" /> : null}
+                  Create Semester
+                </Button>
+              </div>
+            )}
 
-        <div className="mt-4 flex gap-2">
-          <Input
-            placeholder="Search by name or email..."
-            value={userSearch}
-            onChange={(e) => setUserSearch(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && searchUsers()}
-          />
-          <Button onClick={searchUsers} disabled={searchLoading || !userSearch.trim()}>
-            {searchLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
-          </Button>
-        </div>
-
-        {users.length > 0 && (
-          <div className="mt-4 space-y-2">
-            {users.map((u) => (
-              <div key={u.id} className="rounded-xl border bg-card p-4 space-y-3">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className="font-medium text-card-foreground truncate">{u.name}</p>
-                      {u.is_admin && (
-                        <Badge variant="outline" className="text-primary border-primary/30 bg-primary/5 text-xs">
-                          <ShieldCheck className="mr-1 h-3 w-3" />Admin
-                        </Badge>
+            {semesters.length > 0 && (
+              <div className="space-y-2 border-t pt-4">
+                {semesters.map((s) => (
+                  <div key={s.id} className="flex items-center justify-between rounded-lg border p-3">
+                    <div>
+                      <p className="text-sm font-medium text-card-foreground flex items-center gap-2">
+                        {s.semester_name}
+                        {s.is_active && <Badge className="bg-green-100 text-green-700 border-green-200">Active</Badge>}
+                      </p>
+                      <p className="text-xs text-muted-foreground">{s.start_date} → {s.end_date}</p>
+                    </div>
+                    <div className="flex gap-1.5">
+                      {!s.is_active ? (
+                        <Button size="sm" variant="outline" onClick={() => handleActivate(s.id)}>
+                          <Power className="mr-1 h-3.5 w-3.5" /> Start
+                        </Button>
+                      ) : (
+                        <Button size="sm" variant="destructive" onClick={() => handleEnd(s.id)}>
+                          End
+                        </Button>
                       )}
                     </div>
-                    <p className="text-sm text-muted-foreground truncate">{u.email}</p>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <Badge variant="outline" className={tierColors[u.subscription_tier] ?? ""}>
-                      {u.subscription_tier}
-                    </Badge>
-                    <Select
-                      value={u.subscription_tier}
-                      onValueChange={(val) => updateTier(u.user_id, val)}
-                      disabled={updatingId === u.user_id}
-                    >
-                      <SelectTrigger className="w-[120px] h-8 text-xs">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="free">Free</SelectItem>
-                        <SelectItem value="premium">Premium</SelectItem>
-                        <SelectItem value="founder">Founder</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    {updatingId === u.user_id && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
-                  </div>
-                </div>
-                {/* Admin toggle */}
-                <div className="flex items-center justify-between border-t pt-3">
-                  <div className="flex items-center gap-2 text-sm">
-                    <ShieldCheck className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">Admin privileges</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {togglingRoleId === u.user_id && <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />}
-                    <Switch
-                      checked={u.is_admin ?? false}
-                      onCheckedChange={(checked) => toggleAdminRole(u.user_id, checked)}
-                      disabled={togglingRoleId === u.user_id || u.user_id === user?.id}
-                    />
-                  </div>
-                </div>
+                ))}
               </div>
-            ))}
+            )}
           </div>
-        )}
-      </div>
+        </TabsContent>
+
+        {/* PAYMENTS TAB */}
+        <TabsContent value="payments" className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="font-heading text-xl font-bold">Payment Logs</h2>
+            <Button size="sm" variant="outline" onClick={fetchPaymentLogs} disabled={paymentsLoading}>
+              {paymentsLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Refresh"}
+            </Button>
+          </div>
+
+          {paymentsLoading ? (
+            <div className="space-y-2">
+              {[1, 2, 3].map((i) => <div key={i} className="h-16 animate-pulse rounded-xl bg-muted" />)}
+            </div>
+          ) : paymentLogs.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No payment logs yet.</p>
+          ) : (
+            <div className="space-y-2">
+              {paymentLogs.map((p) => (
+                <div key={p.id} className="rounded-xl border bg-card p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-card-foreground truncate">
+                        {p.profile_name || "Unknown"} <span className="text-muted-foreground font-normal">({p.profile_email})</span>
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {p.payment_type === "semester_premium" ? "Semester Premium" : "Class Access"} · GHS {(p.amount_pesewas / 100).toFixed(2)}
+                      </p>
+                      <p className="text-xs text-muted-foreground truncate">{p.reference}</p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <Badge variant="outline" className={
+                        p.status === "success" ? "text-green-600 bg-green-50 border-green-200" :
+                        p.status === "pending" ? "text-amber-600 bg-amber-50 border-amber-200" :
+                        "text-red-600 bg-red-50 border-red-200"
+                      }>
+                        {p.status}
+                      </Badge>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {new Date(p.created_at).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

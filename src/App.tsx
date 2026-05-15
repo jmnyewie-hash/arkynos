@@ -78,6 +78,7 @@ const App = () => (
             <OfflineRedirect />
             <Navbar />
             
+            <main>
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/search" element={<SearchPage />} />
@@ -105,6 +106,7 @@ const App = () => (
               <Route path="/admin/courses" element={<AdminCoursesPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
+            </main>
             <UpdateBanner />
             <BottomToolbar />
           </AuthProvider>

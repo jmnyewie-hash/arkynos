@@ -1,0 +1,22 @@
+# Arkynos
+
+> Arkynos is a free university study-resource library where students share and find past questions, lecture notes, textbooks, lab manuals and solution manuals organized by department, programme, year, semester and course.
+
+## Pages
+
+- [Home](/): Browse recent resources, search by course code, and join the community.
+- [Search](/search): Search courses by code, name or department with fuzzy matching.
+- [Recent Resources](/recent): The latest resources uploaded by the community.
+- [Department of Mechanical Engineering](/department/Mechanical%20Engineering): Browse Mechanical, Automobile and Marine Engineering programmes.
+- [Class Collections](/classes): Browse class-tagged resource bundles for specific cohorts.
+- [Upload](/upload): Contribute a resource to the library.
+- [Upgrade](/upgrade): Get unlimited downloads with a per-semester premium pass.
+- [Mad As Math](/mad-as-math): Curated mathematics resources.
+- [Contact](/contact): Reach the Arkynos admins.
+
+## Optional
+
+- [Sign in](/login)
+- [Create an account](/register)
+- [My Library](/library)
+- [Settings](/settings)

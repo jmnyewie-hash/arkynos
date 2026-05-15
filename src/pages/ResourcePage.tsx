@@ -24,6 +24,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Helmet } from "react-helmet-async";
 type ResourceWithRelations = Tables<"resources"> & {
   courses: Tables<"courses"> | null;
   profiles: Tables<"profiles"> | null;
@@ -160,6 +161,15 @@ export default function ResourcePage() {
 
   return (
     <div className="container max-w-2xl py-10 animate-fade-in">
+      <Helmet>
+        <title>{`${resource.title} — Arkynos`.slice(0, 60)}</title>
+        <meta name="description" content={(resource.description || `Download ${resource.title}${resource.courses ? ` for ${resource.courses.course_code} ${resource.courses.course_name}` : ""} on Arkynos — free university study resources.`).slice(0, 160)} />
+        <link rel="canonical" href={`/resource/${resource.id}`} />
+        <meta property="og:title" content={resource.title} />
+        <meta property="og:description" content={(resource.description || `Study resource on Arkynos.`).slice(0, 160)} />
+        <meta property="og:url" content={`/resource/${resource.id}`} />
+        <meta property="og:type" content="article" />
+      </Helmet>
       {isHidden && isAdmin && (
         <div className="mb-4 rounded-lg border border-destructive/30 bg-destructive/5 p-3 flex items-center gap-2 text-sm text-destructive">
           <EyeOff className="h-4 w-4 shrink-0" />

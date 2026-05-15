@@ -8,6 +8,7 @@ import FoundingBanner from "@/components/FoundingBanner";
 import { useRealtimeResources } from "@/hooks/useRealtimeResources";
 import { useLibrary } from "@/hooks/useLibrary";
 import { useTheme } from "@/hooks/useTheme";
+import { Helmet } from "react-helmet-async";
 import arkynosLogo from "@/assets/arkynos-logo-full.png";
 import arkynosLogoWhite from "@/assets/arkynos-logo-full-white.png";
 import arkynosLogoGlow from "@/assets/arkynos-logo-full-glow.png";
@@ -128,7 +129,7 @@ export default function Index() {
           <CourseSearchBar />
         </div>
         <div className="text-center animate-fade-in">
-          <p className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground/50 italic">A total of <span className="text-sm font-bold text-primary not-italic">{totalFiles.toLocaleString()}</span> files available today</p>
+          <p className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground italic">A total of <span className="text-sm font-bold text-primary not-italic">{totalFiles.toLocaleString()}</span> files available today</p>
           <div className="mt-3 flex flex-col items-center gap-2 px-2">
             <a href="/upload" className="inline-flex w-full max-w-xs items-center justify-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90">
               <Upload className="h-3.5 w-3.5 shrink-0" /> Upload New Files
@@ -153,9 +154,9 @@ export default function Index() {
             </button>
           </div>
           {!isDark && (
-            <img id="home-centerpiece-logo" ref={logoRef} src={currentLogo} alt="Arkynos" className="mx-auto mb-2 w-[50rem] max-w-full h-[22rem] object-contain" />
+            <img id="home-centerpiece-logo" ref={logoRef} src={currentLogo} alt="Arkynos — Labyrinth of Knowledge" width="800" height="352" fetchPriority="high" decoding="async" className="mx-auto mb-2 w-[50rem] max-w-full h-[22rem] object-contain" />
           )}
-          <p className="text-base font-medium tracking-[0.25em] uppercase text-muted-foreground/50 italic">The Labyrinth Of Knowledge</p>
+          <p className="text-base font-medium tracking-[0.25em] uppercase text-muted-foreground italic">The Labyrinth Of Knowledge</p>
           <p className="mt-3 text-lg text-muted-foreground">
             Find and share study resources for your courses
           </p>
@@ -238,7 +239,7 @@ export default function Index() {
           </div>
         )}
 
-        <p className="mt-10 text-center text-xs text-muted-foreground/50">
+        <p className="mt-10 text-center text-xs text-muted-foreground">
           Support us ~ 0241176760
         </p>
       </div>

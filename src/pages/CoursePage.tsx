@@ -6,6 +6,7 @@ import ResourceCard from "@/components/ResourceCard";
 import { useRealtimeResources } from "@/hooks/useRealtimeResources";
 import { useLibrary } from "@/hooks/useLibrary";
 import { TrendingUp, Star, Clock, SlidersHorizontal, FolderOpen } from "lucide-react";
+import { Helmet } from "react-helmet-async";
 
 type ResourceWithRelations = Tables<"resources"> & {
   courses: Tables<"courses"> | null;
@@ -127,6 +128,14 @@ export default function CoursePage() {
 
   return (
     <div className="container max-w-2xl py-10 animate-fade-in">
+      <Helmet>
+        <title>{`${course.course_code} ${course.course_name} — resources on Arkynos`.slice(0, 60)}</title>
+        <meta name="description" content={`Past questions, lecture notes and study resources for ${course.course_code} ${course.course_name} at ${course.university}, ${course.department}. Free on Arkynos.`.slice(0, 160)} />
+        <link rel="canonical" href={`/course/${encodeURIComponent(course.course_code)}`} />
+        <meta property="og:title" content={`${course.course_code} — ${course.course_name}`} />
+        <meta property="og:description" content={`Study resources for ${course.course_code} ${course.course_name}.`} />
+        <meta property="og:url" content={`/course/${encodeURIComponent(course.course_code)}`} />
+      </Helmet>
       <div>
         <h1 className="font-heading text-3xl font-bold">{course.course_code}</h1>
         <p className="mt-1 text-muted-foreground">{course.course_name} · {course.department} · {course.university}</p>
